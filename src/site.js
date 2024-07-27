@@ -373,7 +373,7 @@ function enableUX() {
     buildFilters();
     updateSummary();
     buildTable(); 
-    createTable(); // added this here so it's quicker to go to table
+    createTable(); // added this here so it's quicker to go to table check but slower to load initially so test after tiles
     enableModal();
     enableNavFilters();
     // console.log('stop spinner after legend is rendered on initial load')
@@ -710,11 +710,7 @@ function buildFilters() {
             // if (config.tileSourceLayer == 'integrated'){
             $('#spinner-container-filter').removeClass('d-none')
             $('#spinner-container-filter').addClass('d-flex')
-            // }
-            // else{
-            //     $('#spinner-container').removeClass('d-none')
-            //     $('#spinner-container').addClass('d-flex')
-            // }
+
             $('#' + this.dataset.checkid).click();
             toggleFilter(this.dataset.checkid);
             filterData();
@@ -732,15 +728,8 @@ function selectAllFilter() {
         }
     });
     // console.log('start spinner for select all click') // spinner starts again only for when select select all
-    // if (config.tileSourceLayer == 'integrated'){
     $('#spinner-container-filter').removeClass('d-none')
     $('#spinner-container-filter').addClass('d-flex')
-    
-    // }
-    // else{
-    //     $('#spinner-container').removeClass('d-none')
-    //     $('#spinner-container').addClass('d-flex')
-    // }
     filterData();
 }
 function clearAllFilter() {
