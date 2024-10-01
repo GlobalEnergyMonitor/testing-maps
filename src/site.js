@@ -595,8 +595,7 @@ function addEvents() {
             // }
         } else {
             // console.log(displayDetails(config.linked[selectedFeatures[0].properties[config.linkField]]))
-            var modalText = "<h6 class='p-3'>There are multiple " + config.assetFullLabel + " near this location. Select one for more details</h6>";
-
+            var modalText = "<h6 class='p-3'>There are multiple " + config.assetFullLabel + " near this location. Select one for more details</h6><ul>";
             let ul = $('<ul>');
             selectedFeatures.forEach((feature) => {
                 var link = $('<li class="asset-select-option">' + feature.properties[config.nameField] + "</li>");
@@ -1127,8 +1126,8 @@ function displayDetails(features) {
             }
         } else {
 
-            if (features[0].properties[detail] != '' &&  features[0].properties[detail] != NaN &&  features[0].properties[detail] != null &&  features[0].properties[detail] != 'not found' && features[0].properties[detail] != 'Unknown' && features[0].properties[detail] != ' ' && features[0].properties[detail] != 'Unknown [unknown %]'){
-                    if (config.multiCountry == true && config.detailView[detail]['label'].includes('Country')){
+            if (features[0].properties[detail] != '' &&  features[0].properties[detail] != NaN &&  features[0].properties[detail] != null &&  features[0].properties[detail] != 'not found' && features[0].properties[detail] != 'Unknown [unknown %]'){
+                    if (features[0].properties[detail].includes(';') && config.multiCountry == true && config.detailView[detail]['label'].includes('Country')){
                         // console.log(config.detailView[detail]['label'])
                         // remove semi colon in areas country for multi country
                         // features[0].properties[detail] = removeLastComma(features[0].properties[detail])

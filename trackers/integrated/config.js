@@ -10,9 +10,7 @@ var config = {
         'https://mapsintegrated.nyc3.cdn.digitaloceanspaces.com/maps/integrated-2024-07-31/{z}/{x}/{y}.pbf'
          ],
     tileSourceLayer: 'integrated',
-
-    projection: 'globe',
-
+    // projection: 'globe',
     color: { /* will be processed both into style json for paint circle-color property, and for legend. 
             what's right property name?? is color also listing values used in the summary? 
             should this just be made part of the filter? that might allow to address multiple properties */
@@ -56,24 +54,22 @@ var config = {
     capacityField: 'capacity-(mw)',
     capacityDisplayField: 'capacity-(mw)',
     capacityLabel: 'Capacity (MW)',
-    linkField: 'gem-location-id',
-    urlField: 'gemwiki-url',
-    countryField: 'country/area',
-    searchFields: { 'Project': ['plant-/-project-name'], 
-        //'Companies': ['Owner', 'Parent'],
-        //'Start Year': ['Start year'],
-        'Country/Area': ['country/area'],
-        'Status': ['status']
+    linkField: 'Wiki URL',
+    urlField: 'Wiki URL',
+    countryField: 'Country',
+    searchFields: { 'Project': ['Plant/project name'], 
+        'Companies': ['Owner', 'Parent'],
+        'Start Year': ['Start year'],
+        'Country/Area': ['Country'],
+        'Status': ['Status']
     },
     assetFullLabel: "units / phases / areas",
     assetLabel: "Units / Phases / Areas",
-    img_detail_zoom: 10,
+    img_detail_zoom: 15,
     tableHeaders: {
-        values: ['plant-/-project-name','unit-/-phase-name', 'owner', 'parent', 'capacity-(mw)', 'status', 'subnational-unit-(state,-province)', 'country/area', 'start-year', 'retired-year', 'type'],
-        labels: ['Plant/project name','Unit/phase name','Owner','Parent','Capacity (MW)','Status','Subnational unit (province/state)','Country/Area','Start year', 'Retired year', 'Type'],
-        clickColumns: 'plant-/-project-name',
-        removeLastComma: ['country/area'], 
-
+        values: ['Plant/project name','Unit/phase name', 'Owner', 'Parent', 'Capacity (MW)', 'Status', 'Subnational unit(s)', 'Country', 'Start year'],
+        labels: ['Plant/project name','Unit/phase name','Owner','Parent','Capacity (MW)','Status','Subnational unit (province/state)','Country/Area','Start year'],
+        clickColumns: 'Plant/project name'
     },
     detailView: {
         'plant-/-project-name': {'display': 'heading'},

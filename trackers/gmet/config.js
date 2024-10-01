@@ -37,14 +37,14 @@ var config = {
         {
             field: 'status-legend',
             label: 'Infrastructure Status',
-            values: ['operating', 'proposed-plus','pre-construction-plus','construction-plus','mothballed-plus', 'retired-plus', 'unknown-plus'], // pre-construction-plus
+            values: ['operating','proposed-plus','construction-plus','mothballed-plus', 'retired-plus', 'unknown-plus'], // pre-construction-plus
             /* value_labels must match order/number in values */
-            values_labels: ['Operating', 'Proposed / Announced / Discovered', 'Pre-construction / Exploration','Construction / In development','Mothballed / Idle / Shut in / Abandoned','Retired / Closed / Decommissioned / Cancelled','Not applicable / Unknown / UGS'] // 'Pre-construction / Pre-permit / Permitted / Exploration'
+            values_labels: ['Operating','Proposed / Announced / Discovered' ,'Construction / In development','Mothballed / Idle / Shut in','Retired / Closed / Decommissioned','Not applicable / Unknown'] // 'Pre-construction / Pre-permit / Permitted'
         }
     ],
 
-    // statusDisplayField: 'status',
-    // statusField: 'status-legend',
+    statusDisplayField: 'status',
+    statusField: 'status-legend',
     // # O&G extraction areas and coal mines by status 
     // plumes by "has attribution information"
     // infrastructure emissions estimates
@@ -78,8 +78,8 @@ var config = {
     /* configure the table view, selecting which columns to show, how to label them, 
         and designated which column has the link */
     tableHeaders: {
-        values: ['name', 'status','plume_emissions', 'emission_uncertainty','infra_type', 'date','subnational', 'country','infra_name', 'infra_url', 'well_id', 'gov_assets'],
-        labels: ['Project', 'Status','Emissions (kg/hr)', 'Emissions Uncertainty (kg/hr)','Type of Infrastructure','Observation Date', 'Subnational', 'Country/Area(s)','Nearby Infrastructure Project Name', 'Infrastructure Wiki', 'Government Well ID', 'Other Government ID Assets'],
+        values: ['name', 'status','plume_emissions', 'emission_uncertainty','infra_type', 'date','subnational', 'country','infra_name','well_id', 'gov_assets', 'infra_url'],
+        labels: ['Project', 'Status','Emissions (kg/hr)', 'Emissions Uncertainty (kg/hr)','Type of Infrastructure','Observation Date', 'Subnational', 'Country/Area(s)','Nearby Infrastructure Project Name', 'Government Well ID', 'California VISTA and other Government ID Assets','Infrastructure Wiki'],
         clickColumns: ['name'],
         rightAlign: ['Government Well ID','plume_emissions','date'],
         removeLastComma: ['country']
@@ -87,12 +87,11 @@ var config = {
     /* configure the search box; 
         each label has a value with the list of fields to search. Multiple fields might be searched */
     searchFields: { 'Country/Area(s)': ['country'],
-        'Project Type': ['tracker'],
         'Project': ['name'], 
-        'Companies': ['operator'],
+        'Companies': ['owners'],
         'Type of Infrastructure': ['infra_type'],
         'Government Well ID': ['well_id'],
-        'Other Government ID Assets': ['gov_assets']
+        'California VISTA and other Government ID Assets': ['gov_assets']
     },
 
     /* define fields and how they are displayed. 

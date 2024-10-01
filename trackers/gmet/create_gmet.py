@@ -318,7 +318,7 @@ def create_scaling_col(df):
     # make it round to 2
     plume_df['plume_emissions'] = plume_df['plume_emissions'].astype(float).round(2)
     # make it round to 2
-    plume_df['Emissions Uncertainty (kg/hr)'] = plume_df['Emissions Uncertainty (kg/hr)'].astype(float).round(2)
+    plume_df['emission_uncertainty'] = plume_df['emission_uncertainty'].astype(float).round(2)
     
     # concat them back 
 
@@ -729,99 +729,13 @@ def fix_countries(df):
 df = fix_countries(df)
 
 
-# TODO fix status year if not stated replace with '' DONE
-# TODO replace null subnational FIX MULT COUNTRY DONE
-# TODO if search field is empty undefined fix search DONE
-# TODO find out why some goget still not coming through, likely status 
-
-def is_valid(x):
-    return isinstance(x, (int, float)) and not pd.isna(x) and x != '' and x != 0 and x != 0.0
-def is_valid_str(x):
-    return isinstance(x, (str)) and not pd.isna(x)
-
-
-def last_min_data_fixes(df):
-    for col in ['infra_type', 'gov_assets', 'operator']: # ['infra_type']
-        df[col] = df[col].apply(lambda x: x.strip().lower() if is_valid_str(x) else '')
-
-    print(set(df['status'].to_list()))
-    print(set(df['tracker'].to_list()))
-
-    # make all search values have something
-    print(set(df['infra_type'].to_list()))
-    df['infra_type'].fillna('', inplace = True)
-    print(set(df['infra_type'].to_list()))
-    
-    # well_id
-    df['well_id'].fillna('', inplace = True)
-
-    # gov_assets
-    df['gov_assets'].fillna('', inplace = True)
-
-    # status_year
-    df['status_year'].fillna('', inplace = True)
-    
-
-    # fix null subnat
-    # print(df.columns)
-    # print(df.head())
-
-    df['count_of_semi'] = df.apply(lambda row: len(row['country'].split(';')) - 1, axis=1) # if len of list is more than 2, then split more than once
-    df['multi-country'] = df.apply(lambda row: 't' if row['count_of_semi'] > 1 else 'f', axis=1)
-    # if t then make areas-display 
-    df['areas-subnat-sat-display'] = df.apply(lambda row: f"{row['country']}" if row['multi-country'] == 'f' else 'Multiple Countries/Areas', axis=1)
-
-    # infra_url make it a hyperlink html!!
-    
-    
-
-    return df
-
-df = last_min_data_fixes(df)
-# Define a function to check for valid values
-
-    
+# TODO fix start year if not stated replace with ''
 def round_cap_emissions(df):
     print(df.columns)
-    print('TODO round the emissions and cap columns!')
-    # emission_uncertainty, plume_emissions, mtyr-gcmt_emissions, capacity_output, capacity_prod, tonnesyr-pipes_emissions, capacity, tonnes-goget_emissions, tonnes-goget-reserves_emissions
-    for col in ['emission_uncertainty', 'plume_emissions', 'mtyr-gcmt_emissions', 'capacity_output', 'capacity_prod', 'tonnes-goget_emissions', 'tonnes-goget-reserves_emissions']:
-        
-        
-        df[col] = df[col].apply(lambda x: round(x, 2) if is_valid(x) else '')
+    print('TODO round the emissions and cap columns')
     return df
 
 df = round_cap_emissions(df)
-
-
-# def make_table_wiki_url(df):
-#     df = df.copy()
-#     df['table_infra_url'] = df.apply(lambda row: f"<a href={infra_url} target='_blank'></a>" if row['infra_url'] != "" else row['infra_url'], axis=1)
-#     return df
-# df = make_table_wiki_url(df)
-
-def investigate_goget_missing(df):
-    
-    df = df.copy()
-    
-    df_mask = df[(df['status-legend']==pd.NA) & (df['tracker']=="oil-and-gas-extraction-areas")]
-    df_mask.to_csv('goget_investigate.csv')
-    df['status-legend'] = df['status-legend'].mask(df['status-legend']=='', other='unknown-plus')
-    df['status-legend'] = df['status-legend'].mask(df['status-legend']==pd.NA, other='unknown-plus')
-    df['status'] = df['status'].mask(df['status']=='', other='not found')
-    df['status'] = df['status'].mask(df['status']==pd.NA, other='not found')
-    
-    
-    # print(set(df['tracker'].to_list()))
-    # df_test = df[df['tracker']=='oil-and-gas-extraction-areas']
-    df_mask = df[(df['status-legend']=='') & (df['tracker']=="oil-and-gas-extraction-areas")]
-    df_mask.to_csv('goget_investigate.csv')
-    # # df_test = df_test['country', 'areas', 'goget_id', 'status', 'status-legend', 'scaling_col', 'map_id', 'infra-filter', 'name', 'lat', 'lng']
-    
-    # df_test.to_csv('goget_investigate.csv')
-    # return nothing 
-    return df
-df = investigate_goget_missing(df)
 
 def create_geo(df):
 # def convert_coords_to_point(df): from compile all trackers for AET

@@ -1,9 +1,8 @@
 var config = {
     json: './data/africa_energy_tracker_2024-07-10.geojson',
     geometries: ['Point','LineString'],
-    center: [10, 0],
-    zoomFactor: 1.9,
-    img_detail_zoom: 10,
+    center: [30, 0],
+    zoomFactor: 1.5,
     statusField: 'status-legend',
     statusDisplayField: 'status',
     color: {
@@ -104,31 +103,29 @@ var config = {
     //productionLabel NEED a productionLabel
     showMaxCapacity: false,
 
-    assetFullLabel: "Units / Phases / Areas / Pipelines", //TODO This should be projects when in the list down of linked in same area
+    assetFullLabel: "Units / Phases / Areas / Pipelines",
     //can be string for single value, or hash
-    // not using assetLabel for now TODO
-    assetLabel: '',
-    // assetLabel: {
-    //     // field: 'tracker-custom',
-    //     // values: {
-    //     //     'GCPT': 'units',
-    //     //     'GOGPT': 'units',
-    //     //     'GBPT': 'units',
-    //     //     'GNPT': 'units',
-    //     //     'GSPT': 'phases',
-    //     //     'GWPT':	'phases',
-    //     //     'GHPT':	'units',
-    //     //     'GGPT':	'units',
-    //     //     'GOGET - oil': 'areas',
-    //     //     'GOGET - gas': 'areas',
-    //     //     'GOIT': 'projects',
-    //     //     'GGIT': 'projects',
-    //     //     'GGIT - import': 'projects',
-    //     //     'GGIT - export': 'projects',
-    //     //     'GCMT': 'projects',
-    //     //     'GCTT': 'projects'
-    //     // }
-    // },
+    assetLabel: {
+        field: 'tracker-custom',
+        values: {
+            'GCPT': 'units',
+            'GOGPT': 'units',
+            'GBPT': 'units',
+            'GNPT': 'units',
+            'GSPT': 'phases',
+            'GWPT':	'phases',
+            'GHPT':	'units',
+            'GGPT':	'units',
+            'GOGET - oil': 'areas',
+            'GOGET - gas': 'areas',
+            'GOIT': 'projects',
+            'GGIT': 'projects',
+            'GGIT - import': 'projects',
+            'GGIT - export': 'projects',
+            'GCMT': 'projects',
+            'GCTT': 'projects'
+        }
+    },
     nameField: 'name',
 //    linkField: 'id',  
 
