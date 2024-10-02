@@ -22,31 +22,19 @@ const map = new mapboxgl.Map({
     projection: config.projection
 });
 
-// if (config.projection == 'globe'){
-//     const mapNaturalEarth = new mapboxgl.Map({
-//         container: 'map-second',
-//         style: config.mapStyle,
-//         zoom: determineZoom(),
-//         center: config.center,
-//         projection: 'naturalEarth'
-//     });
-// }
-
-
 map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
 const popup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false
 });
-// map.dragRotate.disable();
-// map.touchZoomRotate.disableRotation();
-// map.dragRotate
-// map.touchZoomRotate
-// map.rotateTo((timestamp / 100) % 360, { duration: 0 })
-
 
 map.on('load', function () {
-    loadData()
+    if (config.projection != 'globe'){
+        // map.setFog({}); // Set the default atmosphere style
+        $('#btn-spin-toggle').hide();
+
+    }
+    loadData();
 });
 function determineZoom() {
     let modifier = 650;
@@ -63,12 +51,18 @@ function determineZoom() {
 function loadData() {
     // Here we could load in data from csv always minus what's needed for map dots?
     if ("tiles" in config) {
+        console.log('addTiles');
         addTiles();
         Papa.parse(config.csv, {
             download: true,
             header: true,
+            error: function(error, file) {
+                console.log(error);
+                console.log(file);
+            },
             complete: function(results) {
-                addGeoJSON(results.data);
+                console.log('addGeoJSON');
+                addGeoJSON(results.data);   
             }
         });
     } else if ("geojson" in config) {
@@ -93,15 +87,15 @@ function loadData() {
         //     success: function(csvData) {
         //         addGeoJSON($.csv.toObjects(csvData));
         //     }
-        // });        
+        // });      
         Papa.parse(config.csv, {
             download: true,
             header: true,
             complete: function(results) {
-                addGeoJSON(results.data);
-            }
-        });
-    }
+                addGeoJSON(results.data);   
+            }  
+    });
+}
 }
 function addGeoJSON(jsonData) {
     // converts all to geojson 
@@ -130,9 +124,10 @@ function addGeoJSON(jsonData) {
                     feature.properties[key] = asset[key];
                 }
             }
-            if (feature.properties[config['countryField']]) {
+            if (feature.properties[config['countryField']]){
                 config.geojson.features.push(feature);
-            } else {
+            }
+            else {
                 console.log(feature)
             }
         });
@@ -140,25 +135,35 @@ function addGeoJSON(jsonData) {
     }
 
     // Now that GeoJSON is created, store in processedGeoJSON, and link assets, then add layers to the map
+    // config.processedGeoJSON = JSON.parse(JSON.stringify(config.geojson)); //deep copy
     config.processedGeoJSON = config.geojson; // copy
+
+    console.log('setMinMax');
     setMinMax();
+    console.log('findLinkedAssets');
     findLinkedAssets();
 
+    // map.addSource('assets-source', {
+    //     'type': 'geojson',
+    //     'data': config.processedGeoJSON
+    // });
+    // part to optimize csv only maps 
     if (!config.tiles) {
         map.addSource('assets-source', {
             'type': 'geojson',
-            'data': config.processedGeoJSON,
-            // 'buffer': 0,
-            // 'tolerance': 100
+            'data': config.processedGeoJSON
         });
     }
+
+    console.log('addLayers');
     addLayers();
+
+    setTimeout(enableUX, 3000);
+
+    console.log('enableUX');
     map.on('idle', enableUX); // enableUX starts to render data
-    // this is when the data has loaded 
-    // console.log('loaded')
-
-
 }
+
 function addTiles() {
     map.addSource('assets-source', {
         'type': 'vector',
@@ -168,19 +173,20 @@ function addTiles() {
     });
 
     /* create layer with invisible aasets in order to calculate statistics necessary for rendering the map and interface */
-    // config.geometries.forEach(geometry => {
-    //     map.addLayer({
-    //         'id': geometry == "LineString" ? 'assets-minmax-line' : 'assets-minmax-point',
-    //         'type': geometry == "LineString" ? 'line' : 'circle',
-    //         'source': 'assets-source',
-    //         'source-layer': config.tileSourceLayer,
-    //         'layout': {},
-    //         'filter': ["==",["geometry-type"],geometry],
-    //         'paint': geometry == "LineString" ? {'line-width': 0, 'line-color': 'red'} : {'circle-radius': 0}
-    //     });
-    // });
+//     config.geometries.forEach(geometry => {
+//         map.addLayer({
+//             'id': geometry == "LineString" ? 'assets-minmax-line' : 'assets-minmax-point',
+//             'type': geometry == "LineString" ? 'line' : 'circle',
+//             'source': 'assets-source',
+//             'source-layer': config.tileSourceLayer,
+//             'layout': {},
+//             'filter': ["==",["geometry-type"],geometry],
+//             'paint': geometry == "LineString" ? {'line-width': 0, 'line-color': 'red'} : {'circle-radius': 0}
+//         });
+//     });
 
-    // map.on('idle', geoJSONFromTiles);
+//     map.on('idle', geoJSONFromTiles);
+
 }
 function geoJSONFromTiles() {
     map.off('idle', geoJSONFromTiles);
@@ -199,8 +205,6 @@ function geoJSONFromTiles() {
         map.removeLayer(layer);
     });
     findLinkedAssets();
-    // console.log('length of config.geojson in geoJSONFromTiles')
-    // console.log(config.geojson.features.length)
     addLayers();
     map.on('idle', enableUX); // enableUX starts to renders data 
     
@@ -217,6 +221,7 @@ function findLinkedAssets() {
     
     map.off('idle', findLinkedAssets);
 
+    // config.preLinkedGeoJSON = JSON.parse(JSON.stringify(config.processedGeoJSON));
     config.preLinkedGeoJSON = config.processedGeoJSON;
     config.totalCount = 0;
 
@@ -370,17 +375,28 @@ function setMinMax() {
 */
 function enableUX() {
     map.off('idle', enableUX);
+    if (config.UXEnabled) {
+        console.log('ux already enabled');
+        return
+    };
+    config.UXEnabled = true;
+    
+    console.log('buildFilters');
     buildFilters();
+    console.log('updateSummary');
     updateSummary();
+    console.log('buildTable');
     buildTable(); 
-    createTable(); // added this here so it's quicker to go to table
+    console.log('enableModal');
     enableModal();
+    console.log('enableNavFilters');
     enableNavFilters();
-    // console.log('stop spinner after legend is rendered on initial load')
     $('#spinner-container').addClass('d-none')
     $('#spinner-container').removeClass('d-flex')
-    // TODO 
-    // spinGlobe();
+    if (config.projection == 'globe') {
+        console.log('spinGlobe');
+        spinGlobe();
+    }
 }
 
 function addLayers() {
@@ -576,9 +592,9 @@ function addEvents() {
     map.on('click', (e) => {
         const bbox = [ [e.point.x - config.hitArea, e.point.y - config.hitArea], [e.point.x + config.hitArea, e.point.y + config.hitArea]];
         const selectedFeatures = getUniqueFeatures(map.queryRenderedFeatures(bbox, {layers: config.layers}), config.linkField).sort((a, b) => a.properties[config.nameField].localeCompare(b.properties[config.nameField]));
-
-        if (selectedFeatures.length == 0) return;
         
+        if (selectedFeatures.length == 0) return;
+
         const links = selectedFeatures.map(
             (feature) => feature.properties[config.linkField]
         );
@@ -587,15 +603,21 @@ function addEvents() {
 
         if (selectedFeatures.length == 1) {
             config.selectModal = '';
+
             displayDetails(config.linked[selectedFeatures[0].properties[config.linkField]]);
+            // commenting this out because it creates a bug in summary capacity section 
             // if (config.tiles) {
             //     displayDetails([selectedFeatures[0]]); //use clicked point
+
+
             // } else {
-            //     displayDetails(config.linked[selectedFeatures[0].properties[config.linkField]]);
+            // displayDetails(config.linked[selectedFeatures[0].properties[config.linkField]]);
+
+
             // }
         } else {
-            // console.log(displayDetails(config.linked[selectedFeatures[0].properties[config.linkField]]))
-            var modalText = "<h6 class='p-3'>There are multiple " + config.assetFullLabel + " near this location. Select one for more details</h6><ul>";
+            var modalText = "<h6 class='p-3'>There are multiple " + config.assetFullLabel + " near this location. Select one for more details</h6>";
+
             let ul = $('<ul>');
             selectedFeatures.forEach((feature) => {
                 var link = $('<li class="asset-select-option">' + feature.properties[config.nameField] + "</li>");
@@ -629,29 +651,26 @@ function addEvents() {
            // $('#basemap-toggle').text("Streets");
            config.baseMap = "Satellite";
            map.setLayoutProperty('satellite', 'visibility', 'visible');
+           map.setFog({
+            "range": [0.8, 8],
+            "color": "#dc9f9f",
+            "horizon-blend": 0.5,
+            "high-color": "#245bde",
+            "space-color": "#000000",
+            "star-intensity": 0.3
+            });
         } else {
            // $('#basemap-toggle').text("Satellite");
            config.baseMap = "Streets";
            map.setLayoutProperty('satellite', 'visibility', 'none');
+
+           map.setFog(null);
         }
     });
 
-    // //TODO - adjust to work more like table view toggle
-    // $('#projection-toggle').on("click", function() {
-    //     if (config.projection == "globe") {
-    //        // $('#basemap-toggle').text("Streets");
-    //        userInteracting = true;
-    //        // hide btn for rotation
-    //        config.projection = "naturalEarth";
-    //        map.setProjection('naturalEarth');
-
-
-    //     } else {
-    //        // $('#basemap-toggle').text("Satellite");
-    //     //    config.projection = "globe";
-    //        map.setLayoutProperty('globe');
-    //     }
-    // });
+    $('#reset-all-button').on("click", function() {
+        enableResetAll();
+    });
 
 
     $('#collapse-sidebar').on("click", function() {
@@ -667,18 +686,25 @@ function addEvents() {
         $('#expand-sidebar').hide();
     });
 }
-    $('#projection-toggle').on("click", function() {
-        if (config.projection == 'globe') {
-            config.projection = "naturalEarth";
-            map.setProjection('naturalEarth');
-            // console.log(config.projection)
-        } else {
-            config.projection = "globe";
-            map.setProjection("globe");
-            // console.log(config.projection)
-        }
-    });
-    
+
+$('#projection-toggle').on("click", function() {
+    if (config.projection == 'globe') {
+        config.projection = "naturalEarth";
+        map.setProjection('naturalEarth');
+        $('#btn-spin-toggle').hide();
+        map.setCenter(config.center);
+        map.setZoom(determineZoom());
+
+    } else {
+        config.projection = "globe";
+        map.setProjection("globe");
+        map.setCenter(config.center);
+        $('#btn-spin-toggle').show();
+        spinGlobe();
+        map.setZoom(determineZoom());
+
+    }
+});
 
 
 /*
@@ -689,7 +715,7 @@ function buildFilters() {
     config.filters.forEach(filter => {
         
         if (config.color.field != filter.field) {
-            $('#filter-form').append('<hr /><h6 class="card-title">' + (filter.label || filter.field.replaceAll("_"," ")) + '</h6>');
+            $('#filter-form').append('<hr /><h7 class="card-title">' + (filter.label || filter.field.replaceAll("_"," ")) + '</h7>');
         }
         for (let i=0; i<filter.values.length; i++) {
             let check_id =  filter.field + '_' + filter.values[i];
@@ -698,25 +724,20 @@ function buildFilters() {
             check += `<div class="col-8"><input type="checkbox" checked class="form-check-input d-none" id="${check_id}">`;
             check += (config.color.field == filter.field ? '<span class="legend-dot" style="background-color:' + config.color.values[ filter.values[i] ] + '"></span>' : "");
             check +=  `<span id='${check_id}-label'>` + ('values_labels' in filter ? filter.values_labels[i] : filter.values[i].replaceAll("_", " ")) + '</span></div>';
-            check += '<div class="col-3 text-end" id="' + check_id + '-count">' + config.filterCount[filter.field][filter.values[i]] + '</div></div>';
+            check += '<div class="col-3 text-end" style="text-align: right;" id="' + check_id + '-count">' + config.filterCount[filter.field][filter.values[i]] + '</div></div>';
             $('#filter-form').append(check);
         }
     });
     $('.filter-row').each(function() {
         this.addEventListener("click", function() {
-            // console.log('CLICKED! so start the spinner') // add in spinner start here for filtering wait 
-            // todo add in customization for gipt
-            // if (config.tileSourceLayer == 'integrated'){
-            $('#spinner-container-filter').removeClass('d-none')
-            $('#spinner-container-filter').addClass('d-flex')
-            // }
-            // else{
-            //     $('#spinner-container').removeClass('d-none')
-            //     $('#spinner-container').addClass('d-flex')
-            // }
             $('#' + this.dataset.checkid).click();
             toggleFilter(this.dataset.checkid);
+
+            $('#spinner-container-filter').removeClass('d-none')
+            $('#spinner-container-filter').addClass('d-flex')
+
             filterData();
+
         });
     });
 }
@@ -730,17 +751,12 @@ function selectAllFilter() {
             toggleFilter(this.dataset.checkid);
         }
     });
-    // console.log('start spinner for select all click') // spinner starts again only for when select select all
-    // if (config.tileSourceLayer == 'integrated'){
+
     $('#spinner-container-filter').removeClass('d-none')
     $('#spinner-container-filter').addClass('d-flex')
-    
-    // }
-    // else{
-    //     $('#spinner-container').removeClass('d-none')
-    //     $('#spinner-container').addClass('d-flex')
-    // }
+
     filterData();
+
 }
 function clearAllFilter() {
     $('.filter-row').each(function() {
@@ -750,6 +766,7 @@ function clearAllFilter() {
         }
     });
     filterData();
+
 }
 function countFilteredFeatures() {
     config.filterCount = {};
@@ -793,9 +810,12 @@ function countFilteredFeatures() {
 }
 function filterData() {
     if (config.tiles) {
+
         filterTiles();
     } else {
+
         filterGeoJSON();
+
     }
 }
 
@@ -826,13 +846,14 @@ function filterTiles() {
         let countryExpression = ['any'];
         config.selectedCountries.forEach(country => {
             if (config.multiCountry) {
-                country = country + ',';
-                countryExpression.push(['in', ['string', country], ['string',['get', config.countryField]]]);
+                country = country + ';'; //this is needed to filter integrated file by country select but doesn't affect filtering by region
+                countryExpression.push(['in', ['string', country], ['string',['get', removeLastComma(config.countryField)]]]);
             } else {
-                countryExpression.push(['==', ['string', country], ['string',['get', config.countryField]]]);
+                countryExpression.push(['==', ['string', country], ['string',['get', removeLastComma(config.countryField)]]]);
             }
         })
         config.filterExpression.push(countryExpression);
+
     }
     for (let field in filterStatus) {
         config.filterExpression.push(['in', ['get', field], ['literal', filterStatus[field]]]);
@@ -855,6 +876,8 @@ function filterTiles() {
 
     if ($('#table-container').is(':visible')) {
         filterGeoJSON();
+        $('btn-spin-toggle').hide();
+
     } else {
         map.on('idle', filterGeoJSON);
     }
@@ -897,6 +920,7 @@ function filterGeoJSON() {
             filteredGeoJSON.features.push(feature);
         }
     });
+    // config.processedGeoJSON = JSON.parse(JSON.stringify(filteredGeoJSON));
     config.processedGeoJSON = filteredGeoJSON;
     findLinkedAssets();
     config.tableDirty = true;
@@ -922,17 +946,11 @@ function updateSummary() {
         $('#max_capacity').text(Math.round(config.maxFilteredCapacity).toString())
         $('#capacity_summary').html("Maximum " + config.capacityLabel);
     }
-    // console.log('stop spinner after updateSummary in filterGeoJSON for any type of filter') // stop spinner filter now?
-    // if (config.tileSourceLayer == 'integrated'){
+
     $('#spinner-container-filter').addClass('d-none')
     $('#spinner-container-filter').removeClass('d-flex')
 }
-//     }
-//     else {    
-//         $('#spinner-container').addClass('d-none')
-//         $('#spinner-container').removeClass('d-flex')
-//     }
-// }
+
 
 /*
   table view
@@ -940,25 +958,29 @@ function updateSummary() {
 function buildTable() {
     $('#table-toggle').on("click", function() {
         if (! $('#table-container').is(':visible')) {
-            $('#table-toggle-label').html("Map view <img src='../../src/img/arrow-right.svg' width='15'>");
+            $('#table-toggle-label').html("Map view <img src='../../src/img/arrow-right.svg' width='15' height='50' style='text-align: center;'>");
             $('#map').hide();
+            $('#btn-spin').hide();
             $('#sidebar').hide();
             $('#table-container').show();
             $('#basemap-toggle').hide();
+            $('btn-spin-toggle').hide();
             $('#projection-toggle').hide();
             updateTable(true);
         } else {
-            $('#table-toggle-label').html("Table view <img src='../../src/img/arrow-right.svg' width='15'>");
+            $('#table-toggle-label').html("Table view <img src='../../src/img/arrow-right.svg' width='15' height='50' style='text-align: center;'>");
             $('#map').show();
+            $('#btn-spin').show();
             $('#sidebar').show();
             $('#table-container').hide();
             $('#basemap-toggle').show();
+            $('btn-spin-toggle').show();
             $('#projection-toggle').show();
+
         }
     });
 }
 function createTable() {
-    console.log('first time takes a while to load')
     if ('rightAlign' in config.tableHeaders) {
         config.tableHeaders.rightAlign.forEach((col) => {
             $("#site-style").get(0).sheet.insertRule('td:nth-child(' + (config.tableHeaders.values.indexOf(col)+1) + ') { text-align:right }', 0);
@@ -976,15 +998,12 @@ function createTable() {
         fixedHeader: true,
         columns: config.tableHeaders.labels.map((header) => { return {'title': header}})
     });
-
 }
 function updateTable(force) {
     // table create/update with large number of rows is slow, only do it if visible
-    
     if ($('#table-container').is(':visible') || force) {
         if (config.table == null) {
             createTable();
-
         } else if (config.tableDirty) {
             config.table.clear();
             config.table.rows.add(geoJSON2Table()).draw();
@@ -1068,7 +1087,6 @@ function displayDetails(features) {
         if (Object.keys(config.detailView[detail]).includes('display')) {
 
             if (config.detailView[detail]['display'] == 'heading') {
-                // console.log(features[0])
                 detail_text += '<h4>' + features[0].properties[detail] + '</h4>';
 
             } else if (config.detailView[detail]['display'] == 'join') {
@@ -1114,7 +1132,6 @@ function displayDetails(features) {
             } else if (config.detailView[detail]['display'] == 'location') {
 
                 if (Object.keys(features[0].properties).includes(detail)) {
-                    // console.log(location_text)
                     if (location_text.length > 0) {
                         location_text += ', ';
                     }
@@ -1127,16 +1144,13 @@ function displayDetails(features) {
         } else {
 
             if (features[0].properties[detail] != '' &&  features[0].properties[detail] != NaN &&  features[0].properties[detail] != null &&  features[0].properties[detail] != 'not found' && features[0].properties[detail] != 'Unknown [unknown %]'){
-                    if (features[0].properties[detail].includes(';') && config.multiCountry == true && config.detailView[detail]['label'].includes('Country')){
-                        // console.log(config.detailView[detail]['label'])
-                        // remove semi colon in areas country for multi country
-                        // features[0].properties[detail] = removeLastComma(features[0].properties[detail])
+                    if (config.multiCountry == true && config.detailView[detail]['label'].includes('Country')){
+    
                         detail_text += '<span class="fw-bold">' + config.detailView[detail]['label'] + '</span>: ' + removeLastComma(features[0].properties[detail]) + '<br/>';
 
 
                     }
                     else if (Object.keys(config.detailView[detail]).includes('label')) {
-                        // console.log(features[0].properties[detail])
                         detail_text += '<span class="fw-bold">' + config.detailView[detail]['label'] + '</span>: ' + features[0].properties[detail] + '<br/>';
                     } else {
                         console.log(features[0].properties[detail])
@@ -1158,43 +1172,65 @@ function displayDetails(features) {
 
     // Need this to be customizable for trackers that do not need summary because no units 
     // Build capacity summary
-    if (capacityLabel == ''){
-        detail_text += '';
-    }
-    else if (features.length > 1) {   
-       let filterIndex = 0;
-        for (const[index, filter] of config.filters.entries()) {
-            if (filter.field == config.statusField) {
-                filterIndex = index;
+    if (capacityLabel != ''){
+        if (features.length > 1) { 
+
+        let filterIndex = 0;
+            for (const[index, filter] of config.filters.entries()) {
+                if (filter.field == config.statusField) {
+                    filterIndex = index;
+                }
             }
-        }
-        let capacity = Object.assign(...config.filters[filterIndex].values.map(f => ({[f]: 0})));
-        let count = Object.assign(...config.filters[filterIndex].values.map(f => ({[f]: 0})));
+
+        // Initialize capacity and count objects using reduce to resolve summary build bug
+        let capacity = config.filters[filterIndex].values.reduce((acc, f) => {
+            acc[f] = 0;
+            return acc;
+        }, {});
+
+        let count = config.filters[filterIndex].values.reduce((acc, f) => {
+            acc[f] = 0;
+            return acc;
+        }, {});
 
         features.forEach((feature) => {
-            capacity[feature.properties[config.statusField]] += feature.properties[config.capacityDisplayField];
+            let capacityInt = parseInt(feature.properties[config.capacityDisplayField], 10);
+
+            capacity[feature.properties[config.statusField]] += capacityInt;
             count[feature.properties[config.statusField]]++;
+
         });
 
-        let detail_capacity = '';
-        Object.keys(count).forEach((k) => {
-            if (count[k] != 0) {
-                detail_capacity += '<div class="row"><div class="col-5"><span class="legend-dot" style="background-color:' + config.color.values[ k ] + '"></span>' + k + '</div><div class="col-4">' + capacity[k] + '</div><div class="col-3">' + count[k] + " of " + features.length + "</div></div>";
-            }
-        });
-        detail_text += '<div>' + 
-            '<div class="row pt-2 justify-content-md-center">Total ' + assetLabel + ': ' + features.length + '</div>' +
-            '<div class="row" style="height: 2px"><hr/></div>' +
-            '<div class="row "><div class="col-5 text-capitalize">' + config.statusField + '</div><div class="col-4">' + capacityLabel + '</div><div class="col-3">#&nbsp;of&nbsp;' + assetLabel + '</div></div>' +
-            detail_capacity +
-            '</div>';
+            let detail_capacity = '';
+            Object.keys(count).forEach((k) => {
+                if (config.color.field == config.statusField){ 
+                
+                    if (count[k] != 0) {
+                        detail_capacity += '<div class="row"><div class="col-5"><span class="legend-dot" style="background-color:' + config.color.values[k] + '"></span>' + k + '</div><div class="col-4">' + capacity[k] + '</div><div class="col-3">' + count[k] + " of " + features.length + "</div></div>";
+                    }
+                }
+                else {
+                    if (count[k] != 0) {
+                        detail_capacity += '<div class="row"><div class="col-5">' + k + '</div><div class="col-4">' + capacity[k] + '</div><div class="col-3">' + count[k] + " of " + features.length + "</div></div>";
+                    }
+                }
+            });
+            detail_text += '<div>' + 
+                '<div class="row pt-2 justify-content-md-center">Total ' + assetLabel + ': ' + features.length + '</div>' +
+                '<div class="row" style="height: 2px"><hr/></div>' +
+                '<div class="row "><div class="col-5 text-capitalize">' + config.statusField + '</div><div class="col-4">' + capacityLabel + '</div><div class="col-3">#&nbsp;of&nbsp;' + assetLabel + '</div></div>' +
+                detail_capacity +
+                '</div>';
+        }
+        else {
+            detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
+                '<span class="legend-dot" style="background-color:' + config.color.values[ features[0].properties[config.statusField] ] + '"></span><span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
+            detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + features[0].properties[config.capacityDisplayField] + ' ' + capacityLabel;
+        }
     }
     else {
-        detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
-            '<span class="legend-dot" style="background-color:' + config.color.values[ features[0].properties[config.statusField] ] + '"></span><span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
-        detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + features[0].properties[config.capacityDisplayField] + ' ' + capacityLabel;
+        detail_text += '';
     }
-
     //Location by azizah from <a href="https://thenounproject.com/browse/icons/term/location/" target="_blank" title="Location Icons">Noun Project</a> (CC BY 3.0)
     //Arrow Back by Nursila from <a href="https://thenounproject.com/browse/icons/term/arrow-back/" target="_blank" title="Arrow Back Icons">Noun Project</a> (CC BY 3.0)
     $('.modal-body').html('<div class="row m-0">' +
@@ -1302,27 +1338,23 @@ function buildCountrySelect() {
             }
         });
         dropdown_html += "</ul></li>";
+
         if (continent_idx != Object.keys(config.countries).length - 1) {
             dropdown_html += '<li><hr class="dropdown-divider"></li>';
         }
+
         $('#country_select').append(dropdown_html);
+        console.log('at the country select append to dropdown point')
     });
 
     $('.country-dropdown-item').each(function() {
         this.addEventListener("click", function() {
-            // console.log('country dropdown clicked')
-            // if (config.tileSourceLayer == 'integrated'){
+            config.selectedCountryText = this.dataset.countrytext;
+            config.selectedCountries = (this.dataset.countries.length > 0 ?  this.dataset.countries.split(",") : []); // I think this needs to be exchanged with ; for multiple countries 
+            $('#selectedCountryLabel').text(config.selectedCountryText || "all");
+
             $('#spinner-container-filter').removeClass('d-none')
             $('#spinner-container-filter').addClass('d-flex')
-            
-            // else{
-            //     $('#spinner-container').removeClass('d-none')
-            //     $('#spinner-container').addClass('d-flex')
-            // }
-
-            config.selectedCountryText = this.dataset.countrytext;
-            config.selectedCountries = (this.dataset.countries.length > 0 ?  this.dataset.countries.split(",") : []);
-            $('#selectedCountryLabel').text(config.selectedCountryText || "all");
             filterData();
         });
     });
@@ -1333,7 +1365,9 @@ function buildCountrySelect() {
 function enableSearch() {
     $('#search-text').on('keyup paste', debounce(function() {
         config.searchText = $('#search-text').val().toLowerCase();
+
         filterData();
+
     }, 500));
     config.searchText = '';
 }
@@ -1352,12 +1386,54 @@ function enableSearchSelect() {
         this.addEventListener("click", function() {
             config.selectedSearchFields = this.dataset.searchfields;
             $('#selectedSearchLabel').text(this.dataset.searchfieldtext);
+
+            $('#spinner-container-filter').removeClass('d-none')
+            $('#spinner-container-filter').addClass('d-flex')
             filterData();
         });
     });
 
     config.selectedSearchFields = allSearchFields.join(',');
 }
+
+function enableResetAll() {
+    // need to also handle for table view - it works the same no special handling needed.
+
+    // clear country filter by returning selectedCountryLabel to 'All' DONE!
+    $('#selectedCountryLabel').text("all");
+    config.selectedCountryText = '';
+    config.selectedCountries = [];
+    
+    // // clear search text by making search text ''
+    config.searchText = ''; 
+    $('#search-text').val('');
+
+    // put search field category back to all
+    let allSearchFields = [];
+    Object.keys(config.searchFields).forEach((field_label) => {
+        allSearchFields = allSearchFields.concat(config.searchFields[field_label]);
+    });
+    config.selectedSearchFields = allSearchFields.join(',');
+    $('#selectedSearchLabel').text("all");
+
+    // clear legend by checking checked boxes DONE! 
+    $('.filter-row').each(function() {
+        if (! $('#' + this.dataset.checkid)[0].checked) {
+            $('#' + this.dataset.checkid)[0].checked = true;
+            toggleFilter(this.dataset.checkid);
+        }
+    }); 
+
+    // start the spinner
+    $('#spinner-container-filter').removeClass('d-none')
+    $('#spinner-container-filter').addClass('d-flex')
+
+    // then filter data
+    filterData();
+
+}  
+
+
 
 /* 
   Util functions
@@ -1446,78 +1522,96 @@ function removeLastComma(str) {
 }
 
 // TODO
-    // // The following values can be changed to control rotation speed:
+// // The following values can be changed to control rotation speed:
 
-    // // At low zooms, complete a revolution every two minutes.
-    // const secondsPerRevolution = 120;
-    // // Above zoom level 5, do not rotate.
-    // const maxSpinZoom = 5;
-    // // Rotate at intermediate speeds between zoom levels 3 and 5.
-    // const slowSpinZoom = 3;
+// At low zooms, complete a revolution every two minutes.
+const secondsPerRevolution = 120;
+// Above zoom level 5, do not rotate.
+const maxSpinZoom = 5;
+// Rotate at intermediate speeds between zoom levels 3 and 5.
+const slowSpinZoom = 3;
+const btnSpinToggle = document.querySelector('#btn-spin-toggle');
 
-    // let userInteracting = false;
-    // let spinEnabled = true;
 
-    // function spinGlobe() {
-    //     const zoom = map.getZoom();
-    //     if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
-    //         let distancePerSecond = 360 / secondsPerRevolution;
-    //         if (zoom > slowSpinZoom) {
-    //             // Slow spinning at higher zooms
-    //             const zoomDif =
-    //                 (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
-    //             distancePerSecond *= zoomDif;
-    //         }
-    //         const center = map.getCenter();
-    //         center.lng -= distancePerSecond;
-    //         // Smoothly animate the map over one second.
-    //         // When this animation is complete, it calls a 'moveend' event.
-    //         map.easeTo({ center, duration: 1000, easing: (n) => n });
-    //     }
-    // }
+let userInteracting = false;
+let spinEnabled = true;
 
-    // // Pause spinning on interaction
-    // map.on('mousedown', () => {
-    //     userInteracting = true;
-    // });
+function spinGlobe() {
 
-    // // Restart spinning the globe when interaction is complete
-    // map.on('mouseup', () => {
-    //     userInteracting = false;
-    //     spinGlobe();
-    // });
+    const zoom = map.getZoom();
+    if (config.projection == 'globe'){
 
-    // // These events account for cases where the mouse has moved
-    // // off the map, so 'mouseup' will not be fired.
-    // map.on('dragend', () => {
-    //     userInteracting = false;
-    //     spinGlobe();
-    // });
-    // map.on('pitchend', () => {
-    //     userInteracting = false;
-    //     spinGlobe();
-    // });
-    // map.on('rotateend', () => {
-    //     userInteracting = false;
-    //     spinGlobe();
-    // });
+        if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
+            let distancePerSecond = 360 / secondsPerRevolution;
+            if (zoom > slowSpinZoom) {
+                // Slow spinning at higher zooms
+                const zoomDif =
+                    (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+                distancePerSecond *= zoomDif;
+            }
+            const center = map.getCenter();
+            center.lng -= distancePerSecond;
+            // Smoothly animate the map over one second.
+            // When this animation is complete, it calls a 'moveend' event.
+            map.easeTo({ center, duration: 1000, easing: (n) => n });
+        }
+    }
+}
 
-    // // When animation is complete, start spinning if there is no ongoing interaction
-    // map.on('moveend', () => {
-    //     spinGlobe();
-    // });
+// Pause spinning on interaction
+map.on('mousedown', () => {
+    userInteracting = true;
+});
 
-    // TODO
+// Restart spinning the globe when interaction is complete
+map.on('mouseup', () => {
+    userInteracting = false;
+    spinGlobe();
+});
 
-    // document.getElementById('btn-spin').addEventListener('click', (e) => {
-    //     spinEnabled = !spinEnabled;
-    //     if (spinEnabled) {
-    //         spinGlobe();
-    //         e.target.innerHTML = 'Pause rotation';
-    //     } else {
-    //         map.stop(); // Immediately end ongoing animation
-    //         e.target.innerHTML = 'Start rotation';
-    //     }
-    // });
+// // These events account for cases where the mouse has moved
+// // off the map, so 'mouseup' will not be fired.
+map.on('dragend', () => {
+    userInteracting = false;
+    spinGlobe();
+});
+map.on('pitchend', () => {
+    userInteracting = false;
+    spinGlobe();
+});
+map.on('rotateend', () => {
+    userInteracting = false;
+    spinGlobe();
+});
 
-    // spinGlobe();
+// // When animation is complete, start spinning if there is no ongoing interaction
+map.on('moveend', () => {
+    spinGlobe();
+});
+
+document.getElementById('btn-spin-toggle').addEventListener('click', (e) => {
+    spinEnabled = !spinEnabled;
+    if (spinEnabled) {
+        spinGlobe();
+        e.target.innerHTML = 'Pause rotation';
+    } else {
+        map.stop(); // Immediately end ongoing animation
+        e.target.innerHTML = 'Start rotation';
+    }
+});
+
+
+// # adding option to pause spin with space important for smaller screens
+document.addEventListener('keydown', (e) => {
+    spinEnabled = !spinEnabled;
+    if (e.code === "Space") {
+        if (spinEnabled) {
+            spinGlobe();
+            btnSpinToggle.innerHTML = 'Pause rotation'; // not working not sure why
+        } else {
+            map.stop(); // Immediately end ongoing animation
+            spinGlobe();
+            btnSpinToggle.innerHTML = 'Start rotation';
+        }
+    }
+});
