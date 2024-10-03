@@ -107,6 +107,7 @@ var config = {
     showCapacityTable: false, 
 
 
+/* style test parameters!
 
 /* Mapbox styling applied to all trackers */
 pointPaint: {
