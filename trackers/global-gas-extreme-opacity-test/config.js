@@ -172,6 +172,9 @@ var config = {
         // 'areas-display': {'display': 'location'} // TODO pull out first one only if ; in it
 
     },
+
+/* style test parameters!
+
 /* Mapbox styling applied to all trackers */
 pointPaint: {
     'circle-opacity':.45
