@@ -9,7 +9,7 @@ var config = {
     img_detail_zoom: 10,
     statusField: 'status-legend',
     statusDisplayField: 'status',
-    // linkField: 'id',
+    linkField: 'id',
     color: {
         field: 'tracker-acro',
         values: {
@@ -168,7 +168,7 @@ var config = {
     detailView: {
         'name': {'display': 'heading'},
         'capacity-table': {'label': 'Capacity'}, // TODO this isn't getting populated ...lets fix summary soon!
-        'status': {'label': 'Status'}, // TODO THIS NEEDS TO BE FIXED it breaks the click option saying not included
+        'status': {'label': 'Status'}, 
         'prod-oil': {'label': 'Production (million bbl/y)'},
         'prod-gas': {'label': 'Production (million m³/y)'},
         'prod-year-oil': {'label': 'Production Year - Oil'},
@@ -182,5 +182,5 @@ var config = {
         'areas': {'label': 'Country/Area(s)'},
         'areas-subnat-sat-display': {'display': 'location'}, 
     },
-showCapacityTable: true,
+showCapacityTable: false,
 };

@@ -1,18 +1,18 @@
 var config = {
-    json: 'compilation_output/europe_2024-10-02.geojson',
+    json: 'compilation_output/europe_2024-10-21.geojson',
     geometries: ['Point','LineString'],
     center: [8, 30],
     zoomFactor: 1.9,
     img_detail_zoom: 10,
     statusField: 'status-legend',
     statusDisplayField: 'status',
-    // linkField: 'id',
+    linkField: 'id',
     color: {
         field: 'tracker-acro',
         values: {
             'GOGPT': 'blue',
             'GOGET': 'red',
-            'GGIT': 'green',
+            'GGIT-eu': 'green',
             'GGIT-lng':'green',
 
         }
@@ -21,7 +21,7 @@ var config = {
     filters: [
         {
             field: 'tracker-acro',
-            values: ["GOGPT",  "GGIT", "GGIT-lng", "GOGET", ], 
+            values: ["GOGPT",  "GGIT-eu", "GGIT-lng", "GOGET", ], 
             values_labels: ['gas units', 'gas pipelines', 'LNG terminals', 'gas extraction areas',],
             primary: true
         },
@@ -32,6 +32,14 @@ var config = {
             values_labels: ['Operating','Proposed/Announced/Discovered','Pre-construction/Pre-permit/Permitted', 'Construction/In development','Retired/Closed/Decommissioned','Cancelled','Mothballed/Idle/Shut in','Shelved', 'Not Found']
 
         },
+        {
+            field: 'pci-list',
+            label: 'PCI gas pipeline list',
+            values: ['both', '5', '6', 'none'],
+            values_labels: ['Both', 'Pci-5', 'Pci-6','Not found']
+
+        },
+
 
     ],
     capacityField: 'scaling-capacity',
@@ -131,8 +139,8 @@ var config = {
     multiCountry: true,
 
     tableHeaders: {
-        values: ['name','unit-name', 'owner', 'parent', 'capacity-table', 'status', 'areas', 'start-year', 'prod-gas', 'prod-year-gas', 'tracker-display',],
-        labels: ['Name','Unit','Owner', 'Parent','Capacity (MW)', 'Status','Country/Area(s)','Start year', 'Production (Million m³/y)', 'Production year (gas)', 'Type'],
+        values: ['name','unit-name', 'owner', 'parent', 'capacity-table', 'status', 'areas', 'start-year', 'prod-gas', 'prod-year-gas', 'tracker-display', 'fuel'],
+        labels: ['Name','Unit','Owner', 'Parent','Capacity (MW)', 'Status','Country/Area(s)','Start year', 'Production (Million m³/y)', 'Production year (gas)', 'Type', 'Fuel'],
         
         // 'capacity-oil', 'capacity-gas'
         // 'Production oil (Million bbl/y)', 'Production Gas (Milliion m³/y)'
@@ -155,9 +163,11 @@ var config = {
     },
     detailView: {
         'name': {'display': 'heading'},
+        'status': {'label': 'Status'}, 
+        'unit-name': {'label': 'Unit Name'},
         // 'status': {'lable': 'Status'}, // THIS NEEDS TO BE FIXED it breaks the click option saying not included
         // 'prod-gcmt': {'label': 'Production (MTPA)'}, // if its GCMT or GOGET should be 
-        'capacity-details': {'label': 'Project Level Capacity'}, // interim until summary capacity can be customized by tracker
+        'capacity-table': {'label': 'Capacity'}, // interim until summary capacity can be customized by tracker
         'prod-gas': {'label': 'Production (Million m³/y)'},
         'prod-year-gas': {'label': 'Production Year - Gas'},
         'start-year': {'label': 'Start Year'},
