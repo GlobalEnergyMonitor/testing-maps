@@ -1,12 +1,12 @@
 var config = {
-    json: './data/africa_2024-09-19.geojson',
+    json: './data/africa_2024-10-21.geojson',
     geometries: ['Point','LineString'],
     center: [10, 0],
     zoomFactor: 1.9,
     img_detail_zoom: 10,
     statusField: 'status-legend',
     statusDisplayField: 'status',
-    // linkField: 'id',
+    linkField: 'id',
     color: {
         field: 'tracker-acro',
         values: {

@@ -1,6 +1,6 @@
 var config = {
 
-    json: 'compilation_output/asia_2024-09-30.geojson',
+    json: 'compilation_output/asia_2024-10-21.geojson',
     geometries: ['Point','LineString'],
     center: [60, 20],
     zoomFactor: 1.9,
@@ -151,7 +151,7 @@ var config = {
     //     // }
     // },
     nameField: 'name',
-//    linkField: 'id',  
+   linkField: 'id',  
 
     countryFile: 'countries.js',
     countryField: 'areas',
@@ -183,9 +183,9 @@ var config = {
     },
     detailView: {
         'name': {'display': 'heading'},
-        // 'status': {'lable': 'Status'}, // THIS NEEDS TO BE FIXED it breaks the click option saying not included
-        // 'prod-gcmt': {'label': 'Production (MTPA)'}, // if its GCMT or GOGET should be 
-        'capacity-details': {'label': 'Project Level Capacity'}, // interim until summary capacity can be customized by tracker
+        'status': {'label': 'Status'}, 
+        'unit-name': {'label': 'Unit Name'},
+        'capacity-table': {'label': 'Capacity'}, // interim until summary capacity can be customized by tracker
         'prod-gas': {'label': 'Production (Million m³/y)'},
         'prod-year-gas': {'label': 'Production Year - Gas'},
         'start-year': {'label': 'Start Year'},
