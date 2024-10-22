@@ -8,21 +8,23 @@ var config = {
     statusDisplayField: 'status',
     linkField: 'id',
     color: {
-        field: 'tracker-acro',
+        field: 'tracker-custom',
         values: {
             'GOGPT': 'blue',
-            'GOGET': 'red',
+            'GOGET-oil': 'red',
             'GGIT-eu': 'green',
-            'GGIT-lng':'green',
+            'GGIT-import':'green',
+            'GGIT-export':'green',
+
 
         }
     },
     //filter values should have no spaces
     filters: [
         {
-            field: 'tracker-acro',
-            values: ["GOGPT",  "GGIT-eu", "GGIT-lng", "GOGET", ], 
-            values_labels: ['gas units', 'gas pipelines', 'LNG terminals', 'gas extraction areas',],
+            field: 'tracker-custom',
+            values: ["GOGPT",  "GGIT-eu", "GGIT-import", "GGIT-export", "GOGET-oil", ], 
+            values_labels: ['gas units', 'gas pipelines', 'LNG import terminals', 'LNG export terminals', 'gas extraction areas',],
             primary: true
         },
         {
@@ -34,12 +36,11 @@ var config = {
         },
         {
             field: 'pci-list',
-            label: 'PCI gas pipeline list',
-            values: ['both', '5', '6', 'none'],
-            values_labels: ['Both', 'Pci-5', 'Pci-6','Not found']
+            label: 'EU Projects of Common Interest (PCI)',
+            values: ['5', '6', 'both'],
+            values_labels: ['PCI-5', 'PCI-6', 'PCI-5 & PCI-6'] 
 
         },
-
 
     ],
     capacityField: 'scaling-capacity',
