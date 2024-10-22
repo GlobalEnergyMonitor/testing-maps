@@ -11,12 +11,14 @@ var config = {
 
     // linkField: 'id',
     color: {
-        field: 'tracker-acro',
+        field: 'tracker-custom',
         values: {
             'GOGPT': 'blue',
-            'GOGET': 'red',
+            'GOGET-oil': 'red',
             'GGIT': 'green',
-            'GGIT-lng':'green',
+            'GGIT-import':'green',
+            'GGIT-export':'green',
+
 
         }
     },
@@ -49,9 +51,9 @@ var config = {
     //filter values should have no spaces
     filters: [
         {
-            field: 'tracker-acro',
-            values: ["GOGPT",  "GGIT", "GGIT-lng", "GOGET", ], 
-            values_labels: ['gas units', 'gas pipelines', 'LNG terminals', 'gas extraction areas',], // CHECK THAT
+            field: 'tracker-custom',
+            values: ["GOGPT",  "GGIT", "GGIT-import", "GGIT-export","GOGET-oil", ], 
+            values_labels: ['gas units', 'gas pipelines', 'LNG import terminals', 'LNG export terminals','gas extraction areas',], // CHECK THAT
             primary: true
         },
         {
