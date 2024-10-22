@@ -2,7 +2,7 @@
 
 
 var config = {
-    json: 'data/latam_2024-10-21.geojson',
+    json: 'compilation_output/latam_2024-10-21.geojson',
     geometries: ['Point','LineString'],
     center: [-70, -20],
     zoomFactor: 1.8,
