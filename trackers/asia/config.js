@@ -1,6 +1,6 @@
 var config = {
 
-    json: 'compilation_output/asia_2024-10-21.geojson',
+    json: 'compilation_output/asia_2024-10-23.geojson',
     geometries: ['Point','LineString'],
     center: [60, 20],
     zoomFactor: 1.9,
@@ -53,7 +53,7 @@ var config = {
         {
             field: 'tracker-custom',
             values: ["GOGPT",  "GGIT", "GGIT-import", "GGIT-export","GOGET-oil", ], 
-            values_labels: ['gas units', 'gas pipelines', 'LNG import terminals', 'LNG export terminals','gas extraction areas',], // CHECK THAT
+            values_labels: ['gas units', 'gas pipelines', 'LNG import terminals', 'LNG export terminals', 'gas extraction areas',], // CHECK THAT
             primary: true
         },
         {
