@@ -37,8 +37,8 @@ var config = {
         {
             field: 'pci-list',
             label: 'EU Projects of Common Interest (PCI)',
-            values: ['5', '6', 'both'],
-            values_labels: ['PCI-5', 'PCI-6', 'PCI-5 & PCI-6'] 
+            values: ['5', '6', 'both', '',],
+            values_labels: ['PCI-5', 'PCI-6', 'PCI-5 & PCI-6', 'Non-PCI'] 
 
         },
 
