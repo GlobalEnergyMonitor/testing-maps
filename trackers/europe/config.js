@@ -24,7 +24,7 @@ var config = {
         {
             field: 'tracker-custom',
             values: ["GOGPT",  "GGIT-eu", "GGIT-import", "GGIT-export", "GOGET-oil", ], 
-            values_labels: ['gas units', 'gas pipelines', 'LNG import terminals', 'LNG export terminals', 'gas extraction areas',],
+            values_labels: ['gas power units', 'gas pipelines', 'LNG import terminals', 'LNG export terminals', 'gas extraction areas',],
             primary: true
         },
         {
@@ -47,67 +47,11 @@ var config = {
     
     capacityDisplayField: 'capacity-display',
     capacityLabel: '',
-    //interpolate: ["cubic-bezier", 0, 0, 0, 1],
-    //can be string for single value, or hash. always single value is showMaxCapacity is true
-    // capacityLabel: {
-    //     field: 'tracker-custom',
-    //     values: {
-    //         'GCPT': 'MW',
-    //         'GOGPT': 'MW',
-    //         'GBPT':	'MW',
-    //         'GNPT':	'MW',
-    //         'GSPT':	'MW',
-    //         'GSPT':	'MW',
-    //         'GWPT':	'MW',
-    //         'GHPT':	'MW',
-    //         'GGPT':	'MW',
-    //         'GOGET - oil':	'million boe/y',
-    //         'GOGET - gas':	'million m³/y',
-    //         'GOIT': 'boe/d',
-    //         'GGIT':	'Bcm/y of natural gas',
-    //         'GGIT - import': 'MTPA of natural gas',
-    //         'GGIT - export': 'MTPA of natural gas',
-    //         'GCMT':	'million tonnes coal/y',
-    //         'GCTT':	'million tonnes coal/y'
-    //     }
-    // },
-    // skipCapacitySum: '',
 
-    // capItemLabel:  {
-    //         field: 'tracker-custom',
-    //         values: {
-    //             'GCPT': 'MW',
-    //             'GOGPT': 'MW',
-    //             'GBPT':	'MW',
-    //             'GNPT':	'MW',
-    //             'GSPT':	'MW',
-    //             'GWPT':	'MW',
-    //             'GHPT':	'MW',
-    //             'GGPT':	'MW',
-    //             // 'GOGET - oil':	'million boe/y',
-    //             // 'GOGET - gas':	'million m³/y',
-    //             'GOIT': 'boe/d',
-    //             'GGIT':	'Bcm/y of natural gas',
-    //             'GGIT - import': 'MTPA of natural gas',
-    //             'GGIT - export': 'MTPA of natural gas',
-    //             // 'GCMT':	'million tonnes coal/y',
-    //             'GCTT':	'million tonnes coal/y'
-    //         }
-    //     },
-    // prodItemLabel: {
-    //     field: 'tracker-custom',
-    //         values: {
-    //             'GOGET - oil':	'million boe/y',
-    //             'GOGET - gas':	'million m³/y',
-    //             'GCMT':	'million tonnes coal/y'
-    //         }
-    // },
-    //productionLabel NEED a productionLabel
     showMaxCapacity: false,
 
     assetFullLabel: "Units / Pipelines", 
     //can be string for single value, or hash
-    // not using assetLabel for now TODO
     assetLabel: '',
     // assetLabel: {
     //     // field: 'tracker-custom',
@@ -131,8 +75,6 @@ var config = {
     //     // }
     // },
     nameField: 'name',
-//    linkField: 'id',  
-
     countryFile: 'countries.js',
     allCountrySelect: false,
     countryField: 'areas',
@@ -142,17 +84,9 @@ var config = {
     tableHeaders: {
         values: ['name','unit-name', 'owner', 'parent', 'capacity-table', 'status', 'areas', 'start-year', 'prod-gas', 'prod-year-gas', 'tracker-display', 'fuel'],
         labels: ['Name','Unit','Owner', 'Parent','Capacity (MW)', 'Status','Country/Area(s)','Start year', 'Production (Million m³/y)', 'Production year (gas)', 'Type', 'Fuel'],
-        
-        // 'capacity-oil', 'capacity-gas'
-        // 'Production oil (Million bbl/y)', 'Production Gas (Milliion m³/y)'
         clickColumns: ['project'],
         rightAlign: ['unit','capacity','prod-gas','start-year','prod-year-gas'], 
         removeLastComma: ['areas'], 
-        // displayValue: {'tracker-display': "assetLabel"},
-        // appendValue: {'capacity': "capItemLabel"},
-        // appendValue: {'production': "prodItemLabel"},
-        // appendValue: {'capacity-oil ': "prodItemLabel"},
-        // appendValue: {'capacity-gas': "prodItemLabel"},
 
     },
     searchFields: { 'Project': ['name'], 
@@ -166,8 +100,6 @@ var config = {
         'name': {'display': 'heading'},
         'status': {'label': 'Status'}, 
         'unit-name': {'label': 'Unit Name'},
-        // 'status': {'lable': 'Status'}, // THIS NEEDS TO BE FIXED it breaks the click option saying not included
-        // 'prod-gcmt': {'label': 'Production (MTPA)'}, // if its GCMT or GOGET should be 
         'capacity-table': {'label': 'Capacity'}, // interim until summary capacity can be customized by tracker
         'prod-gas': {'label': 'Production (Million m³/y)'},
         'prod-year-gas': {'label': 'Production Year - Gas'},
