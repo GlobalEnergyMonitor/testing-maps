@@ -1,6 +1,6 @@
 var config = {
 
-    json: 'compilation_output/asia_2024-10-23.geojson',
+    json: 'compilation_output/asia_2024-11-05.geojson',
     geometries: ['Point','LineString'],
     center: [60, 20],
     zoomFactor: 1.9,
@@ -97,8 +97,8 @@ var config = {
     },
     detailView: {
         'name': {'display': 'heading'},
-        'status': {'label': 'Status'}, 
         'unit-name': {'label': 'Unit Name'},
+        'status': {'label': 'Status'}, 
         'capacity-table': {'label': 'Capacity'}, // interim until summary capacity can be customized by tracker
         'prod-gas': {'label': 'Production (Million m³/y)'},
         'prod-year-gas': {'label': 'Production Year - Gas'},

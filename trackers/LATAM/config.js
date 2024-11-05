@@ -2,7 +2,7 @@
 
 
 var config = {
-    json: 'compilation_output/latam_2024-10-23.geojson',
+    json: 'compilation_output/latam_2024-11-05.geojson',
     geometries: ['Point','LineString'],
     center: [-70, -20],
     zoomFactor: 1.8,
@@ -168,6 +168,7 @@ var config = {
     },
     detailView: {
         'name': {'display': 'heading'},
+        'unit-name': {'label': 'Unit Name'},
         'capacity-table': {'label': 'Capacity'}, // TODO this isn't getting populated ...lets fix summary soon!
         'status': {'label': 'Status'}, 
         'prod-oil': {'label': 'Production (million bbl/y)'},

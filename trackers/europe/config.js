@@ -1,5 +1,5 @@
 var config = {
-    json: 'compilation_output/europe_2024-10-23.geojson',
+    json: 'compilation_output/europe_2024-11-05.geojson',
     geometries: ['Point','LineString'],
     center: [8, 30],
     zoomFactor: 1.9,
@@ -98,6 +98,7 @@ var config = {
     },
     detailView: {
         'name': {'display': 'heading'},
+        'unit-name': {'label': 'Unit Name'},
         'status': {'label': 'Status'}, 
         'unit-name': {'label': 'Unit Name'},
         'capacity-table': {'label': 'Capacity'}, // interim until summary capacity can be customized by tracker
