@@ -208,3 +208,4 @@ zoomFactor: 1.25,
 hitArea: 10, 
 
 };
+
