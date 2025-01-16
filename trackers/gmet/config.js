@@ -130,8 +130,6 @@ var config = {
 
     linkField: 'map_id',
 
-    showCapacityTable: false,
-
     multiCountry: true,
 
     showMaxCapacity: false
