@@ -22,75 +22,18 @@ const map = new mapboxgl.Map({
     projection: config.projection
 });
 
-// create a new map 
-const devMap = new mapboxgl.Map({
-    container: 'devMap',
-    style: config.mapStyle,
-    zoom: determineZoom(),
-    center: config.center,
-    projection: config.projection
-});
-// // // Make devMap a global variable so it can be used in addTiles and elsewhere
-// let devMap = null;
-
-// add new navigation features
-map.scrollZoom.enable();
-map.boxZoom.enable();
-map.dragRotate.enable();
-map.dragPan.enable();
-map.keyboard.enable();
-map.doubleClickZoom.enable();
-map.touchZoomRotate.enable();
-
-// Disable spinning when user interacts with the map
-[
-    'mousedown',
-    'wheel',
-    'touchstart',
-    'dragstart',
-    'rotatestart',
-    'zoomstart',
-    'keydown'
-].forEach(event => {
-    map.on(event, () => {
-        userInteracting = true;
-    });
-});
-
-/*
-    *  When a user clicks the button, `fitBounds()` zooms and pans
-    *  the viewport to contain a bounding box that surrounds Kenya.
-    *  The [lng, lat] pairs are the southwestern and northeastern
-    *  corners of the specified geographical bounds.
-    */
-// document.getElementById('fit').addEventListener('click', () => {
-//     // map.fitBounds([
-//     //     [32.958984, -5.353521], // [lng, lat] - southwestern corner of the bounds
-//     //     [43.50585, 5.615985] // [lng, lat] - northeastern corner of the bounds
-//     // ]);
-//     // use the output or return of getBoundingBox() instead of hardcoded default of Kenya
-//     let boundingBoxSet = getBoundingBox()
-//     map.fitBounds(boundingBoxSet)
-// });
-
 map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
 const popup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false
 });
 
-// declare this so you can customize features depending on if it's first load or filtering
-let initialLoad = true;
-let devTesting = false; 
-let initialDevLoad = true; 
-
 map.on('load', function () {
-    // if (config.projection != 'globe'){
-    //     // map.setFog({}); // Set the default atmosphere style
-    //     // $('#btn-spin-toggle').hide();
-    //     // $('#fit').hide();
+    if (config.projection != 'globe'){
+        // map.setFog({}); // Set the default atmosphere style
+        $('#btn-spin-toggle').hide();
 
-    // }
+    }
     loadData();
 });
 function determineZoom() {
@@ -101,270 +44,6 @@ function determineZoom() {
     return zoom;
 }
 
-function getStandardDeviation (array) {
-    if (!array || array.length === 0) {return 0;}
-
-    const n = array.length
-    const mean = array.reduce((a, b) => a + b) / n
-    return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
-    }
-
-function findDensity(gridSize = 10) {
-    /* This function augmnts the getBoundingBox function so that if there are anomolies they do not skew the "should be" center
-    So for issues like Reunion island being technically part of France, or the typo of a oil plant that has South Dakota listed but 
-    is in Mongolia
-    */
-
-    // get the average bounding box or center for all features listed
-    // or for majority of features listed 
-    // and then exclude the feature(s) whos center is too far from the average
-    // OR try to see if you can measure the density of a layer and have the bounding box prefer a dense view instead of 
-    // the ocean or a north or south pole
-
-    // Find the densest region of features using a grid-based approach.
-    // gridSize: size of grid cell in degrees (default 1 degree)
-
-
-    features = config.processedGeoJSON.features
-    // handle for no features returned
-    if (!features.length) {
-        console.warn('No features returned will not zoom in or fly');
-        // TODO figure out zoom out and respin
-        // maybe clear out filter after message saying nothing found
-        // if (map.getZoom() < 12) {
-        //     map.setZoom(12);
-        // }
-        return null;
-    } else {
-
-        // Collect all coordinates acccount for point, multipoint, linestring, multi line string
-        let allCoords = [];
-        features.forEach(f => {
-            let coords = [];
-            if (f.geometry && f.geometry.type === "Point") {
-                coords = [f.geometry.coordinates];
-            } else if (f.geometry && f.geometry.coordinates && f.geometry.coordinates.length) {
-                coords = f.geometry.coordinates.flat(Infinity)
-                    .filter(c => Array.isArray(c) && c.length === 2 && isFinite(c[0]) && isFinite(c[1]))
-                    .map(c => [c[0], c[1]]);
-            }
-            // Ensure coords is always an array of [lng, lat]
-            if (Array.isArray(coords[0])) {
-                coords.forEach(c => {
-                    if (Array.isArray(c) && c.length === 2 && isFinite(c[0]) && isFinite(c[1])) {
-                        allCoords.push([c[0], c[1]]);
-                    }
-                });
-            } else if (coords.length === 2 && isFinite(coords[0]) && isFinite(coords[1])) {
-                allCoords.push([coords[0], coords[1]]);
-            }
-        });
-
-        if (allCoords.length === 0) {
-            // If nothing is selected, reset to initial center and resume spinning
-            userInteracting = false;
-            spinGlobe();
-            // Return a small bounds around the initial center to trigger fitBounds
-            const center = config.center;
-            const pad = 0.5;
-            return [
-                [center[0] - pad, center[1] - pad], // SW
-                [center[0] + pad, center[1] + pad]  // NE
-            ];
-        }
-        console.log('len of allC' + allCoords.length)
-        // Build grid and count points in each cell
-        const grid = {};
-        allCoords.forEach(([lng, lat]) => {
-            // Round to grid cell
-            const x = Math.floor(lng / gridSize);
-            const y = Math.floor(lat / gridSize);
-            const key = `${x},${y}`;
-            if (!grid[key]) grid[key] = [];
-            grid[key].push([lng, lat]);
-        });
-
-        // Find the cell with the most points
-        let maxCell = null;
-        let maxCount = 0;
-        Object.entries(grid).forEach(([key, points]) => {
-            if (points.length > maxCount) {
-                maxCount = points.length;
-                maxCell = key;
-            }
-        });
-
-        // if (!maxCell) {
-        //     // fallback: use the bounding box of all points
-        //     let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
-        //     allCoords.forEach(([lng, lat]) => {
-        //         minLng = Math.min(minLng, lng);
-        //         minLat = Math.min(minLat, lat);
-        //         maxLng = Math.max(maxLng, lng);
-        //         maxLat = Math.max(maxLat, lat);
-        //     });
-        //     const pad = 0.2;
-        //     return [
-        //         [minLng - pad, minLat - pad], // SW
-        //         [maxLng + pad, maxLat + pad]  // NE
-        //     ];
-        // }
-
-        // Get the densest cell's bounding box
-        const [cellX, cellY] = maxCell.split(',').map(Number);
-        const minLng = cellX * gridSize;
-        const minLat = cellY * gridSize;
-        const maxLng = minLng + gridSize;
-        const maxLat = minLat + gridSize;
-
-
-        // find difference between min and max lng to see if should return null
-        // let diffLng = Math.abs(minLng - maxLng) // 270
-        let diffLng = minLng - maxLng
-        // if absolute value of diff is more than 179 return null 
-        if (diffLng > 180) { 
-            console.log('Greater than 270: ' + diffLng)
-            return null;
-        }
-        console.log('diffLng: ' + diffLng)
-
-        console.log('SW['+ minLng +',' + minLat +']')
-        console.log('NE['+ maxLng +',' + maxLat +']')
-    
-
-        // Optionally, expand the bounding box slightly for better fit
-        // if one feature padding of .5 else ... 
-        const pad = 0;
-        return [
-            [minLng - pad, minLat - pad], // SW
-            [maxLng + pad, maxLat + pad]  // NE
-        ];
-    }
-}
-
-function getBoundingBox(features) {
-    // this function will result in two coordinate pairings that look like the example below
-    // it'll be used by the mapbox fitbounds() method to re orient the map based off of the locations of selected / filtered projects or map assets
-    // those projects can be selected by the user in four ways:
-    // 1.) adjusting the legend filters on status or project type -- rarely will be fitBounds eligible
-    // 2.) selecting a country or continent from the dropdown -- TODO implement std dev but done, instead using density but with a maxZoom
-    // 3.) searching by name of the project in the search bar -- done
-    // 4.) clicking an asset // USE flyTo DONE
-    // TODO if user interacting do not initiate fitBounds ... do we wait? 
-    // sometimes only one project or asset will be returned 
-    // in most cases though many projects will be returned
-    // this function should calculate the most relevant bounding box that helps focus and zoom the user into their area of interest on the map
-    // [32.958984, -5.353521], // [lng, lat] - southwestern corner of the bounds
-    // [43.50585, 5.615985] // [lng, lat] - northeastern corner of the bounds
-
-    // If no features provided, use currently filtered features
-    if (!features) {
-        features = config.processedGeoJSON && config.processedGeoJSON.features
-            ? config.processedGeoJSON.features
-            : [];
-    }
-    if (!features.length) {
-        // Return a small bounds around the initial center to trigger fitBounds
-        return null;
-    }
-    // // Helper to flatten all coordinates from a geometry
-    // function flattenCoords(geometry) {
-    //     if (!geometry) return [];
-    //     if (geometry.type === "Point") {
-    //         return [geometry.coordinates];
-    //     } else if (geometry.type === "MultiPoint" || geometry.type === "LineString") {
-    //         return geometry.coordinates;
-    //     } else if (geometry.type === "MultiLineString" || geometry.type === "Polygon") {
-    //         return geometry.coordinates.flat();
-    //     } else if (geometry.type === "MultiPolygon") {
-    //         return geometry.coordinates.flat(2);
-    //     }
-    //     return [];
-    // }
-
-    // // Collect all coordinates from features
-    // let allCoords = [];
-    // features.forEach(feature => {
-    //     allCoords.push(...flattenCoords(feature.geometry));
-    // });
-    // console.log('allCoords' + allCoords)
-
-    // // Calculate mean and stddev for lng and lat
-    // function getMeanStd(arr) {
-    //     const n = arr.length;
-    //     if (n === 0) return { mean: 0, std: 0 };
-    //     const mean = arr.reduce((a, b) => a + b, 0) / n;
-    //     const std = Math.sqrt(arr.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / n);
-    //     return { mean, std };
-    // }
-    // const lngs = allCoords.map(c => c[0]);
-    // const lats = allCoords.map(c => c[1]);
-    // const { mean: meanLng, std: stdLng } = getMeanStd(lngs);
-    // const { mean: meanLat, std: stdLat } = getMeanStd(lats);
-
-    // // Filter out features whose all coordinates are > 2 stddev from mean
-    // const filteredFeatures = features.filter(feature => {
-    //     const coords = flattenCoords(feature.geometry);
-    //     // If any coordinate is within 2 stddev, keep the feature
-    //     return coords.some(([lng, lat]) =>
-    //         Math.abs(lng - meanLng) <= 2 * stdLng && Math.abs(lat - meanLat) <= 2 * stdLat
-    //     );
-    // });
-
-    // // Use filteredFeatures for the rest of the function
-    // let featuresGeo = filteredFeatures.map(f => f.geometry);
-
-
-    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
-    features.forEach(f => {
-        let coords = f.geometry && f.geometry.type === "Point"
-            ? f.geometry.coordinates
-            : (f.geometry && f.geometry.coordinates && f.geometry.coordinates.length
-                ? f.geometry.coordinates.flat(Infinity)
-                : []);
-        // Handle both Point and LineString/MultiPoint/MultiLineString
-        if (Array.isArray(coords[0])) {
-            coords.forEach(c => {
-                if (Array.isArray(c) && c.length === 2) {
-                    minLng = Math.min(minLng, c[0]);
-                    minLat = Math.min(minLat, c[1]);
-                    maxLng = Math.max(maxLng, c[0]);
-                    maxLat = Math.max(maxLat, c[1]);
-                }
-            });
-        } else if (coords.length === 2) {
-            minLng = Math.min(minLng, coords[0]);
-            minLat = Math.min(minLat, coords[1]);
-            maxLng = Math.max(maxLng, coords[0]);
-            maxLat = Math.max(maxLat, coords[1]);
-        }
-    });
-    // If only one point, expand bounds slightly for better fit
-    if (minLng === maxLng && minLat === maxLat) {
-        const pad = 0.1;
-        minLng -= pad; maxLng += pad;
-        minLat -= pad; maxLat += pad;
-    }
-
-    // find difference between min and max lng to see if should return null
-    let diffLng = Math.abs(minLng - maxLng)
-    // if absolute value of diff is more than 179 return null
-    if (diffLng > 270) {
-        console.log('Greater than 270: ' + diffLng)
-        return null;
-    }
-    console.log('diffLng: ' + diffLng)
-
-    console.log('SW['+ minLng +',' + minLat +']')
-    console.log('NE['+ maxLng +',' + maxLat +']')
-    
-
-
-    return [
-        [minLng, minLat], // SW
-        [maxLng, maxLat]  // NE
-    ];
-}
 
 /*
   load data in various formats, and prepare for use in application
@@ -373,7 +52,7 @@ function loadData() {
     // Here we could load in data from csv always minus what's needed for map dots?
     if ("tiles" in config) {
         console.log('addTiles');
-        addTiles(); // getting stuck in addTiles with devtesting
+        addTiles();
         Papa.parse(config.csv, {
             download: true,
             header: true,
@@ -491,53 +170,38 @@ function addGeoJSON(jsonData) {
     console.log('addLayers');
     addLayers();
 
-    setTimeout(enableUX, 3000); 
+    setTimeout(enableUX, 3000);
 
     console.log('enableUX');
-    map.on('idle', enableUX); 
+    map.on('idle', enableUX); // enableUX starts to render data
 }
 
 function addTiles() {
-    if (devTesting === true) {
-        console.log('in addTiles devTesting');
-        // Make devMap global if not already
-        window.devMap = devMap;
-        devMap.addSource('assets-source', {
-            'type': 'vector',
-            'tiles': config.tiles,
-            'minzoom': 0,
-            'maxzoom': 10 // ?
-        });        
-    } else {
-        // Make map global if not already
-        window.map = map;
-        map.addSource('assets-source', {
-            'type': 'vector',
-            'tiles': config.tiles,
-            'minzoom': 0,
-            'maxzoom': 10 // ?
-        });
-    }
-    /* create layer with invisible assets in order to calculate statistics necessary for rendering the map and interface */
-    // config.geometries.forEach(geometry => {
-    //     map.addLayer({
-    //         'id': geometry == "LineString" ? 'assets-minmax-line' : 'assets-minmax-point',
-    //         'type': geometry == "LineString" ? 'line' : 'circle',
-    //         'source': 'assets-source',
-    //         'source-layer': config.tileSourceLayer,
-    //         'layout': {},
-    //         'filter': ["==",["geometry-type"],geometry],
-    //         'paint': geometry == "LineString" ? {'line-width': 0, 'line-color': 'red'} : {'circle-radius': 0}
-    //     });
-    // });
+    map.addSource('assets-source', {
+        'type': 'vector',
+        'tiles': config.tiles,
+        'minzoom': 0,
+        'maxzoom': 10 // ?
+    });
 
-    // map.on('idle', geoJSONFromTiles);
+    /* create layer with invisible aasets in order to calculate statistics necessary for rendering the map and interface */
+//     config.geometries.forEach(geometry => {
+//         map.addLayer({
+//             'id': geometry == "LineString" ? 'assets-minmax-line' : 'assets-minmax-point',
+//             'type': geometry == "LineString" ? 'line' : 'circle',
+//             'source': 'assets-source',
+//             'source-layer': config.tileSourceLayer,
+//             'layout': {},
+//             'filter': ["==",["geometry-type"],geometry],
+//             'paint': geometry == "LineString" ? {'line-width': 0, 'line-color': 'red'} : {'circle-radius': 0}
+//         });
+//     });
+
+//     map.on('idle', geoJSONFromTiles);
+
 }
 function geoJSONFromTiles() {
     map.off('idle', geoJSONFromTiles);
-    // since map not idle anymore reintroduce spinner 
-    $('#spinner-container-filter').addClass('d-none');
-    $('#spinner-container-filter').removeClass('d-flex');
     let layers = [];
     if (config.geometries.includes('Point')) layers.push('assets-minmax-point');
     if (config.geometries.includes('LineString')) layers.push('assets-minmax-line');
@@ -568,9 +232,7 @@ function geoJSONFromTiles() {
 function findLinkedAssets() {
     
     map.off('idle', findLinkedAssets);
-    // since map not idle anymore reintroduce spinner 
-    $('#spinner-container-filter').addClass('d-none');
-    $('#spinner-container-filter').removeClass('d-flex');
+
     // config.preLinkedGeoJSON = JSON.parse(JSON.stringify(config.processedGeoJSON));
     config.preLinkedGeoJSON = config.processedGeoJSON;
     config.totalCount = 0;
@@ -658,75 +320,7 @@ function findLinkedAssets() {
         config.processedGeoJSON.features.push(features[0]);
 
     });
-
-
-    if (initialLoad == true) {
-        // Do not go through fitBounds on initialLoad 
-        userInteracting = false;
-        spinGlobe();
-    } else {
-        // Try here for fitBounds
-        // if map projection is not mercator or globe do not do fitbounds 
-        if (config.projection == 'globe'){
-            // wait setTimeout(enableUX, 3000);
-
-            // fit to the highlighted projects and zoom in
-            // let boundingBoxSet = getBoundingBox()
-            let boundingBoxSet = findDensity(); // better function that will avoid anomalies and poles
-            // TODO find size of bounding box and then determine max zoom so if its small or less features higher zoom less map
-            // if larger or more features or many dense clusters then low zoom more map
-
-            // if there are no search terms or filters
-            // zoom out and spin 
-            
-            // Only allow to fit bounds when userInteracting is done 
-            // currently it starts fitting to bounds before I've had a chance to finish selecting
-            // the filters
-
-            // Wait a short delay before running fitBounds
-            // actually do map.on('idle', functionThatCallsFitBounds)
-
-            if (boundingBoxSet) {
-                map.fitBounds(boundingBoxSet, {
-                    padding: {top: 10, bottom:25, left: 15, right: 5},
-                    maxZoom: 2,
-                });
-                // if null for no features
-                // return back to start
-                // If nothing is selected, reset to initial center and resume spinning
-
-                // Using easeTo options. jumpTo without animation
-                // or try resetNorth and resetNorthPitch
-
-                // map.easeTo({
-                //     center: [0,0],
-                //     zoom: 1,
-                //     speed: 0.2, // easeTo
-                //     curve: 1, // easeTo
-                //     duration: 1000, // easeTo
-                //     easing(t) { // easeTo
-                //         return t;
-                //     }
-                // })
-
-            } else {
-                map.jumpTo({
-                    center: [0, 0],
-                    zoom: 1,
-                });
-                userInteracting = false;
-                spinGlobe();
-            }
-            console.log('Just fired fitBounds in filterGeoJson');
-
-
-        }
-
-    }
 }
-
-
-
 function generateIcon(icon) {
     let label = JSON.stringify(icon);
     if (map.hasImage(label)) return;
@@ -737,13 +331,8 @@ function generateIcon(icon) {
 
     // get the canvas context
     let context = canvas.getContext('2d');
-    // context.globalAlpha = config.pointPaint["circle-opacity"];
-    if (devTesting === true){
-        context.globalAlpha = Number(document.getElementById('opacity-value').textContent)
-        console.log(context.globalAlpha + ' = ' + Number(document.getElementById('opacity-value').textContent))
-    } else {
-        context.globalAlpha = config.pointPaint["circle-opacity"];
-    }
+    context.globalAlpha = config.pointPaint["circle-opacity"];
+
     // calculate the coordinates of the center of the circle
     let centerX = canvas.width / 2;
     let centerY = canvas.height / 2;
@@ -816,9 +405,6 @@ function setMinMax() {
 */
 function enableUX() {
     map.off('idle', enableUX);
-    // since map not idle anymore reintroduce spinner 
-    $('#spinner-container-filter').addClass('d-none');
-    $('#spinner-container-filter').removeClass('d-flex');
     if (config.UXEnabled) {
         console.log('ux already enabled');
         return
@@ -843,328 +429,144 @@ function enableUX() {
     }
 }
 
-
 function addLayers() {
  
     config.layers = [];
-    // try devMap.setStyle(config.mapStyle);
-    // these layers below need it 
-    // if (initialDevLoad === true){
-    //     // devMap.setStyle(config.mapStyle, {
-    //     //     "diff": false
-    //     // });
-    //     console.log('initialDevLoad true')
-    // }else {
-    //     devMap.setStyle(config.mapStyle, {
-    //         "diff": false
-    //     });
-    // }
     if (config.geometries.includes('LineString')) addLineLayer();
     if (config.geometries.includes('Point')) addPointLayer();
 
-    if (devTesting === true) {
- 
-        devMap.addLayer({
-            id: 'satellite',
-            source: { "type": "raster", "url": "mapbox://mapbox.satellite", "tileSize": 256 },
-            type: "raster",
-            layout: { 'visibility': 'none' }
-        }, config.layers[0]);
+    map.addLayer({
+        id: 'satellite',
+        source: { "type": "raster", "url": "mapbox://mapbox.satellite", "tileSize": 256 },
+        type: "raster",
+        layout: { 'visibility': 'none' }
+    }, config.layers[0]);
 
-        devMap.addSource('countries', {
-            'type': 'vector',
-            'url': 'mapbox://mapbox.country-boundaries-v1'
-        });
-        devMap.addLayer(
-            {
-                'id': 'country-layer',
-                'type': 'fill',
-                'source': 'countries',
-                'source-layer': 'country_boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': 'hsla(219, 0%, 100%, 0%)'
-                }
+    map.addSource('countries', {
+        'type': 'vector',
+        'url': 'mapbox://mapbox.country-boundaries-v1'
+    });
+    map.addLayer(
+        {
+            'id': 'country-layer',
+            'type': 'fill',
+            'source': 'countries',
+            'source-layer': 'country_boundaries',
+            'layout': {},
+            'paint': {
+                'fill-color': 'hsla(219, 0%, 100%, 0%)'
             }
-        , config.layers[0]);
+        }
+    , config.layers[0]);
 
-        addEvents();
-        // addDevEvents();
-    }else {
-        map.addLayer({
-            id: 'satellite',
-            source: { "type": "raster", "url": "mapbox://mapbox.satellite", "tileSize": 256 },
-            type: "raster",
-            layout: { 'visibility': 'none' }
-        }, config.layers[0]);
-
-        map.addSource('countries', {
-            'type': 'vector',
-            'url': 'mapbox://mapbox.country-boundaries-v1'
-        });
-        map.addLayer(
-            {
-                'id': 'country-layer',
-                'type': 'fill',
-                'source': 'countries',
-                'source-layer': 'country_boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': 'hsla(219, 0%, 100%, 0%)'
-                }
-            }
-        , config.layers[0]);
-
-        addEvents();
-        // addDevEvents();
-    }
-
+    addEvents();
 }
-
-// function addLabelLayer( {
-
-// })
-
 function addPointLayer() {
-    // First build circle layer
-    // build style json for circle-color based on config.color
-    if (devTesting === true) {
-        // do same just pull values from user input not config
-        console.log(Number(document.getElementById('opacity-value').textContent))
-
-        let paint = {
-            'circle-opacity': Number(document.getElementById('opacity-value').textContent)
-            }
-        
-        if ('color' in config) {
-            paint["circle-color"] = [
-                "match",
-                ["get", config.color.field],
-                ...Object.keys(config.color.values).flatMap(key => [key, config.color.values[key]]),
-                "#000000"
-            ];
-        }
-        // LET"S ADD exponential NOT linear TODO Maisie 
-        // ["exponential", base] if base is 1 then it is linear the same, power of 1/2 to do squareroot area based
-
-        let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
-        paint['circle-radius'] = [
-            "interpolate", ["linear"], ["zoom"],
-            1, ["interpolate", interpolateExpression,
-                ["to-number",["get", config.capacityField]],
-                // config.minPointCapacity, config.minRadius,
-                // config.maxPointCapacity, config.maxRadius
-                config.minPointCapacity, Number(document.getElementById('minRadius-value').textContent),
-                config.maxPointCapacity, Number(document.getElementById('maxRadius-value').textContent)
-
-            ],
-            10, ["interpolate", interpolateExpression,
-                ["to-number",["get", config.capacityField]],
-                // config.minPointCapacity, config.highZoomMinRadius,
-                // config.maxPointCapacity, config.highZoomMaxRadius
-                config.minPointCapacity, Number(document.getElementById('highZoomMinRadius-value').textContent),
-                config.maxPointCapacity, Number(document.getElementById('highZoomMaxRadius-value').textContent)      
-            ],
+     // First build circle layer
+    //  build style json for circle-color based on config.color
+    let paint = config.pointPaint;
+    if ('color' in config) {
+        paint["circle-color"] = [
+            "match",
+            ["get", config.color.field],
+            ...Object.keys(config.color.values).flatMap(key => [key, config.color.values[key]]),
+            "#000000"
         ];
-
-        devMap.addLayer({
-            'id': 'assets-points',
-            'type': 'circle',
-            'source': 'assets-source',
-            'filter': ["==",["geometry-type"],'Point'],
-            ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-            'layout': {},
-            'paint': paint
-        });
-        config.layers.push('assets-points');
-
-        // Add layer with proportional icons
-        devMap.addLayer({
-            'id': 'assets-symbol', 
-            'type': 'symbol',
-            'source': 'assets-source',
-            'filter': ["==",["geometry-type"],'Point'],
-            ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-            'layout': {
-                'icon-image': ["get", "icon"],
-                'icon-allow-overlap': true,
-                'icon-size': [
-                    "interpolate", ["linear"], ["zoom"],
-                    1, ['interpolate', interpolateExpression,
-                        ["to-number", ["get", config.capacityField]],
-                        // config.minPointCapacity, config.minRadius * 2 / 64,
-                        // config.maxPointCapacity, config.maxRadius * 2 / 64],
-                        config.minPointCapacity, Number(document.getElementById('minRadius-value').textContent * 2 / 64),
-                        config.maxPointCapacity, Number(document.getElementById('maxRadius-value').textContent * 2 / 64)],
-                    10, ['interpolate', interpolateExpression,
-                        ["to-number", ["get", config.capacityField]],
-                        // config.minPointCapacity, config.highZoomMinRadius * 2 / 64,
-                        // config.maxPointCapacity, config.highZoomMaxRadius * 2 / 64]
-                        config.minPointCapacity, Number(document.getElementById('highZoomMinRadius-value').textContent * 2 / 64),
-                        config.maxPointCapacity, Number(document.getElementById('highZoomMaxRadius-value').textContent * 2 / 64)],  
-                ]
-            }
-        });
-
-        // Add highlight layer
-        paint = {
-        'circle-opacity': Number(document.getElementById('opacity-value').textContent)
-        }
-        paint["circle-color"] = '#FFEA00';
-        devMap.addLayer(
-            {
-                'id': 'assets-points-highlighted',
-                'type': 'circle',
-                'source': 'assets-source',
-                'filter': ["==",["geometry-type"],'Point'],
-                ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-                'layout': {},
-                'paint': paint,
-                'filter': ['in', (config.linkField), '']
-            }
-        );
-
-        // try moving this and calling it when basemap is toggled 
-        devMap.addLayer(
-            {
-                'id': 'assets-labels',
-                'type': 'symbol',
-                'source': 'assets-source',
-                'filter': ["==",["geometry-type"],'Point'],
-                ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-                'minzoom': 8,
-                'layout': {
-                    'text-field': '{' + config.nameField + '}', 
-                    'text-font': ["DIN Pro Italic"],
-                    'text-variable-anchor': ['top'],
-                    'text-offset': [0, 1],
-                    'text-size': 14
-                },
-                'paint': {
-                    'text-color': '#000000',
-                    'text-halo-color': "hsla(220, 8%, 100%, 0.75)",
-                    'text-halo-width': 1
-                }
-            }
-        );
-
-    } else{
-        let paint = config.pointPaint;
-        if ('color' in config) {
-            paint["circle-color"] = [
-                "match",
-                ["get", config.color.field],
-                ...Object.keys(config.color.values).flatMap(key => [key, config.color.values[key]]),
-                "#000000"
-            ];
-        }
-        // LET"S ADD exponential NOT linear TODO Maisie 
-        // ["exponential", base] if base is 1 then it is linear the same, power of 1/2 to do squareroot area based
-
-        let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
-        paint['circle-radius'] = [
-            "interpolate", ["linear"], ["zoom"],
-            1, ["interpolate", interpolateExpression,
-                ["to-number",["get", config.capacityField]],
-                // config.minPointCapacity, config.minRadius,
-                // config.maxPointCapacity, config.maxRadius
-                config.minPointCapacity, Number(document.getElementById('minRadius-value').textContent),
-                config.maxPointCapacity, Number(document.getElementById('maxRadius-value').textContent)
-
-            ],
-            10, ["interpolate", interpolateExpression,
-                ["to-number",["get", config.capacityField]],
-                // config.minPointCapacity, config.highZoomMinRadius,
-                // config.maxPointCapacity, config.highZoomMaxRadius
-                config.minPointCapacity, Number(document.getElementById('highZoomMinRadius-value').textContent),
-                config.maxPointCapacity, Number(document.getElementById('highZoomMaxRadius-value').textContent)      
-            ],
-        ];
-
-        map.addLayer({
-            'id': 'assets-points',
-            'type': 'circle',
-            'source': 'assets-source',
-            'filter': ["==",["geometry-type"],'Point'],
-            ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-            'layout': {},
-            'paint': paint
-        });
-        config.layers.push('assets-points');
-
-        // Add layer with proportional icons
-        map.addLayer({
-            'id': 'assets-symbol', 
-            'type': 'symbol',
-            'source': 'assets-source',
-            'filter': ["==",["geometry-type"],'Point'],
-            ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-            'layout': {
-                'icon-image': ["get", "icon"],
-                'icon-allow-overlap': true,
-                'icon-size': [
-                    "interpolate", ["linear"], ["zoom"],
-                    1, ['interpolate', interpolateExpression,
-                        ["to-number", ["get", config.capacityField]],
-                        // config.minPointCapacity, config.minRadius * 2 / 64,
-                        // config.maxPointCapacity, config.maxRadius * 2 / 64],
-                        config.minPointCapacity, Number(document.getElementById('minRadius-value').textContent * 2 / 64),
-                        config.maxPointCapacity, Number(document.getElementById('maxRadius-value').textContent * 2 / 64)],
-                    10, ['interpolate', interpolateExpression,
-                        ["to-number", ["get", config.capacityField]],
-                        // config.minPointCapacity, config.highZoomMinRadius * 2 / 64,
-                        // config.maxPointCapacity, config.highZoomMaxRadius * 2 / 64]
-                        config.minPointCapacity, Number(document.getElementById('highZoomMinRadius-value').textContent * 2 / 64),
-                        config.maxPointCapacity, Number(document.getElementById('highZoomMaxRadius-value').textContent * 2 / 64)],  
-                ]
-            }
-        });
-
-        // Add highlight layer
-        paint = config.pointPaint;
-        paint["circle-color"] = '#FFEA00';
-        map.addLayer(
-            {
-                'id': 'assets-points-highlighted',
-                'type': 'circle',
-                'source': 'assets-source',
-                'filter': ["==",["geometry-type"],'Point'],
-                ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-                'layout': {},
-                'paint': paint,
-                'filter': ['in', (config.linkField), '']
-            }
-        );
-
-        // try moving this and calling it when basemap is toggled 
-        map.addLayer(
-            {
-                'id': 'assets-labels',
-                'type': 'symbol',
-                'source': 'assets-source',
-                'filter': ["==",["geometry-type"],'Point'],
-                ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-                'minzoom': 8,
-                'layout': {
-                    'text-field': '{' + config.nameField + '}', 
-                    'text-font': ["DIN Pro Italic"],
-                    'text-variable-anchor': ['top'],
-                    'text-offset': [0, 1],
-                    'text-size': 14
-                },
-                'paint': {
-                    'text-color': '#000000',
-                    'text-halo-color': "hsla(220, 8%, 100%, 0.75)",
-                    'text-halo-width': 1
-                }
-            }
-        );
     }
+// LET"S ADD exponential NOT linear TODO Maisie 
+// ["exponential", base] if base is 1 then it is linear the same, power of 1/2 to do squareroot area based
+
+    let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
+    paint['circle-radius'] = [
+        "interpolate", ["exponential", .5], ["zoom"],
+        1, ["interpolate", interpolateExpression,
+            ["to-number",["get", config.capacityField]],
+            config.minPointCapacity, config.minRadius,
+            config.maxPointCapacity, config.maxRadius
+        ],
+        10, ["interpolate", interpolateExpression,
+            ["to-number",["get", config.capacityField]],
+            config.minPointCapacity, config.highZoomMinRadius,
+            config.maxPointCapacity, config.highZoomMaxRadius
+        ],
+
+    ];
+
+    
+    map.addLayer({
+        'id': 'assets-points',
+        'type': 'circle',
+        'source': 'assets-source',
+        'filter': ["==",["geometry-type"],'Point'],
+        ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
+        'layout': {},
+        'paint': paint
+    });
+    config.layers.push('assets-points');
+
+
+    // Add layer with proportional icons
+    map.addLayer({
+        'id': 'assets-symbol', 
+        'type': 'symbol',
+        'source': 'assets-source',
+        'filter': ["==",["geometry-type"],'Point'],
+        ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
+        'layout': {
+            'icon-image': ["get", "icon"],
+            'icon-allow-overlap': true,
+            'icon-size': [
+                "interpolate", ["exponential", .5], ["zoom"],
+                1, ['interpolate', interpolateExpression,
+                    ["to-number", ["get", config.capacityField]],
+                    config.minPointCapacity, config.minRadius * 2 / 64,
+                    config.maxPointCapacity, config.maxRadius * 2 / 64],
+                10, ['interpolate', interpolateExpression,
+                    ["to-number", ["get", config.capacityField]],
+                    config.minPointCapacity, config.highZoomMinRadius * 2 / 64,
+                    config.maxPointCapacity, config.highZoomMaxRadius * 2 / 64]
+            ]
+        }
+    });
+
+    // Add highlight layer
+    paint = config.pointPaint;
+    paint["circle-color"] = '#FFEA00';
+    map.addLayer(
+        {
+            'id': 'assets-points-highlighted',
+            'type': 'circle',
+            'source': 'assets-source',
+            'filter': ["==",["geometry-type"],'Point'],
+            ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
+            'layout': {},
+            'paint': paint,
+            'filter': ['in', (config.linkField), '']
+        }
+    );
+    map.addLayer(
+        {
+            'id': 'assets-labels',
+            'type': 'symbol',
+            'source': 'assets-source',
+            'filter': ["==",["geometry-type"],'Point'],
+            ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
+            'minzoom': 8,
+            'layout': {
+                'text-field': '{' + config.nameField + '}', 
+                'text-font': ["DIN Pro Italic"],
+                'text-variable-anchor': ['top'],
+                'text-offset': [0, 1],
+                'text-size': 14
+            },
+            'paint': {
+                'text-color': '#000000',
+                'text-halo-color': "hsla(220, 8%, 100%, 0.75)",
+                'text-halo-width': 1
+            }
+        }
+    );
 }
-
-
-
-
 function addLineLayer() {
     let paint = config.linePaint;
     if ('color' in config) {
@@ -1275,99 +677,8 @@ function addEvents() {
         map.on('mouseleave', layer, () => {
             map.getCanvas().style.cursor = '';
             popup.remove();
-            setHighlightFilter([]);
-            // Reset highlight radius
-            map.setPaintProperty('assets-points-highlighted', 'circle-radius', [
-                "interpolate", ["linear"], ["zoom"],
-                1, config.maxRadius,
-                10, config.highZoomMaxRadius
-            ]);
-        });
-    }
-    
-    if (config.geometries.includes('LineString')) {
-        map.on('mousemove', 'assets-lines', (e) => {
-            // // option to add and subtract padding via hitArea
-            // const hitArea = config.hitArea || Math.max(10, 30 * (1 / map.getZoom()));
-            const features = map.queryRenderedFeatures([
-                [e.point.x, e.point.y],
-                [e.point.x, e.point.y]
-            ], { layers: ['assets-lines'] });
-
-            if (features.length > 0) {
-                map.getCanvas().style.cursor = 'pointer';
-                const feature = features[0];
-                let coordinates;
-                if (feature.geometry.type === "LineString") {
-                    // Use the midpoint of the line for the popup
-                    const lineCoords = feature.geometry.coordinates;
-                    const midIdx = Math.floor(lineCoords.length / 2);
-                    coordinates = lineCoords[midIdx].slice();
-                } else if (feature.geometry.type === "MultiLineString") {
-                    // Use the midpoint of the first line in the MultiLineString
-                    const multiLineCoords = feature.geometry.coordinates[0];
-                    const midIdx = Math.floor(multiLineCoords.length / 2);
-                    coordinates = multiLineCoords[midIdx].slice();
-                } else {
-                    // fallback for other geometry types
-                    coordinates = feature.geometry.coordinates.slice();
-                }
-                const description = feature.properties[config.nameField];
-                
-                // Highlight this line (yellow and expand)
-                // make the assets yellow on hover
-                setHighlightFilter(feature.properties[config.linkField]);
-                // Expand: set a larger width for highlight layer
-                map.setPaintProperty('assets-lines-highlighted', 'line-width', [
-                    "interpolate", ["linear"], ["zoom"],
-                    1, config.maxLineWidth * 1.1,
-                    10, config.highZoomMaxLineWidth * 1.1
-                ]);
-                popup.setLngLat(coordinates).setHTML(description).addTo(map);
-                // console.log('set popup')
-            } else {
-                map.getCanvas().style.cursor = '';
-                popup.remove()
-                setHighlightFilter([]);
-                // Reset highlight width
-                map.setPaintProperty('assets-lines-highlighted', 'line-width', [
-                    "interpolate", ["linear"], ["zoom"],
-                    1, config.maxLineWidth,
-                    10, config.highZoomMaxLineWidth
-                ]);
-            }
-        });
-
-        map.on('mouseleave', 'assets-lines', () => {
-            map.getCanvas().style.cursor = '';
-            popup.remove()
-            setHighlightFilter([]);
-            // Reset highlight width
-            // map.setPaintProperty('assets-lines-highlighted', 'line-width', [
-            //     "interpolate", ["linear"], ["zoom"],
-            //     1, config.maxLineWidth,
-            //     10, config.highZoomMaxLineWidth
-            // ]);
-        });
-    }
-
-    // TODO another time, seems like we'd need to handle for point and line so more complicated than I thought
-    // add same mouse over event for labels so its easier to click
-    // assets-labels
-    // map.on('mousemove', 'assets-labels', (e) => {
-
-    // });
-    // // assets-labels
-    // map.on('mouseleave', 'assets-labels', (e) => {
-    //     map.getCanvas().style.cursor = '';
-    //     popup.remove()
-    // });
-
-    // can we add it so if there is a click on a label it zooms in? 
-
-
-
-
+        }); 
+    });
     $('#basemap-toggle').on("click", function() {
         if (config.baseMap == "Streets") {
            // $('#basemap-toggle').text("Streets");
@@ -1415,6 +726,7 @@ $('#projection-toggle').on("click", function() {
     if (config.projection == 'globe') {
         config.projection = "naturalEarth";
         map.setProjection('naturalEarth');
+        $('#btn-spin-toggle').hide();
         map.setCenter(config.center);
         map.setZoom(determineZoom());
 
@@ -1422,94 +734,12 @@ $('#projection-toggle').on("click", function() {
         config.projection = "globe";
         map.setProjection("globe");
         map.setCenter(config.center);
+        $('#btn-spin-toggle').show();
         spinGlobe();
         map.setZoom(determineZoom());
 
     }
 })
-
-/* 
-    dev testing 
-*/
-
-$('#dev-testing-toggle').on("click", function (){
-    console.log('clicked dev testing toggle')
-    // Show the previously hidden element when the button is clicked
-    // $('#sliders-container').removeClass('d-none').addClass('d-flex');
-    // if ($('#map').css({'visibility': 'hidden'}))
-    devTesting = true;
-    console.log(devTesting)
-    $('#sliders-container').css({'visibility': 'visible'})
-    $('#map').css({'visibility': 'hidden'})
-    $('#sidebar').css({'visibility': 'hidden'})
-    $('#devMap').css({'visibility': 'visible'})
-    
-    // else {
-    //     devTesting = true;
-    //     $('#dev-testing-label').html("Enter Dev testing area");
-    //     $('#sliders-container').css({'visibility': 'hidden'})
-    //     $('#map').css({'visibility': 'visible'})
-    //     $('#sidebar').css({'visibility': 'visible'})        
-    // }
-})
-
-$('#paint-assets-btn').on("click", function (){
-    if (initialDevLoad){
-        console.log('painting with user inputs')
-        loadData(); // un comment this so it paints assets
-        initialDevLoad = false;
-    }else {
-        // delete map and re do loadDat
-        // Remove all sources and layers from devMap before re-initializing
-        // Remove all layers
-        const layers = devMap.getStyle().layers;
-        if (layers) {
-        // Remove from top to bottom to avoid dependency issues
-        for (let i = layers.length - 1; i >= 0; i--) {
-            devMap.removeLayer(layers[i].id);
-        }
-        }
-
-        // Remove all sources
-        const sources = devMap.getStyle().sources;  
-        console.log('Removing sources from devMap')
-        Object.keys(sources).forEach(sourceId => {
-        devMap.removeSource(sourceId);
-        });
-        // Set the style of the devMap to the value from config
-        // so we get landcover etc back from mapBox Studio
-        // devMap.setStyle(config.mapStyle);
-        console.log('Running loadData for new devMap')
-
-        loadData();
-
-    }
-
-    // calls addGeoJSON() 
-    // which calls setMinMax(), findLinkedAssets(), addLayers(), enableUX()  
-})
-
-
-// function addDevEvents() {
-//     // remove all existing source layers so we can re call addLayers 
-//     // and have the new values from the sliders be fed into the style attributes 
-    
-//     // console.log('begin addDevEvents');
-//     // If #opacity-value is a span or div, make it focusable/clickable
-//     $('#opacity-value').css('cursor', 'pointer').attr('tabindex', 0);
-
-//     // Listen for input changes if #opacity-slider is an <input type="range">
-//     $('#opacity-slider').on('input', function() {
-    
-//         console.log('opacity slider changed:', this.value);  
-
-//         // // Update map icons with new opacity
-//         // config.icons = [];
-//         // addGeoJSON(config.geojson);
-
-//     });
-
-// }
 
 
 /*
@@ -1594,8 +824,8 @@ function buildFilters() {
             $('#' + this.dataset.checkid).click();
             toggleFilter(this.dataset.checkid);
 
-            $('#spinner-container-filter').removeClass('d-none');
-            $('#spinner-container-filter').addClass('d-flex');
+            $('#spinner-container-filter').removeClass('d-none')
+            $('#spinner-container-filter').addClass('d-flex')
 
             filterData();
 
@@ -1618,8 +848,8 @@ function selectAllFilter() {
         }
     });
 
-    $('#spinner-container-filter').removeClass('d-none');
-    $('#spinner-container-filter').addClass('d-flex');
+    $('#spinner-container-filter').removeClass('d-none')
+    $('#spinner-container-filter').addClass('d-flex')
 
     filterData();
 
@@ -1635,8 +865,8 @@ function selectAllFilterSection(fieldRow) {
         }
     });
 
-    $('#spinner-container-filter').removeClass('d-none');
-    $('#spinner-container-filter').addClass('d-flex');
+    $('#spinner-container-filter').removeClass('d-none')
+    $('#spinner-container-filter').addClass('d-flex')
 
     filterData();
 }
@@ -1884,9 +1114,8 @@ function updateSummary() {
         }
     }
 
-    $('#spinner-container-filter').addClass('d-none');
-    $('#spinner-container-filter').removeClass('d-flex');
-    console.log('aftr upat summary spinner addClass d-none, removes spinnr')
+    $('#spinner-container-filter').addClass('d-none')
+    $('#spinner-container-filter').removeClass('d-flex')
 }
 
 
@@ -1904,7 +1133,6 @@ function buildTable() {
             $('#basemap-toggle').hide();
             $('btn-spin-toggle').hide();
             $('#projection-toggle').hide();
-            $('#dev-testing-toggle').hide();
             updateTable(true);
         } else {
             $('#table-toggle-label').html("Table view <img src='../../src/img/arrow-right.svg' width='15' height='50' style='text-align: center;'>");
@@ -1915,7 +1143,6 @@ function buildTable() {
             $('#basemap-toggle').show();
             $('btn-spin-toggle').show();
             $('#projection-toggle').show();
-            $('#dev-testing-toggle').show();
 
         }
     });
@@ -2036,10 +1263,6 @@ function displayDetails(features) {
 
         if (Object.keys(config.detailView[detail]).includes('display')) {
 
-        if (Object.keys(config.detailView[detail]).includes('display')) {
-
-            if (config.detailView[detail]['display'] == 'heading') {
-                detail_text += '<h4>' + features[0].properties[detail] + '</h4>';
             if (config.detailView[detail]['display'] == 'heading') {
                 detail_text += '<h4>' + features[0].properties[detail] + '</h4>';
 
@@ -2058,7 +1281,6 @@ function displayDetails(features) {
                     }
                     detail_text += '<span class="text-capitalize">' + join_array[0].replaceAll('_',' ') + '</span><br/>';;
                 }
-                }
 
             } else if (config.detailView[detail]['display'] == 'range') {
 
@@ -2069,8 +1291,6 @@ function displayDetails(features) {
                 ); 
                 let least = features.reduce((accumulator, feature) => {
                         return (feature.properties[detail] != '' && feature.properties[detail] < accumulator ?  feature.properties[detail] : accumulator);
-                 },
-                 5000
                  },
                  5000
                 );
@@ -2095,19 +1315,10 @@ function displayDetails(features) {
                     //TODO figure out why subnational and country are reversed in nuclear
                     // console.log(location_text)
 
-                    //TODO figure out why subnational and country are reversed in nuclear
-                    // console.log(location_text)
-
                     location_text += features[0].properties[detail];
                 }
             }
-            }
         } else {
-            // console.log('we are in the last else')
-            // console.log(features[0].properties[detail])
-            // if (features[0].properties[detail] != '' &&  features[0].properties[detail] != NaN && features[0].properties[detail] != null && features[0].properties[detail] != 'Unknown [unknown %]'){
-                // if (config.multiCountry == true && config.detailView[detail]['label'].includes('Country')){
-            if (features[0].properties[detail] != '' && features[0].properties[detail] != 'undefined' && features[0].properties[detail] !=0 && features[0].properties[detail] != NaN && features[0].properties[detail] != 'nan' && features[0].properties[detail] != null && features[0].properties[detail] != 'Unknown [unknown %]') {
             // console.log('we are in the last else')
             // console.log(features[0].properties[detail])
             // if (features[0].properties[detail] != '' &&  features[0].properties[detail] != NaN && features[0].properties[detail] != null && features[0].properties[detail] != 'Unknown [unknown %]'){
@@ -2117,10 +1328,7 @@ function displayDetails(features) {
                     detail_text += '<span class="fw-bold">' + config.detailView[detail]['label'] + '</span>: ' + removeLastComma(features[0].properties[detail]) + '<br/>';
                 }
                 //     detail_text += '<span class="fw-bold">' + config.detailView[detail]['label'] + '</span>: ' + removeLastComma(features[0].properties[detail]) + '<br/>';
-                //     detail_text += '<span class="fw-bold">' + config.detailView[detail]['label'] + '</span>: ' + removeLastComma(features[0].properties[detail]) + '<br/>';
 
-
-                // }
 
                 // }
                 else if (Object.keys(config.detailView[detail]).includes('label')) { // and color config add the dot
@@ -2131,13 +1339,11 @@ function displayDetails(features) {
                 } else {
                     console.log(features[0].properties[detail])
                     console.log('inner else issue')
-                    console.log('inner else issue')
                     // detail_text += features[0].properties[detail] + '<br/>';
                 }
             }
             else {
                 console.log(features[0].properties[detail])
-                console.log('outer else issue')
                 console.log('outer else issue')
 
             }
@@ -2204,10 +1410,6 @@ function displayDetails(features) {
                 detail_capacity +
                 '</div>';
         }
-        else {
-            detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
-                '<span class="legend-dot" style="background-color:' + config.color.values[ features[0].properties[config.statusDisplayField] ] + '"></span><span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
-            detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + parseInt(features[0].properties[config.capacityDisplayField], 10).toLocaleString() + ' ' + capacityLabel;
         else {
             detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
                 '<span class="legend-dot" style="background-color:' + config.color.values[ features[0].properties[config.statusDisplayField] ] + '"></span><span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
@@ -2354,8 +1556,8 @@ function buildCountrySelect() {
             config.selectedCountryText = this.dataset.countrytext;
             config.selectedCountries = (this.dataset.countries.length > 0 ? this.dataset.countries.split(";") : []);
             $('#selectedCountryLabel').text(config.selectedCountryText || "all");
-            $('#spinner-container-filter').removeClass('d-none');
-            $('#spinner-container-filter').addClass('d-flex');
+            $('#spinner-container-filter').removeClass('d-none')
+            $('#spinner-container-filter').addClass('d-flex')
             filterData();
         });
     });
@@ -2444,8 +1646,8 @@ function enableSearchSelect() {
             config.selectedSearchFields = this.dataset.searchfields;
             $('#selectedSearchLabel').text(this.dataset.searchfieldtext);
 
-            $('#spinner-container-filter').removeClass('d-none');
-            $('#spinner-container-filter').addClass('d-flex');
+            $('#spinner-container-filter').removeClass('d-none')
+            $('#spinner-container-filter').addClass('d-flex')
             filterData();
         });
     });
@@ -2483,8 +1685,8 @@ function enableResetAll() {
     // }); 
 
     // start the spinner
-    $('#spinner-container-filter').removeClass('d-none');
-    $('#spinner-container-filter').addClass('d-flex');
+    $('#spinner-container-filter').removeClass('d-none')
+    $('#spinner-container-filter').addClass('d-flex')
 
     // then filter data
     filterData();
@@ -2646,3 +1848,31 @@ map.on('rotateend', () => {
 map.on('moveend', () => {
     spinGlobe();
 });
+
+document.getElementById('btn-spin-toggle').addEventListener('click', (e) => {
+    spinEnabled = !spinEnabled;
+    if (spinEnabled) {
+        spinGlobe();
+        e.target.innerHTML = 'Pause rotation';
+    } else {
+        map.stop(); // Immediately end ongoing animation
+        e.target.innerHTML = 'Start rotation';
+    }
+});
+
+
+// # adding option to pause spin with space important for smaller screens
+document.addEventListener('keydown', (e) => {
+    spinEnabled = !spinEnabled;
+    if (e.code === "Space") {
+        if (spinEnabled) {
+            spinGlobe();
+            btnSpinToggle.innerHTML = 'Pause rotation'; // not working not sure why
+        } else {
+            map.stop(); // Immediately end ongoing animation
+            spinGlobe();
+            btnSpinToggle.innerHTML = 'Start rotation';
+        }
+    }
+});
+
