@@ -35,8 +35,6 @@ var config = {
         clickColumns: ['plant-name'],
         rightAlign: ['unit-name','capacity-(mw)','start-year'],
         toLocaleString: ['capacity-(mw)'],
-
->>>>>>> 81808373619ec7caaa2f0f4b2814984378a66e84
     },
     searchFields: { 'Plant': ['plant-name'], 
         'Companies': ['owner(s)', 'parent(s)', 'operator(s)'],

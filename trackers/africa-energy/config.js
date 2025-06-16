@@ -198,9 +198,9 @@ var config = {
     highZoomMaxRadius: 32,
 
     minLineWidth: .4,
-    maxLineWidth: 1,
+    maxLineWidth: 7,
     highZoomMinLineWidth: .4,
-    highZoomMaxLineWidth: 1,
+    highZoomMaxLineWidth: 7,
     // showAllPhases: true
     
     // interpolate: ["cubic-bezier", 0, 0, 0, 1],

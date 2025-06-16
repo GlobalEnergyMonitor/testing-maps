@@ -74,9 +74,6 @@ var config = {
         clickColumns: ['project-name'],
         rightAlign: ['capacity-(mw)','start-year'],
         toLocaleString: ['capacity-(mw)'],
-
-
->>>>>>> 81808373619ec7caaa2f0f4b2814984378a66e84
     },
 
     /* configure the search box; 
