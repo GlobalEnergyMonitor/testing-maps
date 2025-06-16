@@ -7,7 +7,6 @@ var config = {
     tileSourceLayer: 'integrated',
 
     projection: 'globe',
-
     color: { /* will be processed both into style json for paint circle-color property, and for legend. 
             what's right property name?? is color also listing values used in the summary? 
             should this just be made part of the filter? that might allow to address multiple properties */
@@ -24,10 +23,24 @@ var config = {
         }
 
     },
+
+    // /* radius associated with minimum/maximum value on map */
+    // minRadius: 2,
+    // maxRadius: 10,
+    // minLineWidth: 1,
+    // maxLineWidth: 10,
+
+    // /* radius to increase min/max to under high zoom */
+    // highZoomMinRadius: 4,
+    // highZoomMaxRadius: 32,
+    // highZoomMinLineWidth: 4,
+    // highZoomMaxLineWidth: 32,
+
     minRadius: 1,
     maxRadius: 10,
     highZoomMinRadius: 4,
     highZoomMaxRadius: 32,
+
     interpolate: ["cubic-bezier", 0, 0, 0, 1],
     filters: [
         {
@@ -42,7 +55,6 @@ var config = {
         }
     ],
     nameField: 'plant-/-project-name',
-    showAllPhases: true,
     statusField: 'status',
     statusDisplayField: 'status',
     capacityField: 'capacity-(mw)',

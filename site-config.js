@@ -20,6 +20,7 @@ var site_config = {
         'green': '#4c9d4f',
         'grey': '#8f8f8e'
     },
+    /* style test parameters!
 
     /* Mapbox styling applied to all trackers */
     pointPaint: {
@@ -32,18 +33,25 @@ var site_config = {
         'line-cap': 'round', 
         'line-join': 'round'
     },
-    
-    /* radius associated with minimum/maximum value on map */
-    minRadius: 2,
-    maxRadius: 10,
-    minLineWidth: 1,
-    maxLineWidth: 10,
 
-    /* radius to increase min/max to under high zoom */
+    minRadius: 1,
+    maxRadius: 10,
     highZoomMinRadius: 4,
     highZoomMaxRadius: 32,
-    highZoomMinLineWidth: 4,
-    highZoomMaxLineWidth: 32,
+
+    /* radius associated with minimum/maximum value on map */
+    // /* Defined by pixels and be 1- infinity, 0 is invisible */
+    // minRadius: 2,
+    // maxRadius: 30,
+    // minLineWidth: .5,
+    // maxLineWidth: 7,
+
+    // /* radius to increase min/max to under high zoom */
+    // /* In  mapbox there are 22 zoom levels, higher zoom usually meaning samller area "closer in"*/
+    // highZoomMinRadius: 4,
+    // highZoomMaxRadius: 32,
+    // highZoomMinLineWidth: .5,
+    // highZoomMaxLineWidth: 7,
     
     /* define column names to pull data from */
     linkField: 'url',
@@ -61,20 +69,20 @@ var site_config = {
     },
 
     /* by default, no all phases link; override in tracker config where appropriate */
-    showAllPhases: true,
+    showAllPhases: false,
     showMaxCapacity: true,
 
     /* zoom level to set map when viewing all phases */
     phasesZoom: 8,
 
     /* initial load zoom multiplier */
-    zoomFactor: 1.25,
+    zoomFactor: 1,
 
     countryFile: '../../src/countries.json', 
     allCountrySelect: true,
     multiCountry: false,
 
-    hitArea: 10, 
-    // satelliteVisible: false, // to help style the labels better 
+    hitArea: 5, 
+
     geometries: ['Point']
 };

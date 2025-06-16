@@ -1,8 +1,8 @@
 var config = {
     geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/mapfiles/africa_map_2025-05-09.geojson', //'compilation_output/africa_2025-04-29.geojson',
     geometries: ['Point','LineString'],
-    center: [30, 0],
-    zoomFactor: 1.5,
+    center: [15, 0],
+    zoomFactor: 1,
     statusField: 'status-legend',
     statusDisplayField: 'status',
     // linkField: 'id',
@@ -32,7 +32,6 @@ var config = {
             field: 'tracker-custom',
             values: ["GCPT", "GOGPT", "GBPT", "GNPT", "GSPT", "GWPT", "GHPT", "GGPT", "GOIT", "GGIT", "GGIT-import", "GGIT-export","GCTT", "GOGET-oil", "GCMT"], 
             values_labels: ['coal units', 'oil&gas units', 'bioenergy units', 'nuclear units', 'solar phases', 'wind phases', 'hydropower plants', 'geothermal units', 'oil pipelines', 'gas pipelines', 'LNG import terminals', 'LNG export terminals', 'coal terminals', 'oil&gas extraction areas','coal mines'],
-
             primary: true
         },
         {
@@ -108,7 +107,6 @@ var config = {
     assetFullLabel: "Units / Phases / Pipelines", 
     assetLabel: 'units',
 
-
     // can be string for single value, or hash
     // assetLabel: {
     //     field: 'tracker-custom',
@@ -144,7 +142,6 @@ var config = {
 
         clickColumns: ['name'],
         rightAlign: ['unit','capacity-table','prod-oil', 'prod-gas','start-year', 'prod-year-oil', 'prod-year-gas'], 
-
         removeLastComma: ['areas'], 
         toLocaleString: ['capacity-table'],
         // displayValue: {'tracker-display': "assetLabel"},
@@ -180,19 +177,32 @@ var config = {
         'areas': {'label': 'Country/Area(s)'},
         'areas-subnat-sat-display': {'display': 'location'}, 
     },
-        /* radius associated with minimum/maximum value on map */
+
+    // /* radius associated with minimum/maximum value on map */
     // minRadius: 2,
     // maxRadius: 10,
-    minLineWidth: 1,
-    maxLineWidth: 3,
+    // minLineWidth: 1,
+    // maxLineWidth: 10,
 
     // /* radius to increase min/max to under high zoom */
     // highZoomMinRadius: 4,
     // highZoomMaxRadius: 32,
     // highZoomMinLineWidth: 4,
     // highZoomMaxLineWidth: 32,
+
+    /* radius associated with minimum/maximum value on map */
+    minRadius: .8,
+    maxRadius: 10,
+    // /* radius to increase min/max to under high zoom */
+    highZoomMinRadius: 4,
+    highZoomMaxRadius: 32,
+
+    minLineWidth: .4,
+    maxLineWidth: 1,
+    highZoomMinLineWidth: .4,
+    highZoomMaxLineWidth: 1,
     // showAllPhases: true
     
-
+    // interpolate: ["cubic-bezier", 0, 0, 0, 1],
 
 };
