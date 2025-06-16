@@ -41,7 +41,8 @@ var config = {
     highZoomMinRadius: 4,
     highZoomMaxRadius: 32,
 
-    interpolate: ["cubic-bezier", 0, 0, 0, 1],
+    // interpolate: ["cubic-bezier", 0, 0, 0, 1],
+    interpolate: ["exponential", .5],
     filters: [
         {
             field: 'type',

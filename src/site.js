@@ -9,7 +9,7 @@ function processConfig() {
         config.color.values[color_key] = config.colors[ config.color.values[color_key] ];
     });
 }
-
+let currZoom = 1
 /*
   Set up mapboxgljs instance, and trigger data load
 */
@@ -21,12 +21,16 @@ const map = new mapboxgl.Map({
     center: config.center,
     projection: config.projection
 });
-
+console.log('This is current zoom' + map.zoom)
 map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
 const popup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false
 });
+
+
+map.doubleClickZoom.enable();
+
 
 map.on('load', function () {
     if (config.projection != 'globe'){
@@ -477,6 +481,9 @@ function addPointLayer() {
 // ["exponential", base] if base is 1 then it is linear the same, power of 1/2 to do squareroot area based
 
     let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
+    // TODO
+    // find out the current zoom level
+    // bins for each zoom stage and override the config min max radius 
     paint['circle-radius'] = [
         "interpolate", ["exponential", .5], ["zoom"],
         1, ["interpolate", interpolateExpression,
@@ -516,7 +523,7 @@ function addPointLayer() {
             'icon-image': ["get", "icon"],
             'icon-allow-overlap': true,
             'icon-size': [
-                "interpolate", ["exponential", .5], ["zoom"],
+                "interpolate", ["linear"], ["zoom"],
                 1, ['interpolate', interpolateExpression,
                     ["to-number", ["get", config.capacityField]],
                     config.minPointCapacity, config.minRadius * 2 / 64,
@@ -579,8 +586,9 @@ function addLineLayer() {
     }
 
     let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
+
     paint['line-width'] = [
-        "interpolate", ["linear"], ["zoom"],
+        "interpolate", ["exponential", .5], ["zoom"],
         1, ["interpolate", interpolateExpression,
             ["to-number",["get", config.capacityField]],
             config.minLineCapacity, config.minLineWidth,
@@ -621,6 +629,16 @@ function addLineLayer() {
 }
 
 function addEvents() {
+
+    // Example trigger of a BoxZoomEvent of type "boxzoomstart"
+    map.on('zoomend', (e) => {
+
+        currZoom = map.getZoom();
+        console.log('currZoom', currZoom);
+        
+        // event type: boxzoomstart
+    });
+
     map.on('click', (e) => {
         const bbox = [ [e.point.x - config.hitArea, e.point.y - config.hitArea], [e.point.x + config.hitArea, e.point.y + config.hitArea]];
         const selectedFeatures = getUniqueFeatures(map.queryRenderedFeatures(bbox, {layers: config.layers}), config.linkField).sort((a, b) => a.properties[config.nameField].localeCompare(b.properties[config.nameField]));
@@ -679,6 +697,7 @@ function addEvents() {
             popup.remove();
         }); 
     });
+
     $('#basemap-toggle').on("click", function() {
         if (config.baseMap == "Streets") {
            // $('#basemap-toggle').text("Streets");
