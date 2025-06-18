@@ -7,7 +7,7 @@ import sys
 from creds import *
 import logging
 
-trackers_to_update = ['Integrated-simple']# official tracker tab name in map tracker log sheet
+trackers_to_update = ['Coal Mines']# official tracker tab name in map tracker log sheet
 new_release_date = 'May_2025' # for within about page NEEDS TO BE FULL MONTH
 releaseiso = '2025-05'
 priority = [''] # europe # NOTE NEEDS TO BE [''] to be skipped NEEDS TO BE mapname in map_tab internal

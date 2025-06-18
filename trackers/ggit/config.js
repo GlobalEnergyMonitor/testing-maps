@@ -42,24 +42,25 @@ var config = {
             'GGIT-export': 'MTPA of natural gas',            
         }
     },
+    assetFullLabel: 'Gas Infrastructure projects',
+    assetLabel: 'projects',
+    // assetFullLabel: {
+    //     field: 'tracker-custom',
+    //     values: {
+    //         'GGIT': 'Pipelines',
+    //         'GGIT-import': 'Terminals',
+    //         'GGIT-export': 'Terminals',            
+    //     }
+    // },
     
-    assetFullLabel: {
-        field: 'tracker-custom',
-        values: {
-            'GGIT': 'Pipelines',
-            'GGIT-import': 'Terminals',
-            'GGIT-export': 'Terminals',            
-        }
-    },
-    
-    assetLabel: {
-        field: 'tracker-custom',
-        values: {
-            'GGIT': 'segments',
-            'GGIT-import': 'trains',
-            'GGIT-export': 'trains',            
-        }
-    },
+    // assetLabel: {
+    //     field: 'tracker-custom',
+    //     values: {
+    //         'GGIT': 'segments',
+    //         'GGIT-import': 'trains',
+    //         'GGIT-export': 'trains',            
+    //     }
+    // },
     nameField: 'name', 
     tableHeaders: {
         values: ['name','unit-name', 'owner', 'parent', 'capacity-table', 'units-of-m', 'status', 'region', 'areas', 'subnat', 'start-year', 'tracker-display'],

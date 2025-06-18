@@ -45,7 +45,7 @@ var site_config = {
     // maxRadius: 30,
     minLineWidth: .5,
     maxLineWidth: 7,
-
+    
     // /* radius to increase min/max to under high zoom */
     // /* In  mapbox there are 22 zoom levels, higher zoom usually meaning samller area "closer in"*/
     // highZoomMinRadius: 4,
