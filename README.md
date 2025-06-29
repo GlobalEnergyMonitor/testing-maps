@@ -37,6 +37,35 @@ Fork the repository. Place new data file in the appropriate tracker directory. T
 * Run multi_tracker_maps_script.py directly or from run_maps.py with subprocess
 subprocess.run(["python", "/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/multi_tracker_maps_script.py"])                 
 
+### Above two sections can be removed after this section is complete:
+Responsibilities of this repo (hint: maybe we separate this out to other repos soooon)
+- create files for map js code from final data
+- create files for final data download from final data for multi-tracker maps (mostly regional as of writing)
+- manage tracker maps (tile based and json based) via core map js code held in src folders and trackers/tracker folders
+- save to s3 digital ocean raw data, map files, parquet of raw data tabs and metadata about these files from start to finish 
+- test files at start to get ahead of data consistency or other problems for the map
+- test files at end for data integrity
+
+Non IDE set up / external process duties
+- manual copy excel file to google drive then update map tracker log sheet
+- manual download geojson file, rename, and save to s3
+
+IDE set up 
+- adjust all_config.py based on your needs (primarily these initial four and any local file path)
+    --trackers_to_update = ['Integrated-simple']# official tracker tab name in map tracker log sheet
+    --new_release_date = 'June_2025' # for find replace within about page NEEDS TO BE FULL MONTH
+    --releaseiso = '2025-06' # YYYY-MM-DD (day optional)
+    --simplified = False # True False
+    --priority = [''] # allows you to prioritize global, regional or internal output files
+
+- If you have a new tracker to set up, add to the renaming_cols_dict in all_config.py and add net new columns to final_cols, currently you may want to run the script and check the final names first, since the js map code requires certain formatting, so the dictioanry renaming_cols_dict may not be the final col name
+
+Important files to run after non IDE and IDE setup
+- in root run ```python run_maps.py```
+    -- make_metadata.py
+    -- make_data_downloads.py
+    -- make_maps.py
+
 
 ### Pre and Post Tests
 * [Testing and data set up for multi tracker map files and data download files](https://docs.google.com/document/d/1LacVuubl4T4CtGzy1KT_GsWrjV-DOI8XQFuLsUliT88/edit?tab=t.0#heading=h.eooqz1k5afdy)

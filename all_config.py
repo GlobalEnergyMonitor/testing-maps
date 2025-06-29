@@ -7,10 +7,11 @@ import sys
 from creds import *
 import logging
 
-trackers_to_update = ['Coal Mines']# official tracker tab name in map tracker log sheet
-new_release_date = 'May_2025' # for within about page NEEDS TO BE FULL MONTH
-releaseiso = '2025-05'
-priority = [''] # europe # NOTE NEEDS TO BE [''] to be skipped NEEDS TO BE mapname in map_tab internal
+trackers_to_update = ['Cement and Concrete']# official tracker tab name in map tracker log sheet
+new_release_date = 'June_2025' # for within about page NEEDS TO BE FULL MONTH
+releaseiso = '2025-06'
+simplified = False # True False
+priority = ['gcct'] # europe # NOTE NEEDS TO BE [''] to be skipped NEEDS TO BE mapname in map_tab internal
                     # africa
                     # integrated
                     # europe
@@ -39,22 +40,41 @@ log_file_path = f'{logpath}log_file.log'
 logging.basicConfig(filename=log_file_path, level=logging.INFO, format='%(asctime)s - %(message)s')
 
 tracker_folder_path = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/'
-# goget_orig_file = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/Global Oil and Gas Extraction Tracker - 2024-03-08_1205 DATA TEAM COPY.xlsx'
-# goget_orig_tab = ['Main data','Production and reserves']
 
-# egt_dd_key = '1h8Nr8lJJiUIsSIzEmwnici4Js9Brxt7GChDo_DBQF2s' 
-# goget_global_key = '1wI11cMqhqZXTK7MVD2semkZIqlF4DSpfsNTaSPBWWO0'
+# github pages folder name to map log internal name when they do not match
+gitpages_mapname = {
+    "africa": "africa-energy",
+    "latam": "LATAM",
+    "goit": "GOIT",
+    "goget": "GOGET",
+    "gcpt": "coal-plant",
+    "gcmt": "coal-mine",
+    "gogpt": "gas-plant",
+    "gspt": "solar",
+    "gwpt": "wind",
+    "gnpt": "nuclear",
+    "gbpt": "bioenergy",
+    "ggpt": "geothermal",
+    "ghpt": "hydro",
+}
 
-# egt_ggit_pipes = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-EGT-Gas-Hydrogen-Pipelines-2025-02 DATA TEAM COPY.geojson'
-# egt_ggit_terminals = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-EGT-Terminals-2025-02 DATA TEAM COPY.geojson'
-
+# for configuring appropriate js format for legend
+# RUlE is: no _ no spaces for values or section title
+# TODO finish filling out
+legcols_bymap = {
+    "gcmt": ["status", "coal-grade", "mine-type"],
+    "gcct": ["status", "plant-type", "prod-type"]
+    
+}
 region_key = '1yaKdLauJ2n1FLSeqPsYNxZiuF5jBngIrQOIi9fXysAw'
 region_tab = ['mapping']
 
-# TODO swap out for rep poitns https://docs.google.com/spreadsheets/d/1Bu2RhxgvRW7yEJu6zbng_nudXBYRASNvRtgIOvrDN0c/edit?gid=975391128#gid=975391128 
+# TODO swap out for rep points https://docs.google.com/spreadsheets/d/1Bu2RhxgvRW7yEJu6zbng_nudXBYRASNvRtgIOvrDN0c/edit?gid=975391128#gid=975391128 
 # gem standard representative points Latitude_rep_point	Longitude_rep_point	GEM Standard Country Name
-centroid_key = '1ETg632Bkwnr96YQbtmDwyWDpSHqmg5He0GQwJjJz8IU'
+centroid_key = '1ETg632Bkwnr96YQbtmDwyWDpSHqmg5He0GQwJjJz8IU'  # Country/Area
 centroid_tab = ['centroids']
+rep_point_key = '1Bu2RhxgvRW7yEJu6zbng_nudXBYRASNvRtgIOvrDN0c', # GEM Standard Country Name
+rep_point_tab = ['gem standard representative points']
 # Format the date in ISO format
 # Get today's date
 today_date = datetime.today()
@@ -77,23 +97,31 @@ gspread_creds = gspread.oauth(
 # maps_with_needed_conversion = ['asia', 'europe', 'africa', 'latam', 'ggit']
 gas_only_maps = ['AGT', 'EGT', 'asia', 'europe', 'ggit'] 
 non_gsheet_data = ['Gas Pipelines', 'LNG Terminals', 'Oil Pipelines', 'Gas Pipelines EU', 'LNG Terminals EU', 'GOGPT EU']
+non_regional_maps = ['gist', 'gmet', 'giomt', 'gcct']
 
 conversion_key = '1fOPwhKsFVU5TnmkbEyPOylHl3XKZzDCVJ29dtTngkew'
 conversion_tab = ['data']
-# gcmt_closed_tab = 'Global Coal Mine Tracker (Close'
+gcmt_closed_tab = 'Global Coal Mine Tracker (Close'
 
 
-# TODO make it so that each map has it's only set of final cols, so smallest csv possible, helpful for regional gas mostly ...
-# TODO maybe keep all location data in there, and keep a preserved country and subnat col
 # TODO keep in retired year or closed year for longitudinal, and make sure start year is there too
 final_cols = ['facilitytype','unit_id', 'loc-oper', 'loc-owner', 'tech-type','ea_scaling_capacity', 'operator', 'Operator', 'Binational', 'binational', 'loc-accu','units-of-m','mapname','tracker-acro','official_name','url', 'areas','name', 'unit_name', 'capacity',
               'status', 'start_year', 'subnat', 'region', 'owner', 'parent', 'tracker', 'tracker_custom', 'operator-name-(local-lang/script)', 'owner-name-(local-lang/script)',
         'original_units', 'location-accuracy','conversion_factor', 'geometry', 'river', 'area2', 'region2', 'subnat2', 'capacity1', 'capacity2',
         'prod-coal', 'Latitude', 'Longitude', 'pid','id', 'prod_oil', 'prod_gas', 'prod_year_oil', 'prod_year_gas', 'fuel', 'PCI5', 'PCI6', 'pci5','pci6','WKTFormat', 'Fuel', 'maturity', 'fuel-filter', 
-        'pci-list', 'coal-grade', 'mine-type', 'prod-coal', 'owners_noneng', 'noneng_name', 'coalfield', 'workforce', 'prod_year', 'opening-year', 'closing-year', 'opening_year', 'closing_year', 'end-year']
+        'pci-list', 'coal-grade', 'mine-type', 'prod-coal', 'owners_noneng', 'noneng_name', 'coalfield', 'workforce', 'prod_year', 'opening-year', 'closing-year', 'opening_year', 'closing_year', 'end-year', 'pci-list', 'coal-grade', 'mine-type', 'prod-coal', 'owners_noneng', 'noneng_name', 'coalfield', 'workforce', 'prod_year', 'opening-year', 'closing-year', 'opening_year', 'closing_year', 'end-year',
+        'claycal-yn', 'altf-yn', 'ccs-yn', 'prod-type', 'plant-type', 'entity-id', 'color', 'capacity-display', 'Clinker Capacity (millions metric tonnes per annum)', 'Cement Capacity (millions metric tonnes per annum)', "cem-type"]
 
-renaming_cols_dict = {'GOGPT': {'GEM location ID':'pid', 'GEM unit ID': 'id','Wiki URL': 'url','Country/Area': 'areas', 'Plant name': 'name', 'Unit name': 'unit_name', 
-                                'Capacity (MW)': 'capacity', 'Status': 'status', 'Fuel': 'fuel', 'Owner(s)': 'owner', 'Parent(s)': 'parent',
+renaming_cols_dict = {'GCCT': {'GEM Plant ID': 'pid', 'GEM Asset name (English)': 'name', 'Asset name (other language)': 'noneng_name', 'Coordinate accuracy': 'location-accuracy', 
+                             'Subnational unit': 'subnat', 'Country/Area': 'areas',
+                             'Cement Color': 'color', 'Operating status': 'status', 'Start date':'start_year', 'Owner name (English)': 'owner',
+                             'Owner name (other language)': 'loc-owner', 'GEM Entity ID':'entity-id', 'Plant type':'plant-type', 
+                             'Production type':'prod-type',
+                             'CCS/CCUS': 'ccs-yn', 'Alternative Fuel': 'altf-yn', 'Clay Calcination': 'claycal-yn', 'GEM wiki page': 'url', "Majority Cement Type": "cem-type"},
+
+
+                    'GOGPT': {'GEM location ID':'pid', 'GEM unit ID': 'id','Wiki URL': 'url','Country/Area': 'areas', 'Plant name': 'name', 'Unit name': 'unit_name', 
+                              'Capacity (MW)': 'capacity', 'Status': 'status', 'Fuel': 'fuel', 'Owner(s)': 'owner', 'Parent(s)': 'parent',
                                 'Start year': 'start_year', 'State/Province': 'subnat', 'Region': 'region'},
                       'GCPT': {'GEM location ID':'pid', 'GEM unit/phase ID': 'id','Country/Area': 'areas', 'Wiki URL':'url',
                                    'Plant name': 'name', 'Unit name':'unit_name',
@@ -120,10 +148,11 @@ renaming_cols_dict = {'GOGPT': {'GEM location ID':'pid', 'GEM unit ID': 'id','Wi
                       'GGPT': {'GEM location ID':'pid', 'GEM unit ID':'id', 'Country/Area': 'areas', 'Project Name': 'name', 'Unit Name': 'unit_name',
                                'Unit Capacity (MW)': 'capacity', 'Status': 'status', 'Start Year': 'start_year', 'Owner': 'owner',
                                'Region': 'region', 'State/Province':'subnat', 'Wiki URL': 'url'},
-                      # TODO TO DECIDE need to copy for infra and extraction non power to make a pid copy of the unit id, for ease of use, or just apply unit logic to power
                       
                       'GCTT': {'GEM Terminal ID':'pid', 'GEM Unit/Phase ID': 'unit_id','Coal Terminal Name': 'name', 'Coal Terminal Name (detail or other)': 'other_name','Parent Port Name': 'port','Wiki URL': 'url', 'Status': 'status', 'Owner': 'owner', 'Capacity (Mt)':'capacity',
                                'Start Year': 'start_year', 'Region': 'region', 'State/Province':'subnat', 'Country/Area': 'areas'},
+                      
+                      # TODO change GOGET to pid
                       'GOGET': {'Unit ID':'id', 'Wiki name': 'name', 'Country/Area': 'areas', 'Subnational unit (province, state)': 'subnat', 'Status': 'status', 'Discovery year': 'start_year', 'Production start year': 'prod_start_year',
                                 'GEM region': 'region','Owner': 'owner', 'Parent': 'parent', 'Wiki URL': 'url', 'Production - Oil (Million bbl/y)': 'prod_oil', 'Production - Gas (Million m³/y)': 'prod_gas',
                                 'Production - Total (Oil, Gas and Hydrocarbons) (Million boe/y)': 'capacity','Production Year - Oil': 'prod_year_oil', 'Production Year - Gas': 'prod_year_gas'
@@ -143,33 +172,16 @@ renaming_cols_dict = {'GOGPT': {'GEM location ID':'pid', 'GEM unit ID': 'id','Wi
                                    'UnitName': 'unit_name', 'Status': 'status', 'Country': 'areas', 'Owner': 'owner', 
                                    'Parent': 'parent', 'CapacityInMtpa': 'capacity', 'StartYearEarliest': 'start_year', 'Region': 'region', 
                                    'State/Province': 'subnat'},
-                    #   'GGIT-eu': {'ProjectID':'id','Countries': 'areas','Wiki': 'url', 'Fuel': 'fuel',
-                    #                'PipelineName':'name', 'SegmentName':'unit_name', 'Status':'status', 'Owner':'owner', 'Parent': 'parent',
-                    #                'StartYear1': 'start_year', 'CapacityBcm/y': 'capacity', 'StartState/Province': 'subnat',
-                    #                'StartRegion': 'region', 'EndState/Province': 'subnat2', 'EndRegion': 'region2',
-                    #                },
-                      
-                      # TODO fix this today april 14th
-                        # Gas Pipelines EU	GGIT-eu
-                        # LNG Terminals EU	GGIT-lng-eu
-                        # GOGPT EU	GOGPT-eu
-                      # gogpt-eu fuel, h2%, h2-usage-proposed-%, pci5, pci6
-                    #   'GOGPT-eu': {},
-                    # 'GOGPT-eu': {'gem-location-id':'pid', 'gem-unit-id': 'id','wiki-url': 'url','country/area': 'areas', 'plant-name': 'name', 'unit-name': 'unit_name', 
-                    #                                 'capacity-(mw)': 'capacity', 'status': 'status', 'fuel': 'fuel', 'owner(s)': 'owner', 'parent(s)': 'parent',
-                    #                                 'start-year': 'start_year', 'subnational-unit-(province,-state)': 'subnat', 'region': 'region', 'owner':'owner', 'parent': 'parent'},
-                    'plants': {'gem-location-id':'pid', 'gem-unit-id': 'id','wiki-url': 'url','country/area': 'areas', 'plant-name': 'name', 'unit-name': 'unit_name',
-                            'capacity-(mw)': 'capacity', 'owner(s)': 'owner', 'parent(s)': 'parent', 'plant-name-in-local-language-/-script': 'other-local', 'other-name(s)': 'other-name',
-                            'start-year': 'start_year', 'state/province': 'subnat'},
+                        # GOGPT-eu two tabs
+                        'plants': {'gem-location-id':'pid', 'gem-unit-id': 'id','wiki-url': 'url','country/area': 'areas', 'plant-name': 'name', 'unit-name': 'unit_name',
+                                'capacity-(mw)': 'capacity', 'owner(s)': 'owner', 'parent(s)': 'parent', 'plant-name-in-local-language-/-script': 'other-local', 'other-name(s)': 'other-name',
+                                'start-year': 'start_year', 'state/province': 'subnat'},
 
-                    'plants_hy': {'gem-location-id':'pid', 'gem-unit-id': 'id','wiki-url': 'url','country/area': 'areas', 'plant-name': 'name', 'unit-name': 'unit_name',
-                            'capacity-(mw)': 'capacity', 'owner(s)': 'owner', 'parent(s)': 'parent', 'plant-name-in-local-language-/-script': 'other-local', 'other-name(s)': 'other-name',
-                            'start-year': 'start_year', 'state/province': 'subnat'},
+                        'plants_hy': {'gem-location-id':'pid', 'gem-unit-id': 'id','wiki-url': 'url','country/area': 'areas', 'plant-name': 'name', 'unit-name': 'unit_name',
+                                'capacity-(mw)': 'capacity', 'owner(s)': 'owner', 'parent(s)': 'parent', 'plant-name-in-local-language-/-script': 'other-local', 'other-name(s)': 'other-name',
+                                'start-year': 'start_year', 'state/province': 'subnat'},
 
-                    #   'extraction': {'unit-id':'id', 'wiki-name': 'name', 'country': 'areas', 'subnational-unit-(province,-state)': 'subnat', 'discovery-year': 'start_year', 'production-start-year': 'prod_start_year',
-                    #             'gem-region': 'region', 'wiki-url': 'url', 'production---oil-(million-bbl/y)': 'prod_oil', 'production---gas-(million-m³/y)': 'prod_gas',
-                    #             'production---total-(oil,-gas-and-hydrocarbons)-(million-boe/y)': 'capacity','production-year---oil': 'prod_year_oil', 'production-year---gas': 'prod_year_gas',
-                    #             'country-list':'mult_countries', 'fuel-type': 'fuel'},
+                        # gas pipelines eu
 
                       'EGT-gas': {'projectid':'pid','countries': 'areas','wiki': 'url',
                                    'pipelinename':'name', 'segmentname':'unit_name',
@@ -177,12 +189,11 @@ renaming_cols_dict = {'GOGPT': {'GEM location ID':'pid', 'GEM unit ID': 'id','Wi
                                    'startregion': 'region', 'endstate/province': 'subnat2', 'endregion': 'region2', 'otherenglishnames': 'other-name',
                                     'otherlanguageprimarypipelinename': 'other-local',
                                    },
+                        # gas terminals eu
                       'EGT-term': {'comboid':'pid','wiki': 'url', 'terminalname': 'name',
                                    'unitname': 'unit_name', 'country': 'areas', 'capacity': 'given_capacity','capacityinmtpa': 'capacity', 'startyear1': 'start_year', 'region': 'region',
                                    'state/province': 'subnat', 'otherlanguagename': 'other-name'},
                         }
-
-# which trackers do have meaningful project ids
 
 
 # final_order_datadownload = ['Oil & Gas Plants', 'Coal Plants', 'Solar', 'Wind', 'Nuclear', 'Hydropower', 'Bioenergy', 'Geothermal', 'Coal Terminals', 'Oil & Gas Extraction', 'Coal Mines', 'Oil Pipelines', 'Gas Pipelines', 'LNG Terminals']
@@ -205,8 +216,11 @@ tracker_to_fullname = {
                     "GGIT-import": "LNG import terminal",
                     "GGIT-export": "LNG export terminal",
                     "GCMT": "coal mine",
-                    "GCTT": "coal terminal"
-}
+                    "GCTT": "coal terminal",
+                    "GIST": 'Iron & Steel',
+                    "GIOMT": 'Iron ore Mines',
+                    "GCCT": 'Cement and Concrete'
+                }
 
 
 tracker_to_legendname = {
@@ -228,64 +242,14 @@ tracker_to_legendname = {
                     "GCTT": "coal-terminal"
 }
 
-# TODO ideally get this from map log gsheet
-# DO THIS NOW TODO so that aet and gipt look done and latam still needs to do
-# trackers_to_update = ['Coal Plants', 'Nuclear', 'Oil & Gas Plants'] # ['Coal Plants', 'Nuclear', 'Oil & Gas Plants']
-# new_release_date = 'February 2025' # get from spreadsheet I manage 15l2fcUBADkNVHw-Gld_kk7EaMiFFi8ysWt6aXVW26n8
-# previous_release = 'data/Africa-Energy-Tracker-data-July-2024.xlsx' # key 1B8fwCQZ3ZMCf7ZjQPqETKNeyFN0uNFZMFWw532jv480
-# previous_map = 'data/africa_energy_tracker_2024-07-10.geojson' 
-
-
-# prev_key_dict = {'africa': '128rAsbENoUzzKJAv1V0Z3AuCc6kNanCclKJVGkSOmhM', 'latam': '1ZKY-jSs2vxXSq5dLkp6-qGbhaxhz9Sh9Xo50ZG3LG7Q', 'asia': '1x-n4YLSRA3RIz80Jm5yfyWiMtbVfYHhOtHXsWhg3d-k', 'europe': '1h8Nr8lJJiUIsSIzEmwnici4Js9Brxt7GChDo_DBQF2s', 'integrated': '1SZVpnXQ1iE5kJJfmAZQ64q9LaG4wfq4urVX7jdBmIlk'} # ideally pull this from the results tabs in the map log sheet
-
-
-# also TODO ideally save new release data file of map to gsheets and put htat link in the results tab
-# if in colab could save to tracker release and update this dict automatically
-# print('Handle multi tracker map creation for more than just AET')
-
 multi_tracker_log_sheet_key = '15l2fcUBADkNVHw-Gld_kk7EaMiFFi8ysWt6aXVW26n8'
 source_data_tab = ['source']
 map_tab = ['map']
 regional_multi_map_tab = ['regional_multi_map'] # regional 
 
 multi_tracker_countries_sheet = '1UUTNERZYT1kHNMo_bKpwSGrUax9WZ8eyGPOyaokgggk'
-# will be commenting all this out soon! get to map file
-# tracker_folder = 'africa-energy'
-# path_for_test_results = gem_path + tracker_folder + '/test_results/'
-# path_for_data_dwnld = gem_path + tracker_folder + '/dt_dwnld/'
-
-# geojson_file_of_all_africa = f'africa_energy_tracker_{iso_today_date}.geojson'
-# path_for_download_and_map_files = gem_path + tracker_folder + '/compilation_output/' + iso_today_date_folder
-
-# os.makedirs(path_for_download_and_map_files, exist_ok=True) not needed can likely delet
-# os.makedirs(path_for_data_dwnld, exist_ok=True)
 
 testing_path = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/'
-
-# use about page from global releases
-
-# about_page_ggit_goit = {
-#     "LNG Terminals": "1nyhaAHdIG7ds5ypC8QNPD6HODNo0hh6VYKL9CjG2WnE",
-#     "Gas Pipelines": "1llzDMAXX7xJn3j4d6JQ2UjebgVpRFDBkZ4QTtUPmSHg",
-#     "Oil Pipelines": "12bhnTJ5kaia187ZvX9qWshfs4btmZuTpzPj2Jz7ct6Y", 
-# }
-
-# goit_geojson = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-GOIT-Oil-NGL-Pipelines-2024-10-29.geojson'#'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-GOIT-Oil-NGL-Pipelines-2024-06 copy.geojson'
-# ggit_lng_geojson = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-GGIT-LNG-Terminals-2024-09 DATA TEAM COPY.geojson'
-# ggit_geojson = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-GGIT-Gas-Pipelines-2024-12.geojson' #'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-GGIT-Gas-Pipelines-2023-12 copy.geojson'
-
-# ggit_lng_eu_geojson = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-EGT-Terminals-2025-02 DATA TEAM COPY.geojson'
-# ggit_eu_geojson = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-EGT-Gas-Hydrogen-Pipelines-2025-02 DATA TEAM COPY.geojson'
-
-
-# fixed routes and capacity conversions goit (capacity boed) and ggit (route) Oct 23rd 2024
-# merge on projectID only specific columns so as to keep rest of data consistent with public release 
-# temporary until next release
-# goit_cap_updated = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-GOIT-Oil-NGL-Pipelines-2024-10-29.geojson'
-# shouldn't need these anymore FEB 24th
-# ggit_routes_updated = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/GEM-GGIT-Gas-Pipelines-2024-12 DATA TEAM COPY.geojson'
-# ggit_eu_temp = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/source/Europe-Gas-Tracker-2024-05 DATA TEAM COPY.xlsx' # convert to geojson and add in missing coords from global json file 
-
 
 full_country_list = [
     "Algeria", "Angola", "Benin", "Botswana", "British Indian Ocean Territory", "Burkina Faso", 

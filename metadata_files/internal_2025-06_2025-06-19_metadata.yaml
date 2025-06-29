@@ -1,0 +1,3265 @@
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 11 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Coal Mine Tracker - June 2025
+        1: "Copyright \xA9 Global Energy Monitor. Global Coal Mine Tracker, June 2025\
+          \ release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Coal Mine Tracker,
+          June 2025 release" (See the CC license for attribution requirements if sharing
+          or adapting the data set.)'
+        3: 'Contact: Dorothy Lan Mei, Project Manager, Global Energy Monitor - dorothy.mei@globalenergymonitor.org'
+        4: ''
+        5: Notes
+        6: 1. This database includes operating coal mines producing 1 million tonnes
+          per annum and more, with smaller mines included at discretion, and proposed
+          coal mines with a capacity of 1 million tonnes per annum and more
+        7: 2. This database includes a separate sheet specifically for documenting
+          coal mines that closed mainly since 2015. ("Closed Mines" sheet)
+        8: 3. For more information on each mine, with references, see GEM.wiki pages
+          (here) ("Non-Closed Mines" sheet, Column H, I)
+        9: 4. For an explanation of the compilation of this data, see "Methodology"
+          on Global Energy Monitor Wiki platform (GEM.wiki) (here)
+        10: 5. For coal mine employment estmates, see "Estimating coal mine workforce
+          size" on Global Energy Monitor Wiki platform (GEM.wiki) (here)
+        11: 6. For summary statistics by province, country, region, company etc.,
+          see "Summary Statistics" on Global Energy Monitor website (here)
+        12: 7. For links to reports using GCMT data, see "Reports" on Global Energy
+          Monitor website (here)
+        13: 8. A mapping tool for this data is available on the Global Energy Monitor
+          website (here)
+        14: '9. For more information on mine ownership check out the Global Energy
+          Ownership Tracker: The tracker maps each level of the chain from the direct
+          owner (as in, the lowest-level identified owner in the chain of ownership)
+          up to their highest-level ultimate parents (e.g., corporations, investment
+          firms, and governments). Ownership links are reported with the percentage
+          of ownership, including owners that have controlling interest as well as
+          those with minority, non-controlling interests (if over a threshold of 5%
+          ownership). Companies IDs, such as PermIDs, are also included.'
+        15: "10. Where appropriate, Global Coal Mine Tracker (GCMT) assets have been\
+          \ associated with individual remotely-sensed methane plumes described in\
+          \ the Global Methane Emitters Tracker (GMET). Plumes are associated with\
+          \ a mine asset if the origin of the plume, as determined by the satellite\
+          \ data provider, appears to fall within the boundary of a GCMT asset upon\
+          \ manual review by a GEM researcher. This manual review involves visual\
+          \ inspection of basemap imagery in Google Earth Pro as well as RGB imagery\
+          \ (for CarbonMapper plumes) from the time of the plume emission, and analysis\
+          \ of government and media sources related to the mine as detailed in the\
+          \ GEM wiki pages for individual GCMT assets. Note that the GMET does not\
+          \ include every known remotely sensed methane plume \u2013 see the GMET\
+          \ methodology page for information on data coverage. \n"
+        16: ''
+        17: ''
+        18: ''
+        19: Dictionary
+        20: Column Name
+        21: Status
+        22: Operating
+        23: Proposed
+        24: Mothballed
+        25: Cancelled
+        26: Shelved
+        27: Retired
+        28: Status Detail
+        29: Announced
+        30: Exploration
+        31: Pre-Permit
+        32: Permitted
+        33: Construction
+        34: Test Operation
+        35: Care and Maintenance
+        36: GEM Mine ID
+        37: MSHA ID
+        38: Country / Area
+        39: Mine Name
+        40: Mine Name AKAs
+        41: Complex Name
+        42: Mine Name (Non-ENG)
+        43: Complex Name
+        44: GEM Wiki Page (ENG)
+        45: GEM Wiki Page (Non-ENG)
+        46: Project Type
+        47: New
+        48: Expansion
+        49: Extension
+        50: Project Phase
+        51: Owners
+        52: Owners (Non-ENG)
+        53: Parent Company
+        54: Company HQs
+        55: Entity ID
+        56: Capacity (Mtpa)
+        57: Production (Mtpa)
+        58: Year of Production
+        59: Coal Output (Annual, Mst)
+        60: Mine Type
+        61: Mining Method
+        62: Open Pit
+        63: Strip
+        64: Mountain Top Removal
+        65: Board and Pillar
+        66: Longwall
+        67: Mixed
+        68: Mine Size (Km2)
+        69: Mine Depth (m)
+        70: Depth Accuracy
+        71: Workforce Size
+        72: Workforce Accuracy
+        73: Coal Type
+        74: Coal Grade
+        75: Percentage of Met Coal
+        76: Percentage of Thermal Coal
+        77: Accuracy Rating
+        78: Reported Year of Percentage Split
+        79: Total Reserves (Proven and Probable, Mt)
+        80: Year of Total Reserves Recorded
+        81: Total Resource (Inferred, Indicated, Measured)
+        82: Reserve to Production Ratio (R/P)
+        83: Opening Year
+        84: Closing Year
+        85: Reported Life of Mine
+        86: Reported Year of Mine Life
+        87: Coalfield
+        88: Latitude
+        89: Longitude
+        90: Location Accuracy
+        91: Primary Consumer, Destination
+        92: Coal Plant, Steel Plant, Terminal
+        93: Coal Plant, Steel Plant, Terminal GEM Wiki
+        94: Gas-level Rating
+        95: Gas-level Rating Appraisal Year
+        96: Reported Coal Mine Methane Emissions (thousand tonnes per year)
+        97: Year of Reported Coal Mine Methane Emissions
+        98: Source ID
+        99: 'Has associated plume data '
+        100: Has associated CMM mitigation data
+        101: GEM Coal Mine Methane Emissions Estimate (MCM/yr)
+        102: GEM Coal Mine Methane Emissions Estimate (M tonnes/yr)
+        103: CMM Emissions (CO2e 20 years)
+        104: CMM Emissions (CO2e 100 years)
+      1:
+        0: Global Coal Mine Tracker - May 2025
+        1: "Copyright \xA9 Global Energy Monitor. Global Coal Mine Tracker, May 2025\
+          \ release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: Definition
+        21: '"Status" describes the various active/inactive stages of a coal mine
+          or mine project.'
+        22: A coal mine where coal removal is occurring for commercial purposes. This
+          includes mines that have produced coal within the year, even if operations
+          were temporarily suspended for several months.
+        23: A coal mine project that has not yet begun operation. This includes projects
+          that have been announced (via corporate or government planning documents),
+          projects that are under permitting (including feasibility studies), projects
+          that are under construction, as well as those in test operation.
+        24: A coal mine that is neither operating nor retired, such as those that
+          are idled or put on "care and maintenance." Such mines could return to operation,
+          but are not currently operating.
+        25: A proposed coal mine project for which a cancellation announcement has
+          been made by the owning company or government authorities. GEM also assigns
+          a status of "cancelled" to projects when no progress has been observed for
+          4+ years.
+        26: A proposed coal mine project for which no public updates nor progress
+          has been observed for 2+ years.
+        27: A previously operating coal mine that has been permanently closed.
+        28: '"Status detail" describes the mine status on a granular level, such as
+          which planning stage a proposed coal mine project has progressed to, or
+          whether an operating mine is experiencing temporary work stoppages. '
+        29: 'A status assigned when a coal mine project has been described in corporate
+          or government plans, but full details remain unknown. '
+        30: 'A status assigned when the economic viability of a coal mine project
+          is being explored. During the exploration stage, information is gathered
+          about a potential mine site''s characteristics via geological surveys, pre-feasability
+          studies, and the drilling of boreholes. '
+        31: A status assigned when permit applications (environmental assessments,
+          land use rights, water licenses, etc.) for a coal mine project have been
+          filed, but not yet obtained.
+        32: 'A status assigned to a coal mine project that has been granted permit
+          approvals, but has not yet begun construction. '
+        33: A status assigned when a coal mine project has begun construction of its
+          mining infrastructure and facilities.
+        34: A status assigned when a coal mine project begins coal removal, but not
+          yet for commercial purposes.
+        35: A status assigned when an operating mine temporarily closes, but there
+          is potential to recommence operations at a later date. During the care and
+          maintenance period, coal production stops but the mine site is still managed
+          by minimal staff to ensure it remains in a safe and stable condition.
+        36: A unique alphanumeric identifier assigned to each coal mine by GEM for
+          internal identification purposes.
+        37: A unique numerical identifier assigned to each US coal mine by the US
+          Mine Safety and Health Administration (MSHA) for identification purposes
+          nationwide.
+        38: The geographic country or area where a coal mine or proposed coal mine
+          project is located.
+        39: 'The name of a coal mine or proposed coal mine project. '
+        40: The nickname or alias of a coal mine or proposed coal mine project. AKAs
+          are often used with proposed projects which have not yet been assigned an
+          official name.
+        41: ''
+        42: 'The non-english name of a coal mine or proposed coal mine project, as
+          it appears in the official language of the country or area where the mine
+          is located. '
+        43: The name of the larger mining complex or group to which one or more coal
+          mines belong.
+        44: 'The URL corresponding to a coal mine''s or proposed coal mine project''s
+          English GEM wiki page.  '
+        45: 'The URL corresponding to a coal mine''s or proposed coal mine project''s
+          non-English GEM wiki page.  '
+        46: 'Refers to the type of coal mine project: expansion, extension, or new. '
+        47: A "new" mine is a greenfield mine planned to be developed in an area where
+          there was no previous mining activity.
+        48: An "expansion" is when an existing mine seeks to increase its existing
+          coal capacity.
+        49: An "extension" is when an existing mine seeks to mine new areas to extend
+          its mine life.
+        50: 'Refers to proposed coal mine projects that will be developed in stages,
+          often with initial development followed by subsequent expansions over time
+          (e.g., Phase I, II, III). '
+        51: The immediate owner of a coal mine or coal mine project who is responsible
+          for the mining of the coal. The number in brackets next to the owning entity's
+          name denotes the percentage of shares they hold. If an individual rather
+          than a company owns the mine, this is indicated by the term "natural person(s)."
+        52: 'The non-english name of the immediate owner of the coal mine or proposed
+          coal mine project, as it appears in the official language of the country
+          or area where the mine is located. '
+        53: The highest-level owner of a coal mine or coal mine project. The number
+          in brackets next to the owning entity's name denotes the percentage of shares
+          they hold. If an individual rather than a company owns the mine, this is
+          indicated by the term "natural person(s)."
+        54: The geographic country or area where the parent company is headquartered
+          in.
+        55: Unique identifier assigned by the GEM's Global Energy Ownership Tracker
+          team.
+        56: The maximum amount of coal a mine or mine project is engineered to produce,
+          expressed in millions of tonnes per year.
+        57: The amount of coal produced by a mine, expressed in millions of tonnes
+          per year.
+        58: The year during which the cited coal production occurred. (If coal output
+          for the current year is unavailable, data for the most recently available
+          year is given.)
+        59: The amount of coal produced by a US mine, expressed in millions of short
+          tons per year. This value applies to US coal mines only.
+        60: The classification of coal mines by mining method, including "Surface,"
+          "Underground," and combined "Underground & Surface" facilities.
+        61: The specific technique used to extract coal from the earth.
+        62: "also known as \u201COpen Cast\u201D, refers to mining directly on the\
+          \ ground surface"
+        63: is a type of surface mining where the overlying vegetation, rock, and
+          soil (overburden) is removed in order to reach the underlying coal seam,
+          which usually lies a few feet beneath the surface.
+        64: is a mining practice where the tops of mountains are removed, exposing
+          the seams of coal. It is a form of surface mining at the summit or summit
+          ridge of a mountain.
+        65: "also known as \u201CRoom and Pillar\u201D, it\u2019s a method of underground\
+          \ mining. In this method, seams of coal are mined partially, leaving large\
+          \ pillars of coal intact to support the overlying layers of rock"
+        66: is a type of underground mining method used to extract coal from a seam
+          that is too deep for open-pit mining
+        67: More than one mining method.
+        68: The total surface area of the mining covered by the coal mining operation,
+          including surface facilities, access roads, overburden dumps, and the underground
+          or open-pit mine footprint.
+        69: The vertical distance from the ground surface down to the coal seam that
+          is being mined.
+        70: Indicates the confidence level in the reported depth of the coal mine.
+          "Exact" means the depth is directly stated in a reliable source, while "Estimated"
+          means it is inferred from averages at the national level in a variety of
+          industry and government reports.
+        71: The total number of personnel employed by a coal mining operation, including
+          those directly involved in extraction and those supporting operations.
+        72: "Indicates the accuracy level of workforce data. \"Exact\" means the workforce\
+          \ size is explicitly reported in data sources, while \"Estimated\" refers\
+          \ to figures generated using GEM\u2019s machine learning model when official\
+          \ data is unavailable."
+        73: The classification of coal based on its physical and chemical properties,
+          particularly its carbon content, calorific value, moisture, volatile matter,
+          and ash content. Global Coal Mine Tracker use British coal type (lignite,
+          subbituminous, bituminous, anthracite).
+        74: 'The classification of coal based on its primary use:
+
+          -Thermal Coal: Used for power generation or industrial heating.
+
+          -Metallurgical Coal (Coking Coal): Used for steelmaking and other industrial
+          processes.'
+        75: The proportion of metallurgical coal within the "Thermal & Met" classification
+          under Coal Grades for opearting coal mines.
+        76: The proportion of thermal coal within the "Thermal & Met" classification
+          under Coal Grades for operating coal mines.
+        77: "Indicates the confidence level in the accuracy of the information provided.\
+          \ A percentage split is marked as \"Exact\" when it is explicitly stated\
+          \ in the data source, and \"Estimated\" when it is based on the researcher\u2019\
+          s interpretation or experience drawn from available sources."
+        78: The year in which the percentage breakdown of coal grade was reported
+          or deocumented.
+        79: The combined amount of economically recoverable or minable coal.
+        80: The year in which the total coal reserves of the mine were reported or
+          evaluated.
+        81: The total estimated volume of a coal deposit in the ground
+        82: A measure of how long a coal reserve will last at the current annual rate
+          of production.
+        83: The year when the mine commenced its commercial operations.
+        84: The year in which the coal mine is scheduled to close or has already ceased
+          operations.
+        85: The expected operational lifespan of a mine, expressed in year, based
+          on the currently known and economically recoverable reserves, and the planned
+          annual production rate.
+        86: The year in which the life of mine is reported or evaluated.
+        87: Coalfield to which a coal mine belongs.
+        88: Location of the project expressed in decimal degrees, assumed to use the
+          WGS84 coordinate system (as in Google Maps).
+        89: Location of the project expressed in decimal degrees, assumed to use the
+          WGS84 coordinate system (as in Google Maps).
+        90: Indicates whether the location is "Approximate" or "Exact". Location is
+          "Approximate" based on using nearest city or inferred from contextual information
+          in the data source. Location is "Exact" when explicitly provided in the
+          source materials.
+        91: The main end user or receiving entity of the coal produced by the mine.
+          This may include coal power plants, steel plants, export terminals, or industrial
+          facilities that rely on coal as a primary source.
+        92: The name of the end user or receiving entity of the coal. The project
+          name should match exactly with those documented by GEM to ensure consistency.
+        93: 'GEM''s Wiki URLs of end user or receiving entity of the coal '
+        94: 'The gas-level rating of a coal mine is a classification system that indicates
+          the methane content and gas-related risk level of a coal mine. '
+        95: The year in which the gas-level rating of the coal mine was appraised
+          or officially reported.
+        96: 'The amount of methane emissions from a coal mine reported by an official
+          source or company reports, expressed in thousands of metric tonnes per year. '
+        97: The year in which the coal mine methane emissions were reported or released.
+        98: 'The identifier assigned by the reporting agency to the coal mine associated
+          with the reported methane emissions. '
+        99: "A \u201CYes\u201D in this field indicates that the GCMT asset has been\
+          \ associated with a remotely sensed methane plume detailed in the Global\
+          \ Methane Emitters Tracker. Yes* refers to the one mine (Mandalong Coal\
+          \ Mine) which had methane plumes associated with it in the December 2024\
+          \ briefing which were not included in the version of GMET public at the\
+          \ time due to minor differences in query methodology. "
+        100: "A \u201CYes\u201D in this field indicates that the GCMT asset has been\
+          \ associated with a known coal mine methane mitigation project (e.g., pre-mining\
+          \ drainage, flaring, ventilation air methane destruction, utilization, etc.). "
+        101: 'An estimate of annual methane emissions from a coal mine calculated
+          by GEM, expressed in million cubic meters per year (MCM/yr). This estimate
+          is based on the Model for Calculating Coal Mine Methane (MC2M). '
+        102: An estimate of annual methane emissions from a coal mine, expressed in
+          million metric tonnes per year.
+        103: "An estimate of coal mine methane emissions, expressed in carbon dioxide\
+          \ equivalents (CO\u2082e) over a 20-year time horizon. "
+        104: "An estimate of coal mine methane emissions, expressed in carbon dioxide\
+          \ equivalents (CO\u2082e) over a 100-year time horizon. "
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: Notes
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+        27: ''
+        28: ''
+        29: ''
+        30: ''
+        31: ''
+        32: ''
+        33: ''
+        34: ''
+        35: ''
+        36: ''
+        37: ''
+        38: Column name changed from "Country"  to "Country/Area"
+        39: ''
+        40: ''
+        41: ''
+        42: ''
+        43: ''
+        44: ''
+        45: ''
+        46: ''
+        47: ''
+        48: ''
+        49: ''
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: ''
+        59: ''
+        60: ''
+        61: ''
+        62: ''
+        63: ''
+        64: ''
+        65: ''
+        66: ''
+        67: ''
+        68: ''
+        69: ''
+        70: "For more details, please refer to GEM\u2019s methodology wiki page on\
+          \ estimating methane emissions from coal mines."
+        71: ''
+        72: For more details, please refer to GEM's wiki page on estimating coal mine
+          workforce size.
+        73: ''
+        74: ''
+        75: ''
+        76: ''
+        77: ''
+        78: ''
+        79: Please see GEM's wiki on coal reserves for details.
+        80: ''
+        81: ''
+        82: ''
+        83: ''
+        84: ''
+        85: ''
+        86: ''
+        87: ''
+        88: ''
+        89: ''
+        90: ''
+        91: ''
+        92: ''
+        93: ''
+        94: 'In this release, this indicator is available only for coal mines in China,
+          where mines are typically classified into three levels: Low-gas, High-gas,
+          and Outburst. For a detailed explanation of the methodology, please visit
+          the wiki page here.'
+        95: ''
+        96: Column name changed from "Reported Coal Mine Methane Emissions (thousand
+          tonnes  CO2e)" to "Reported Coal Mine Methane Emissions (thousand tonnes
+          per year)"
+        97: ''
+        98: ''
+        99: Some mines may have multiple plumes from different dates/times of observation
+          associated with them. See the wiki page for each GCMT asset for details
+          and download the full Global Methane Emitters Tracker here.
+        100: Some mitigation projects span multiple mines, and some mines are associated
+          with multiple mitigation projects. See this companion dataset for more details,
+          and methodology wiki page here.
+        101: "Due to limited production data for Chinese coal mines, CMM emissions\
+          \ are estimated using the latest annual capacity utilization rate\u2014\
+          72.8% for the coal mining and washing industry\u2014as reported by the National\
+          \ Bureau of Statistics of China in 2024.                               \
+          \       \n"
+        102: ''
+        103: "Starting in 2022, the Global Coal Mine Tracker adopted the latest conversion\
+          \ factor from the IPCC\u2019s Sixth Assessment Report (2022), using a 20-year\
+          \ Global Warming Potential (GWP) of 82.5."
+        104: "Starting in 2022, the Global Coal Mine Tracker adopted the latest conversion\
+          \ factor from the IPCC\u2019s Sixth Assessment Report (2022), using a 100-year\
+          \ Global Warming Potential (GWP) of 29.8."
+    about_key: ''
+    acro: GCMT
+    data:
+      columns:
+      - GEM Mine ID: object
+      - MSHA ID: object
+      - Country / Area: object
+      - Mine Name: object
+      - Mine Name AKAs: object
+      - Mine Name (Non-ENG): object
+      - Complex Name: object
+      - GEM Wiki Page (ENG): object
+      - GEM Wiki Page (Non-ENG): object
+      - Status: object
+      - Status Detail: object
+      - Project Type: object
+      - Project Phase: object
+      - Owners: object
+      - Owner GEM Entity ID: object
+      - Owners (Non-ENG): object
+      - Parent Company: object
+      - Company HQs: object
+      - Capacity (Mtpa): object
+      - Production (Mtpa): object
+      - Year of Production: object
+      - Coal Output (Annual, Mst): object
+      - Mine Type: object
+      - Mining Method: object
+      - Mine Size (Km2): object
+      - Mine Depth (m): object
+      - Depth Accuracy: object
+      - Workforce Size: object
+      - Workforce Accuracy: object
+      - Coal Type: object
+      - Coal Grade: object
+      - Percentage of Met Coal: object
+      - Percentage of Thermal Coal: object
+      - Accuracy Rating: object
+      - Reported Year of Percentage Split: object
+      - Total Reserves (Proven and Probable, Mt): object
+      - Year of Total Reserves Recorded: object
+      - Total Resource (Inferred, Indicated, Measured): object
+      - Reserve to Production Ratio (R/P): object
+      - Opening Year: object
+      - Closing Year: object
+      - Reported Life of Mine: object
+      - Reported Year of Mine Life: object
+      - Coalfield: object
+      - Location: object
+      - Prefecture, District: object
+      - State, Province: object
+      - Subregion: object
+      - Region: object
+      - Latitude: object
+      - Longitude: object
+      - Location Accuracy: object
+      - Primary Consumer, Destination: object
+      - Coal Plant, Steel Plant, Terminal: object
+      - Coal Plant, Steel Plant, Terminal GEM Wiki: object
+      - Gas-level Rating: object
+      - Gas-level Rating Appraisal Year: object
+      - Reported Coal Mine Methane Emissions (thousand tonnes per year): object
+      - Year of Reported Coal Mine Methane Emissions: object
+      - Source ID: object
+      - Has associated plume data: object
+      - Has associated CMM mitigation data: object
+      - GEM Coal Mine Methane Emissions Estimate (MCM/yr): object
+      - GEM Coal Mine Methane Emissions Estimate (M tonnes/yr): object
+      - Methane Gas Content (m^3/tonne) (Updated): object
+      - Methane Emissions Factor (Updated): object
+      - CMM Emissions (CO2e 20 years): object
+      - CMM Emissions (CO2e 100 years): object
+      - ISO Code: float64
+      - ? 'Mine Size
+
+          (Km2)'
+        : object
+      - ? 'Mine Depth
+
+          (m)'
+        : object
+      - Reason for Closure: object
+      - Mine Site Status: object
+      columns2: null
+      info: DataFrame with 6991 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country / Area
+    key: 1YSlF9ADnRZH2ug9NwUGjp2bphbFZxkz1FnxSO1NV-ks
+    name: Coal Mines
+    off_name: Coal Mine
+    release: May 2025
+    tabs:
+    - GCMT Non-closed Mines
+    - GCMT Closed Mines
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 1 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Oil and Gas Plant Tracker - June 2025
+        1: "Copyright \xA9 Global Energy Monitor. Global Oil and Gas Plant Tracker,\
+          \ June 2025 release. Distributed under a Creative Commons Attribution 4.0\
+          \ International License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Oil and Gas Plant
+          Tracker, June 2025 release" (See the CC license for attribution requirements
+          if sharing or adapting the data set.)'
+        3: 'Contact: Jenny Martos, Project Manager, Global Energy Monitor - jenny.martos@globalenergymonitor.org'
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: Notes
+        5: 1. For background, additional infomation, and references, see wiki pages
+          for the power station (column A)
+        6: 2. For the Methodology, see https://globalenergymonitor.org/projects/global-oil-gas-plant-tracker/methodology/
+        7: 3. For summary statistics by country/area, region, etc., see "Summary Data"
+          at https://globalenergymonitor.org/projects/global-oil-gas-plant-tracker/summary-data/
+        8: 4. For links to reports using GOGPT data, see "Reports & Briefings" at
+          https://globalenergymonitor.org/projects/global-oil-gas-plant-tracker/reports-briefings/
+        9: 5. This database only includes oil and gas-fired generating units 20 MW
+          and larger for the European Union and United Kingdom, and units 50 MW and
+          larger elsewhere globally.
+        10: '6. The Global Energy Monitor website provides a mapping tool for this
+          data: https://globalenergymonitor.org/projects/global-oil-gas-plant-tracker/tracker/'
+        11: "7. Global Energy Monitor has transitioned to using the United Nations\u2019\
+          \ region and subregion definitions."
+        12: "8. Global Energy Monitor has adopted the name \u2018T\xFCrkiye\u2019\
+          \ as a replacement for \u2018Turkey\u2019."
+        13: 9. Version 2 of the February 2023 data incorporated minor changes to the
+          Wiki URLs column.
+        14: ''
+        15: Status definitions
+        16: announced
+        17: pre-construction
+        18: construction
+        19: operating
+        20: shelved
+        21: cancelled
+        22: mothballed
+        23: retired
+        24: ''
+        25: "For more information on plant ownership check out the\_Global Energy\
+          \ Ownership Tracker (https://globalenergymonitor.org/projects/global-energy-ownership-tracker/):\_\
+          The tracker maps each level of the chain from the direct owner (as in, the\
+          \ lowest-level identified owner in the chain of ownership) up to their highest-level\
+          \ ultimate parents (e.g., corporations, investment firms, and governments).\
+          \ Ownership links are reported with the percentage of ownership, including\
+          \ owners that have controlling interest as well as those with minority,\
+          \ non-controlling interests (if over a threshold of 5% ownership). Companies\
+          \ IDs, such as PermIDs, are also included."
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: Projects that have been publicly reported but have not yet moved actively
+          forward by applying for permits or seeking land, material, or financing.
+        17: Projects that are actively moving forward in seeking governmental approvals,
+          land rights, or financing.
+        18: Site preparation and other activities are underway.
+        19: The plant has been formally commissioned; commercial operation has begun.
+        20: Two years have passed with no action on a project after the project proposal.
+        21: "A cancellation announcement has been made. The status is marked as \u2018\
+          cancelled \u2013 inferred 4 y\u2019 if no progress has been observed for\
+          \ at least four years."
+        22: The project is disused, but not dismantled.
+        23: The project has been decommissioned; this term is also used if the plant
+          has been destroyed by war.
+        24: ''
+        25: ''
+    about_key: ''
+    acro: GOGPT
+    data:
+      columns:
+      - Wiki URL: object
+      - Country/Area: object
+      - Plant name: object
+      - Plant Name in Local Language / Script: object
+      - Other Name(s): object
+      - Unit name: object
+      - Fuel: object
+      - Capacity (MW): float64
+      - Status: object
+      - Turbine/Engine Technology: object
+      - Equipment Manufacturer/Model: object
+      - CHP: object
+      - Hydrogen capable?: object
+      - CCS attachment?: object
+      - Conversion/replacement?: object
+      - Conversion from/replacement of (fuel): object
+      - Conversion from/replacement of (GEM unit ID): object
+      - Conversion to (fuel): object
+      - Conversion to (GEM unit ID): object
+      - Start year: object
+      - Retired year: object
+      - Planned retire: object
+      - Operator(s): object
+      - Owner(s): object
+      - Parent(s): object
+      - Latitude: object
+      - Longitude: object
+      - Location accuracy: object
+      - City: object
+      - Local area (taluk, county): object
+      - Major area (prefecture, district): object
+      - State/Province: object
+      - Subregion: object
+      - Region: object
+      - Other IDs (location): object
+      - Other IDs (unit): object
+      - Captive industry use: object
+      - Captive industry type: object
+      - Captive non-industry use: object
+      - GEM location ID: object
+      - GEM unit ID: object
+      columns2:
+      - null
+      info: DataFrame with 13895 rows
+    data_official: {}
+    fuelcol: Fuel
+    geocol: Country/Area
+    key: 1cy0A7k0GoB2b_b2wesObcAvts0GbXa7go7FVE_bHpBc
+    name: Oil & Gas Plants
+    off_name: Oil and Gas Plant
+    release: January 2025
+    tabs:
+    - Gas & Oil Units
+    - sub-threshold units
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 2 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: "Copyright \xA9 Global Energy Monitor. Global Coal Plant Tracker, January\
+          \ 2025 release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        1: 'Recommended Citation: "Global Energy Monitor, Global Coal Plant Tracker,
+          January 2025 release" (See the CC license for attribution requirements if
+          sharing or adapting the data set.)'
+        2: Global Coal Plant Tracker - January 2025
+        3: 'Contact: Christine Shearer, Project Manager, Global Energy Monitor - christine.shearer@globalenergymonitor.org'
+        4: ''
+        5: About
+        6: 'The Global Coal Plant Tracker includes global coal-fired units that are
+          30 megawatts (MW) or larger within the following parameters: all operating/mothballed
+          units; all units retired since 2000; and all units proposed since 2010.'
+        7: ''
+        8: Notes
+        9: 1. The "Summaries (excl China)" tab provides proposal summaries for projects
+          outside of China with Announced, Pre-permit, Permitted, and Shelved Units.
+          See gem.wiki for full details and to provide feedback.
+        10: 2. For the GCPT Methodology, see https://globalenergymonitor.org/projects/global-coal-plant-tracker/methodology/
+        11: 3. For CO2 calculation method, see "Estimating carbon dioxide emissions
+          from coal plants" at https://www.gem.wiki/Estimating_carbon_dioxide_emissions_from_coal_plants
+        12: 4. For summary statistics by province, country, region, etc., see "Summary
+          Data" at https://globalenergymonitor.org/projects/global-coal-plant-tracker/summary-data/
+        13: 5. For links to GEM reports using GCPT data, see "Reports & Briefings"
+          at https://globalenergymonitor.org/projects/global-coal-plant-tracker/reports-briefings/
+        14: 6. This database only includes coal-fired generating units 30 MW and larger.
+        15: '7. The Global Energy Monitor website provides a mapping tool for this
+          data: https://globalenergymonitor.org/projects/global-coal-plant-tracker/tracker/'
+        16: 8. Units converted from burning primarily coal to another fuel are noted
+          in column U, and the GEM ID of the new converted unit in column V.
+        17: 9. Units receiving payments from China's new capacity payment mechanism
+          are identified in column AM. More information can be found at https://www.gem.wiki/China_Coal_Capacity_Payment_Mechanism
+        18: '10. For a spreadsheet of status changes over time (2014 to 2024), or
+          planned retirement dates over time (2017-2024), please contact Global Energy
+          Monitor at the email above. '
+        19: 11. Future versions of the GCPT will include CHP data for all units, not
+          just captive units. For more information or an early preview of the data
+          contact GEM at the email above.
+        20: '12. For more information on coal plant ownership see the Global Energy
+          Ownership Tracker (GEOT): https://globalenergymonitor.org/projects/global-energy-ownership-tracker/.
+          The GEOT maps each level of the ownership chain from the direct owner (the
+          lowest-level identified owner in the chain of ownership) to their highest-level
+          ultimate parents (e.g., corporations, investment firms, and governments).
+          Ownership links are reported with the percentage of ownership, including
+          owners that have controlling interest as well as those with minority, non-controlling
+          interests (if over a threshold of 5% ownership). Companies IDs, such as
+          PermIDs, are also included.'
+        21: ''
+        22: Status definitions
+        23: Announced
+        24: Pre-permit
+        25: Permitted
+        26: Construction
+        27: Shelved
+        28: Cancelled
+        29: Operating
+        30: Mothballed
+        31: Retired
+        32: ''
+        33: CO2 Annual and Lifetime Estimates
+        34: Metholology
+        35: Note
+        36: Lifetime
+        37: Heat rate
+        38: Emission factor
+        39: Capacity factor
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: "Projects that have appeared in corporate or governmental planning documents\
+          \ but have not yet moved actively forward by applying for permits or seeking\
+          \ land, coal, or financing.\t\t\t\t"
+        24: 'Projects that have actively moved forward in one or more of the following
+          ways: applying for environmental permits, acquiring land, acquiring coal,
+          acquiring water rights, acquiring transmission arrangements, or securing
+          financing. In India the key criterion for moving a project from "announced"
+          to "pre-permit" is the existence of a "terms of reference" (TOR) letter
+          by the Ministry of Environment, Forests, and Climate Change. In China, "pre-permit"
+          means a feasibility study has been completed.'
+        25: Projects that have secured all environmental permits but have not broken
+          ground. In India the key criterion for moving a project from "pre-permit"
+          to "permitted" is the approval of an "environmental clearance" (EC) by the
+          Ministry of Environment, Forests, and Climate Change. In China, "permitted"
+          means a plant has received a permit from the National Development and Reform
+          Commission (NDRC), allowing for construction, or the equivalent approval
+          at the province level.
+        26: Projects where physical construction (i.e. concrete and steel, not just
+          a ground-breaking ceremony or early site preparation) has begun.
+        27: Projects where sufficient evidence is found to indicate that a project
+          is no longer moving forward, but not enough to declare it definitively cancelled.
+          Projects where construction has been put on hold are also considered "shelved."
+          A project that shows no activity over a period of 2 years is categorized
+          as "shelved" unless there is evidence to the contrary.
+        28: In some cases a sponsor announces that it has cancelled a project. More
+          often a project fails to advance and then quietly disappears from related
+          documents. In addition, a plant that shows no activity or with no known
+          developments over a period of 4 years is categorized as "cancelled," unless
+          there is evidence to the contrary. Proposed projects that are switched to
+          natural gas are considered "cancelled" as coal plants.
+        29: Units that have been formally commissioned or that have entered commercial
+          operation.
+        30: Units that have been deactivated or put into an inactive state but are
+          not retired.
+        31: Units that have been permanently decommissioned or converted to another
+          fuel.
+        32: ''
+        33: ''
+        34: For CO2 calculation method, see "Estimating carbon dioxide emissions from
+          coal plants" at https://www.gem.wiki/Estimating_carbon_dioxide_emissions_from_coal_plants
+        35: The GCPT estimates for CO2 emissions are intended to provide guidance
+          on overall country and regional emissions over the lifecycle of the existing
+          and proposed fleet of plants. They are not intended to provide detailed
+          impact analysis for particular plants. For this reason, the average global
+          capacity factor is used for all plants. In general, newer plants will tend
+          to have higher capacity factors than the average, and older plants will
+          have lower capacity factors than the average. Similarly, heat rates and
+          emission factors represent broad performance; these factors will differ
+          for particular plants and coal supplies.
+        36: Lifetime emissions assume a plant lifetime of 35 years, based on the global
+          average retirement age of 37 years. Plants older than 35 years are assumed
+          to operate an additional 5 years. Plants with a planned retirement date
+          are assumed to cease operations that year.
+        37: Heat rate is based on type of combustion technology, with performance
+          penalties for older and smaller units. More discussion at https://www.gem.wiki/Estimating_carbon_dioxide_emissions_from_coal_plants
+        38: Based on type of coal using the 2006 IPPC Guidelines for National Greenhouse
+          Inventories, Table 2.2, page 2.16.
+        39: 55% global average, based on GEM's global operating coal power capacity
+          and Ember's global coal power generation data (2023).
+    about_key: ''
+    acro: GCPT
+    data:
+      columns:
+      - GEM unit/phase ID: object
+      - GEM location ID: object
+      - Country/Area: object
+      - Wiki URL: object
+      - Plant name: object
+      - Unit name: object
+      - Plant name (other): object
+      - Plant name (local): object
+      - Owner: object
+      - Owner GEM Entity ID: object
+      - Parent: object
+      - Parent GEM Entity ID: object
+      - Capacity (MW): float64
+      - Status: object
+      - Start year: object
+      - Retired year: object
+      - Planned retirement: object
+      - Combustion technology: object
+      - Coal type: object
+      - Coal source: object
+      - Conversion to (fuel): object
+      - Conversion to (GEM unit ID): object
+      - Alternate Fuel: object
+      - Location: object
+      - Local area (taluk, county): object
+      - Major area (prefecture, district): object
+      - Subnational unit (province, state): object
+      - Subregion: object
+      - Region: object
+      - Latitude: float64
+      - Longitude: float64
+      - Location accuracy: object
+      - Permits: object
+      - Permit Date: object
+      - Permit Parsed: object
+      - Captive: object
+      - Captive industry use: object
+      - Captive residential use: object
+      - China Capacity Payment Recipient: object
+      - Plant age (years): int64
+      - Capacity factor: float64
+      - Heat rate (Btu per kWh): float64
+      - Emission factor (kg of CO2 per TJ): int64
+      - Annual CO2 (million tonnes / annum): float64
+      - Remaining plant lifetime (years): int64
+      - Lifetime CO2 (million tonnes): float64
+      columns2:
+      - null
+      info: DataFrame with 14146 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1jUbsItBq_CVXy0dUxCP7APHfstDL85BaykCXYURagX4
+    name: Coal Plants
+    off_name: Coal Plant
+    release: January 2025
+    tabs:
+    - Units
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 3 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Solar Power Tracker - February 2025
+        1: "Copyright \xA9 Global Energy Monitor. Global Solar Power Tracker, February\
+          \ 2025 release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Solar Power Tracker,
+          February 2025 release" (See the CC license for attribution requirements
+          if sharing or adapting the data set.)'
+        3: "Records with a TZ ID in the Other IDs (unit/phase) column were partially\
+          \ or fully sourced from the TransitionZero, Solar Asset Mapper, May 2024.\
+          \ \nCopyright \xA9 TransitionZero, Solar Asset Mapper, December 2024. Distributed\
+          \ under a Creative Commons Attribution 4.0 International License."
+        4: 'Contact: Kasandra O''Malia, Global Solar Power Tracker Project Manager,
+          Global Energy Monitor - kasandra.omalia@globalenergymonitor.org'
+        5: Methodology
+        6: ''
+        7: February 2025 Release Notes
+        8: "This update covers research on Africa, Americas, Asia, and Oceania as\
+          \ defined by the United Nations\u2019 region definitions, as well as global\
+          \ updates to 2024 operating projects."
+        9: The tracker capacity threshold is 1 MW. Due to research methodology differences,
+          projects above 20 MW are published in a separate tab.
+        10: Records with a WKSL ID in the Other IDs (unit/phase) column were partially
+          or fully sourced from the wiki-solar.org April, 2023 proprietary dataset.
+        11: ''
+        12: Thresholds for Data Categories
+        13: 20 MW+
+        14: 1-20 MW
+        15: Solar farm capacity cut-off, Global
+        16: ''
+        17: Definitions
+        18: Column
+        19: Status
+        20: Status
+        21: Status
+        22: Status
+        23: Status
+        24: Status
+        25: Status
+        26: Status
+        27: ''
+        28: Columns
+        29: Column Name
+        30: Date Last Researched
+        31: Country/Area
+        32: Project Name
+        33: Phase Name
+        34: Project Name in Local Language / Script
+        35: Other Name(s)
+        36: Capacity (MW)
+        37: Capacity Rating
+        38: Technology Type
+        39: Status
+        40: Start year
+        41: Retired year
+        42: Operator
+        43: Operator Name in Local Language / Script
+        44: Owner
+        45: Owner Name in Local Language / Script
+        46: Hydrogen
+        47: Latitude
+        48: Longitude
+        49: Location accuracy
+        50: City
+        51: Local area (taluk, county)
+        52: Major area (prefecture, district)
+        53: State/Province
+        54: Subregion
+        55: Region
+        56: Other IDs (location)
+        57: Other IDs (unit/phase)
+        58: GEM location ID
+        59: GEM phase ID
+        60: Wiki URL
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: Greater than or equal to 20 MW
+        14: Greater than 1 MW, but smaller than 20 MW
+        15: Projects smaller than 1 MW are not included
+        16: ''
+        17: ''
+        18: Full Name
+        19: operating
+        20: construction
+        21: pre-construction
+        22: announced
+        23: shelved
+        24: mothballed
+        25: retired
+        26: cancelled
+        27: ''
+        28: ''
+        29: Units
+        30: yyyy/mm/dd
+        31: n/a
+        32: n/a
+        33: n/a
+        34: n/a
+        35: n/a
+        36: Megawatt (MW)
+        37: MWac, MWp/dc, unknown
+        38: PV, Solar Thermal, Assumed PV
+        39: see above
+        40: yyyy
+        41: yyyy
+        42: n/a
+        43: n/a
+        44: n/a
+        45: n/a
+        46: True, blank
+        47: decimal degrees
+        48: decimal degrees
+        49: approximate, exact
+        50: n/a
+        51: n/a
+        52: n/a
+        53: n/a
+        54: n/a
+        55: n/a
+        56: n/a
+        57: n/a
+        58: L1+11 digits
+        59: G1+11 digits
+        60: n/a
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: Notes
+        19: Commercial operation date achieved
+        20: Equipment installation has begun (not just clearing/roads)
+        21: Projects that are actively moving forward in seeking governmental approvals,
+          land rights, or financing
+        22: "Projects that been publicly reported but have not yet moved actively\
+          \ forward by applying for permits or seeking land, material, or financing.\
+          \ Examples: (1) projects are the potential \u201CPhase 2\u201D at a location\
+          \ where \u201CPhase 1\u201D is currently under development, (2) Projects\
+          \ that are described in long-range company or governmental planning documents."
+        23: Suspension announced. The status is marked as "shelved - inferred 2y"
+          if no updates have been published in 2 or more years.
+        24: Disused but not dismantled
+        25: Dismantled
+        26: Cancellation announced. The status is marked as "cancelled - inferred
+          4y" if no updates have been publishe din 4 or more years.
+        27: ''
+        28: ''
+        29: Definition
+        30: Date that this project was last researched by the researcher
+        31: Country or area the project is located in (Unabbreviated)
+        32: Commonly used name
+        33: Common name of the project phase
+        34: Commonly used name in the locally used script
+        35: Alternative names, including the name in local script
+        36: Nameplate capacity, or best available data, of the phase in megawatts
+          rounded to its nearest tenth.
+        37: The reported capacity rating, unknown selected if not provided
+        38: If the solar installation uses PV (Photovoltaic) technology to create
+          a current or uses heat from the sun to run a turbine
+        39: see rows 19-26 above
+        40: Year the project is or is expected to be commissioned
+        41: Year the plant is taken offline
+        42: The company that operates the project
+        43: Company name that operates the project in the locally used script
+        44: The company that directly owns the plant
+        45: Company name that directly owns the project in the locally used script
+        46: True if a project phase is dedicated for green hydrogen production
+        47: Latitude, assumed WGS84 (google maps), of the project phase
+        48: Longitude, assumed WGS84 (google maps), of the project phase
+        49: Location is Approximate based on using nearest city or other information
+          in data sources, or Location is Exact when explicitly provided in data source
+        50: City, town, village, or township (China) where project is located
+        51: County, taluk, or district (China) where project is located
+        52: Prefecture, district, or municipality (China) where project is located
+        53: Subnational unit where project is located
+        54: Subregion location based on United Nations definition
+        55: Region location based on United Nations definition
+        56: Location identifier from external datasets
+        57: Unit or Phase identifier from external datasets
+        58: GEM generated ID unique for each project
+        59: GEM generated ID unique for each phase
+        60: URL of existing, footnoted factsheet GEM.wiki page
+      3:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+        27: ''
+        28: ''
+        29: Notes
+        30: ''
+        31: The Country/Area column presents energy data within various economic contexts,
+          and the geographical unit does not strictly follow political boundaries.
+        32: Preference is for a government provided name. Without that information,
+          the name the owner or operating company uses was taken, or the name was
+          generated based on project location.
+        33: Roman numerals are changed to numbers. If the Owner uses non-sequential
+          numbers or other characters, those are used.
+        34: Left blank for local languages that use the roman/latin alphabet. Otherwise
+          local name in local script provided if possible.
+        35: ''
+        36: Please refer to "Thresholds for Data Categories" section above.
+        37: Capacity may be reported as the DC / peak value the arrays could provide
+          or as the AC value of what will be tied into the grid. This is often not
+          specified and could be either value when reported as just 'MW'.
+        38: Projects for which no information could be found specifying the technology
+          type are listed as "Assumed PV" because PV is by far the most common technology.
+        39: ''
+        40: Latest date was taken when original data source provided a range; Start
+          years not included for projects that are cancelled or shelved.
+        41: ''
+        42: Company that performs day-to-day operations and maintenance of the project.
+        43: Left blank for local languages use the roman/latin alphabet. Otherwise
+          operator name in local script included if possible.
+        44: ''
+        45: Left blank for local languages that use the roman/latin alphabet. Otherwise
+          direct owner name included in local script if possible.
+        46: ''
+        47: ''
+        48: ''
+        49: Exact locations feature 4 decimal places for Latitude and Longitude fields.
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: Previous GEM ID numbers have been preserved. For example, a previous GEM
+          ID of L812345 is now L100000812345.
+        59: Previous GEM ID numbers have been preserved. For example, a previous GEM
+          ID of G812345 is now G100000812345.
+        60: ''
+    about_key: ''
+    acro: GSPT
+    data:
+      columns:
+      - Date Last Researched: object
+      - Country/Area: object
+      - Project Name: object
+      - Phase Name: object
+      - Project Name in Local Language / Script: object
+      - Other Name(s): object
+      - Capacity (MW): float64
+      - Capacity Rating: object
+      - Technology Type: object
+      - Status: object
+      - Start year: object
+      - Retired year: object
+      - Operator: object
+      - Operator Name in Local Language / Script: object
+      - Owner: object
+      - Owner Name in Local Language / Script: object
+      - Hydrogen: object
+      - Latitude: float64
+      - Longitude: float64
+      - Location accuracy: object
+      - City: object
+      - Local area (taluk, county): object
+      - Major area (prefecture, district): object
+      - State/Province: object
+      - Subregion: object
+      - Region: object
+      - GEM location ID: object
+      - GEM phase ID: object
+      - Other IDs (location): object
+      - Other IDs (unit/phase): object
+      - Wiki URL: object
+      columns2:
+      - null
+      info: DataFrame with 75689 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1bUTPRTmIqu7URVECm66NGr_DF7v32UUOzBaBf1dNawk
+    name: Solar
+    off_name: Solar Power
+    release: February 2025
+    tabs:
+    - 20 MW+
+    - 1-20 MW
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 4 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Wind Power Tracker - February 2025
+        1: "Copyright \xA9 Global Energy Monitor. Global Wind Power Tracker, February\
+          \ 2025 release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Wind Power Tracker,
+          February 2025 release" (See the CC license for attribution requirements
+          if sharing or adapting the data set.)'
+        3: 'Contact: Janna E. Smith, Project Manager, Global Wind Power tracker (GWPT),
+          Global Energy Monitor - janna.smith@globalenergymonitor.org'
+        4: Methodology
+        5: ''
+        6: February 2025 Release Notes
+        7: "This update covers research on Africa, Americas, Asia, and Oceania as\
+          \ defined by the United Nations\u2019 region definitions, as well as global\
+          \ updates to 2024 operating projects."
+        8: Below threshold data are provided for some countries when the data were
+          readily available.
+        9: ''
+        10: Thresholds for Data tab
+        11: Wind farm capacity cut-off, Global
+        12: ''
+        13: Thresholds for Below Threshold tab
+        14: Wind farm capacity cutt-off, Global
+        15: ''
+        16: Definitions
+        17: Column
+        18: Status
+        19: Status
+        20: Status
+        21: Status
+        22: Status
+        23: Status
+        24: Status
+        25: Status
+        26: ''
+        27: Columns
+        28: Column Name
+        29: Date Last Researched
+        30: Country/Area
+        31: Project Name
+        32: Phase Name
+        33: Project Name in Local Language / Script
+        34: Other Name(s)
+        35: Capacity (MW)
+        36: Installation Type
+        37: Status
+        38: Start year
+        39: Retired year
+        40: Operator
+        41: Operator Name in Local Language / Script
+        42: Owner
+        43: Owner Name in Local Language / Script
+        44: Hydrogen
+        45: Latitude
+        46: Longitude
+        47: Location accuracy
+        48: City
+        49: Local Area
+        50: Major Area
+        51: State/Province
+        52: Subregion
+        53: Region
+        54: Other IDs (location)
+        55: Other IDs (unit/phase)
+        56: GEM Location ID
+        57: GEM Phase ID
+        58: Wiki URL
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: <10 MW not included
+        12: ''
+        13: ''
+        14: Projects smaller than 1 MW not included
+        15: ''
+        16: ''
+        17: Full Name
+        18: operating
+        19: construction
+        20: pre-construction
+        21: announced
+        22: shelved
+        23: mothballed
+        24: retired
+        25: cancelled
+        26: ''
+        27: ''
+        28: Units
+        29: yyyy/mm/dd
+        30: n/a
+        31: n/a
+        32: n/a
+        33: n/a
+        34: n/a
+        35: MW
+        36: onshore, offshore hard mount, offshore floating, offshore mount unknown
+        37: n/a
+        38: yyyy
+        39: yyyy
+        40: n/a
+        41: n/a
+        42: n/a
+        43: n/a
+        44: 'TRUE'
+        45: decimal degrees
+        46: decimal degrees
+        47: approximate, exact
+        48: n/a
+        49: n/a
+        50: n/a
+        51: n/a
+        52: n/a
+        53: n/a
+        54: n/a
+        55: n/a
+        56: L1+11 digits
+        57: G1+11 digits
+        58: n/a
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: Notes
+        18: Commercial operation date achieved
+        19: Equipment installation has begun
+        20: Projects that are actively moving forward in seeking governmental approvals,
+          land rights, or financing.
+        21: "Projects that have been publicly reported but have not yet moved actively\
+          \ forward by applying for permits or seeking land, material, or financing.\
+          \ Examples: (1) projects are the potential \u201CPhase II\u201D at a location\
+          \ where \u201CPhase I\u201D is currently under pre-construction, (2) Projects\
+          \ that are described in long-range company or governmental planning documents."
+        22: "Suspension of operation has been announced. The status is marked as \u2018\
+          shelved - inferred 2 y\u2019 if no progress has been observed for at least\
+          \ two years."
+        23: Disused but not dismantled
+        24: Dismantled
+        25: "A cancellation announcement has been made. The status is marked as 'cancelled\
+          \ - inferred 4 y\u2019 if no progress has been observed for at least four\
+          \ years."
+        26: ''
+        27: ''
+        28: Definition
+        29: Date that this project was last researched by the researcher
+        30: Country/Area the project is located in (Unabbreviated)
+        31: Commonly used name
+        32: Common name of the project phase
+        33: Commonly used name in the locally used script
+        34: Alternative names, including the name in local script
+        35: Nameplate capacity, or best available data, of the phase in megawatts
+        36: How the wind turbines are installed
+        37: see rows 19-26 above
+        38: Year the project is or is expected to be commissioned
+        39: Year the plant is taken offline
+        40: The company that operates the project
+        41: Company name that operates the project in the locally used script
+        42: The company that directly owns the plant
+        43: Company name that directly owns the project in the locally used script
+        44: True if a project phase is dedicated for green hydrogen production
+        45: Latitude, assumed WGS84 (google maps), of the project phase
+        46: Longitude, assumed WGS84 (google maps), of the project phase
+        47: Location is Approximate based on using nearest city or other information
+          in data sources, or Location is Exact when explicitly provided in data source
+        48: City, town, village, or township (China) where project is located
+        49: County, taluk, or district (China) where project is located
+        50: Prefecture, district, or municipality (China) where project is located
+        51: Subnational unit where project is located
+        52: Subregion location based on United Nations definition
+        53: Region location based on United Nations definition
+        54: Location identifier from external dataset
+        55: Unit or Phase identifier from external dataset
+        56: GEM generated ID unique for each project
+        57: GEM generated ID unique for each phase
+        58: URL of existing or planned GEM.wiki page
+      3:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+        27: ''
+        28: Notes
+        29: ''
+        30: ''
+        31: Preference is for a government provided name. Without that information,
+          the name the owner or operating company uses was taken.
+        32: Roman numerals are changed to numbers. If the Owner uses non-sequential
+          numbers or other characters, those are used.
+        33: Left blank for local languages that use the roman/latin alphabet. Otherwise
+          local name in local script provided if possible.
+        34: ''
+        35: 'Cut-offs: >=10MW globally'
+        36: Hard mount vs floating is dependant on the depth of the water.
+        37: ''
+        38: Latest date was taken when original data source provided a range; Start
+          years not included for projects that are cancelled or shelved.
+        39: ''
+        40: Company that performs day-to-day operations and maintenance of the project.
+        41: Left blank for local languages use the roman/latin alphabet. Otherwise
+          operator name in local script is included if possible.
+        42: ''
+        43: Left blank for local languages that use the roman/latin alphabet. Otherwise
+          direct owner name included in local script if possible.
+        44: ''
+        45: ''
+        46: ''
+        47: ''
+        48: ''
+        49: ''
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: ''
+    about_key: ''
+    acro: GWPT
+    data:
+      columns:
+      - Date Last Researched: object
+      - Country/Area: object
+      - Project Name: object
+      - Phase Name: object
+      - Project Name in Local Language / Script: object
+      - Other Name(s): object
+      - Capacity (MW): float64
+      - Installation Type: object
+      - Status: object
+      - Start year: object
+      - Retired year: object
+      - Operator: object
+      - Operator Name in Local Language / Script: object
+      - Owner: object
+      - Owner Name in Local Language / Script: object
+      - Hydrogen: object
+      - Latitude: float64
+      - Longitude: float64
+      - Location accuracy: object
+      - City: object
+      - Local area (taluk, county): object
+      - Major area (prefecture, district): object
+      - State/Province: object
+      - Subregion: object
+      - Region: object
+      - GEM location ID: object
+      - GEM phase ID: object
+      - Other IDs (location): object
+      - Other IDs (unit/phase): object
+      - Wiki URL: object
+      columns2:
+      - null
+      info: DataFrame with 31454 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1x-IxdiqMJ_v-M_45ASFdg55Gl3Hsx3vb-7wjt8qCq5k
+    name: Wind
+    off_name: Wind Power
+    release: February 2025
+    tabs:
+    - Data
+    - Below Threshold
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 5 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Nuclear Power Tracker - July 23, 2024
+        1: "Copyright \xA9 Global Energy Monitor. Global Nuclear Power Tracker, July\
+          \ 2024 release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Nuclear Power Tracker,
+          July 2024 release" (See the CC license for attribution requirements if sharing
+          or adapting the data set.)'
+        3: 'Contact: Joe Bernardi, Project Manager, Global Hydro and Nuclear Trackers,
+          Global Energy Monitor - joe.bernardi@globalenergymonitor.org'
+        4: ''
+        5: July 2024 Release Notes
+        6: This update covers all regions of the globe, and uses the United Nations'
+          Statistics Division definitions of region and subregion.
+        7: The column name "Country" has been changed to "Country/Area". The Country/Area
+          column presents energy data within various economic contexts, and the geographical
+          unit does not strictly follow political boundaries.
+        8: GEM ID formats have changed from an L7+5 digit number to L1+11 digit number
+          for location IDs and a G7+5 digit number to a G1+11 digit number. Previous
+          GEM ID numbers have been preserved. For example, a previous GEM ID of L500064
+          is now L100000500064.
+        9: Shelved and cancelled statuses have been broken down into two subcategories
+          depending on if there was an announcement of delay or cancellation, or if
+          the status is inferred by lack of observed progress.
+        10: ''
+        11: Definitions
+        12: Column
+        13: Status
+        14: Status
+        15: Status
+        16: Status
+        17: Status
+        18: Status
+        19: Status
+        20: Status
+        21: Status
+        22: Status
+        23: ''
+        24: Columns
+        25: Column Name
+        26: Date Last Researched
+        27: Country/Area
+        28: Project Name
+        29: Unit Name
+        30: Project Name in Local Language / Script
+        31: Other Name(s)
+        32: Capacity (MW)
+        33: Status
+        34: Reactor Type
+        35: Model
+        36: Start Year
+        37: Retirement Year
+        38: Planned Retirement
+        39: Cancellation Year
+        40: Construction Start Date
+        41: First Criticality Date
+        42: First Grid Connection
+        43: Commercial Operation Date
+        44: Retirement Date
+        45: Owner
+        46: Owner Name in Local Language / Script
+        47: Operator
+        48: Operator Name in Local Language / Script
+        49: Reference Net Capacity (MW)
+        50: Design Net Capacity (MW)
+        51: Thermal Capacity (MWt)
+        52: Latitude
+        53: Longitude
+        54: Location Accuracy
+        55: City
+        56: Local Area (taluk, county)
+        57: Major Area (prefecture, district)
+        58: State/Province
+        59: Subregion
+        60: Region
+        61: GEM location ID
+        62: GEM unit ID
+        63: Wiki URL
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: Full Name
+        13: announced
+        14: pre-construction
+        15: construction
+        16: operating
+        17: shelved
+        18: shelved - inferred 2 y
+        19: cancelled
+        20: cancelled - inferred 4 y
+        21: mothballed
+        22: retired
+        23: ''
+        24: ''
+        25: Units
+        26: yyyy-mm-dd
+        27: n/a
+        28: n/a
+        29: n/a
+        30: n/a
+        31: n/a
+        32: MW
+        33: n/a
+        34: n/a
+        35: n/a
+        36: yyyy
+        37: yyyy
+        38: Y or N
+        39: yyyy
+        40: yyyy-mm-dd [when available]
+        41: yyyy-mm-dd [when available]
+        42: yyyy-mm-dd [when available]
+        43: yyyy-mm-dd [when available]
+        44: yyyy-mm-dd [when available]
+        45: n/a
+        46: n/a
+        47: n/a
+        48: n/a
+        49: MW
+        50: MW
+        51: MWt
+        52: decimal degrees
+        53: decimal degrees
+        54: approximate, exact
+        55: n/a
+        56: n/a
+        57: n/a
+        58: n/a
+        59: n/a
+        60: n/a
+        61: L100000500001 - L100000599999 for nuclear projects
+        62: G100000500001 - G100000599999 for nuclear units
+        63: n/a
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: Notes
+        13: The unit has been described in corporate or government plans but concrete
+          steps such as applying for permits have not yet been taken.
+        14: The unit is actively moving forward in seeking governmental approvals,
+          land rights, or financing.
+        15: The unit has site preparation and equipment installation underway.
+        16: The unit has been formally commissioned; commercial operation has begun.
+        17: Unit suspension has been announced.
+        18: The unit is inferred to be shelved because no progress has been observed
+          for at least two years.
+        19: A cancellation announcement for the unit has been made.
+        20: The unit is inferred to be cancelled because no progress has been observed
+          for at least four years.
+        21: The unit is disused, but not dismantled.
+        22: The unit has been decommissioned.
+        23: ''
+        24: ''
+        25: Definition
+        26: Date that this unit was last researched by the researcher
+        27: Country/area where the project is located (unabbreviated)
+        28: Commonly used name
+        29: Common name of the unit
+        30: Commonly used name in the locally used script
+        31: Alternative names, including the name in local script
+        32: Nameplate capacity, or best available data, of the unit in megawatts
+        33: see rows 14-23 above
+        34: Classification of power reactors by coolant and moderator material
+        35: Specific design series of the reactor
+        36: Year the unit is commissioned
+        37: Year the unit is taken offline
+        38: Indicates if the Retirement Year is planned or actual
+        39: Year the unit is cancelled
+        40: Date that unit construction begins
+        41: Date that the unit first achieves criticality
+        42: Date that the unit first connects to the grid
+        43: Date that the unit begins commercial operation
+        44: Date that the unit is retired
+        45: The company(ies) that directly own(s) the unit
+        46: Company name(s) of owner(s) in the locally used script
+        47: The company(ies) that operates the unit
+        48: Company name(s) of operator(s) in the locally used script
+        49: Net capacity of the unit for the reference period
+        50: Net capacity of the unit as originally designed by the manufacturer
+        51: Net capacity for heat transferred from nuclear fuel to coolant
+        52: Latitude, assumed WGS84 (google maps)
+        53: Latitude, assumed WGS84 (google maps)
+        54: Location is Approximate based by using nearest city or other information
+          in research, or Location is Exact based on visibility on map or given in
+          research
+        55: City, town, or village where unit is located
+        56: County/taluk where unit is located
+        57: Prefecture or district where unit is located
+        58: Subnational unit where unit is located
+        59: Subregion (using UN Population and Statistics definitions) where unit
+          is located
+        60: Region (using UN Population and Statistics definitions) where unit is
+          located
+        61: GEM-generated ID unique for each project
+        62: GEM-generated ID unique for each unit
+        63: URL of corresponding GEM.wiki pages
+      3:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: Notes
+        26: ''
+        27: ''
+        28: Preference is for a government provided name. Without that information,
+          the name used by the owner or operating company is listed
+        29: Roman numerals are changed to numbers. If the owner uses non-sequential
+          numbers or other characters, those are used
+        30: Left blank for local languages that use the Roman/Latin alphabet. Otherwise
+          local name(s) in local script provided if possible
+        31: ''
+        32: No capacity threshold
+        33: ''
+        34: ''
+        35: ''
+        36: ''
+        37: ''
+        38: ''
+        39: ''
+        40: ''
+        41: ''
+        42: ''
+        43: ''
+        44: ''
+        45: If percent ownership is known format is CompanyA [X%]; CompanyB [Y%]
+        46: Left blank for local languages that use the Roman/Latin alphabet. Otherwise
+          owner name(s) in local script included if possible
+        47: Company that performs day-to-day operations and maintenance of the unit
+        48: Left blank for local languages that use the Roman/Latin alphabet. Otherwise
+          operator name(s) in local script included if possible
+        49: ''
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: ''
+        59: ''
+        60: ''
+        61: ''
+        62: ''
+        63: ''
+    about_key: ''
+    acro: GNPT
+    data:
+      columns:
+      - Date Last Researched: object
+      - Country/Area: object
+      - Project Name: object
+      - Unit Name: object
+      - Project Name in Local Language / Script: object
+      - Other Name(s): object
+      - Capacity (MW): int64
+      - Status: object
+      - Reactor Type: object
+      - Model: object
+      - Start Year: object
+      - Retirement Year: object
+      - Planned Retirement: object
+      - Cancellation Year: object
+      - Construction Start Date: object
+      - First Criticality Date: object
+      - First Grid Connection: object
+      - Commercial Operation Date: object
+      - Retirement Date: object
+      - Owner: object
+      - Owner Name in Local Language / Script: object
+      - Operator: object
+      - Operator Name in Local Language / Script: object
+      - Reference Net Capacity (MW): object
+      - Design Net Capacity (MW): object
+      - Thermal Capacity (MWt): object
+      - Latitude: float64
+      - Longitude: float64
+      - Location Accuracy: object
+      - City: object
+      - Local Area (taluk, county): object
+      - Major Area (prefecture, district): object
+      - State/Province: object
+      - Subregion: object
+      - Region: object
+      - GEM location ID: object
+      - GEM unit ID: object
+      - Wiki URL: object
+      columns2:
+      - null
+      info: DataFrame with 1541 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1zCcO9LwVmiQZBOGqlwKGYgZ5lAnBKJ91hjwWcbUw5nQ
+    name: Nuclear
+    off_name: Nuclear Power
+    release: July 2024
+    tabs:
+    - Data
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 6 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Hydropower Tracker - April 2025
+        1: "Copyright \xA9 Global Energy Monitor. Global Hydropower Power Tracker,\
+          \ April 2025 release. Distributed under a Creative Commons Attribution 4.0\
+          \ International License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Hydropower Power
+          Tracker, April 2025 release" (See the CC license for attribution requirements
+          if sharing or adapting the data set.)'
+        3: 'Contact: Joe Bernardi, Project Manager, Global Hydro and Nuclear Trackers,
+          Global Energy Monitor: joe.bernardi@globalenergymonitor.org'
+        4: Methodology
+        5: ''
+        6: April 2025 Release Notes
+        7: "This update covers all regions of the globe, and uses the United Nations\u2019\
+          \ Statistics Division definitions of region and subregion. All prospective\
+          \ facilities, as well as any for which there was an indication of changed\
+          \ status, were researched for updates."
+        8: This update now includes all operating and prospective projects with more
+          than a 45 MW capacity, lowering the capacity threshold for project inclusion
+          from 75 MW to 45 MW.
+        9: "The column name \u201CCountry\u201D has been changed to \u201CCountry/Area\u201D\
+          . The Country/Area column presents energy data within various economic contexts,\
+          \ and the geographical unit does not strictly follow political boundaries."
+        10: GEM ID formats have changed from an L8+5 digit number to L1+11 digit number
+          for location IDs and a G8+5 digit number to a G1+11 digit number. Previous
+          GEM ID numbers have been preserved. For example, a previous GEM ID of L603791
+          is now L100000603791.
+        11: Shelved and cancelled statuses have been broken down into two subcategories
+          depending on if there was an announcement of delay or cancellation, or if
+          the status is inferred by lack of observed progress.
+        12: ''
+        13: Thresholds for Data Tab
+        14: Hydropower project capacity cut-off, global
+        15: ''
+        16: Thresholds for Below Threshold Tab
+        17: Hydropower project capacity cut-off, global
+        18: ''
+        19: Definitions
+        20: Column
+        21: Status
+        22: Status
+        23: Status
+        24: Status
+        25: Status
+        26: Status
+        27: Status
+        28: Status
+        29: Status
+        30: Status
+        31: ''
+        32: Column
+        33: Technology Type
+        34: Technology Type
+        35: Technology Type
+        36: Technology Type
+        37: Technology Type
+        38: Technology Type
+        39: ''
+        40: Columns
+        41: Column
+        42: Date Last Researched
+        43: Country/Area 1
+        44: Country/Area 2
+        45: Project Name
+        46: Project Name (local lang/script)
+        47: Other Name(s)
+        48: Capacity (MW)
+        49: Binational
+        50: Country/Area 1 Capacity (MW)
+        51: Country/Area 2 Capacity (MW)
+        52: Turbines
+        53: Status
+        54: Complex
+        55: Start Year
+        56: Retired Year
+        57: Owner
+        58: Owner Name (local lang/script)
+        59: Operator
+        60: Operator Name (local lang/script)
+        61: Technology Type
+        62: River / Watercourse
+        63: Latitude
+        64: Longitude
+        65: Location Accuracy
+        66: City 1
+        67: Local Area 1
+        68: Major Area 1
+        69: State/Province 1
+        70: Subregion 1
+        71: Region 1
+        72: City 2
+        73: Local Area 2
+        74: Major Area 2
+        75: State/Province 2
+        76: Subregion 2
+        77: Region 2
+        78: GEM location ID
+        79: GEM unit ID
+        80: Wiki URL
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: <45 MW not included
+        15: ''
+        16: ''
+        17: <10 MW not included
+        18: ''
+        19: ''
+        20: Full Name
+        21: announced
+        22: pre-construction
+        23: construction
+        24: operating
+        25: shelved
+        26: shelved - inferred 2 y
+        27: cancelled
+        28: cancelled - inferred 4 y
+        29: mothballed
+        30: retired
+        31: ''
+        32: Full Name
+        33: conventional storage
+        34: pumped storage
+        35: run-of-river
+        36: unknown
+        37: conventional and pumped storage
+        38: conventional and run-of-river
+        39: ''
+        40: ''
+        41: Units
+        42: yyyy-mm-dd
+        43: n/a
+        44: n/a
+        45: n/a
+        46: n/a
+        47: n/a
+        48: MW
+        49: Yes / No
+        50: MW
+        51: MW
+        52: n/a
+        53: n/a
+        54: n/a
+        55: yyyy
+        56: yyyy
+        57: n/a
+        58: n/a
+        59: n/a
+        60: n/a
+        61: n/a
+        62: n/a
+        63: decimal degrees
+        64: decimal degrees
+        65: approximate, exact
+        66: n/a
+        67: n/a
+        68: n/a
+        69: n/a
+        70: n/a
+        71: n/a
+        72: n/a
+        73: n/a
+        74: n/a
+        75: n/a
+        76: n/a
+        77: n/a
+        78: L100000600001 - L100000699999
+        79: G100000600001 - G100000699999
+        80: n/a
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: Notes
+        21: Described in corporate or government plans but have not yet taken concrete
+          steps such as applying for permits.
+        22: Actively moving forward in seeking governmental approvals, land rights,
+          or financing.
+        23: Site preparation and equipment installation are underway.
+        24: Formally commissioned; commercial operation has begun.
+        25: Suspension of progress has been announced.
+        26: Inferred to be shelved if no progress has been observed for at least two
+          years.
+        27: A cancellation announcement has been made.
+        28: Inferred to be cancelled if no progress has been observed for at least
+          four years.
+        29: Disused, but not dismantled.
+        30: Decommissioned.
+        31: ''
+        32: Notes
+        33: The project typically or entirely generates electricity from water stored
+          in a reservoir.
+        34: The project generates electricity using water which is cycled between
+          a lower and an upper reservoir by a pumping system.
+        35: The project typically or entirely generates electricty from flowing water
+          with little to no storage capacity.
+        36: Technology type not specified.
+        37: The project has both conventional storage and pumped storage capability.
+        38: The project has both conventional storage and run-of-river capability.
+        39: ''
+        40: ''
+        41: Definition
+        42: Date that this project was last researched
+        43: Primary country/area where the project is located (unabbreviated)
+        44: Additional country/area where the project is located (unabbreviated)
+        45: Commonly used name
+        46: Commonly used name in the locally used script
+        47: Alternative names, including the name in local script
+        48: Total nameplate capacity, or best available data, of the project, in megawatts
+        49: Indicates whether the project is located on an international boundary
+        50: Gross capacity, or best available data, of the portion of the project
+          which is located in Country/Area 1, in megawatts, rounded to whole number
+        51: Gross capacity, or best available data, of the portion of the project
+          which is located in Country/Area 2, in megawatts, rounded to whole number
+        52: Turbine number and capacity
+        53: see rows 25-32 above
+        54: Name of the complex that this project is a part of, if any
+        55: Year the project was or will be commissioned
+        56: Year the project was or will be taken offline
+        57: The company that directly owns the project
+        58: Company name(s) of owner(s) in the locally used script
+        59: The company(ies) that operates the project
+        60: Company name(s) of operator(s) in the locally used script
+        61: see rows 35-40 above
+        62: The name of the river or watercourse on which the project is located
+        63: Latitude of the project, assumed WGS84 (Google Maps)
+        64: Longitude of the project, assumed WGS84 (Google Maps)
+        65: Approximate based on using nearest city or other information in research,
+          or exact based on visibility on map or given in research
+        66: City, town, or village where project is located within Country/Area 1
+        67: County or taluk where project is located within Country/Area 1
+        68: Prefecture or district where project is located within Country/Area 1
+        69: Subnational unit where project is located within Country/Area 1
+        70: Subregion (using UN Population and Statistics definitions) where project
+          is located within Country/Area 1
+        71: Region (using UN Population and Statistics definitions) where project
+          is located within Country/Area 1
+        72: City, town, or village where project is located within Country/Area 2,
+          if applicable
+        73: County or taluk where project is located within Country/Area 2, if applicable
+        74: Prefecture or district where project is located within Country/Area 2,
+          if applicable
+        75: Subnational unit where project is located within Country/Area 2, if applicable
+        76: Subregion (using UN Population and Statistics definitions) where project
+          is located within Country/Area 2, if applicable
+        77: Region (using UN Population and Statistics definitions) where project
+          is located within Country/Area 2, if applicable
+        78: GEM-generated ID unique for each project
+        79: GEM-generated ID unique for each unit
+        80: URL of GEM.wiki pages
+      3:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+        27: ''
+        28: ''
+        29: ''
+        30: ''
+        31: ''
+        32: ''
+        33: ''
+        34: ''
+        35: ''
+        36: ''
+        37: ''
+        38: ''
+        39: ''
+        40: ''
+        41: Notes
+        42: ''
+        43: If project is binational, Country/Area 1 is either the country/area listed
+          first in alphabetical order for projects where capacity is shared equally,
+          or the country/area with a larger portion of the total project capacity.
+        44: If project is binational, Country/Area 2 is either the country/area listed
+          second in alphabetical order for projects where capacity is shared equally,
+          or the country/area with a smaller portion of the total project capacity.
+        45: Preference is for a government provided name. Without that information,
+          the name used by the owner or operating company is listed.
+        46: ''
+        47: ''
+        48: ''
+        49: ''
+        50: Capacity cutoffs mentioned above apply to the project as a whole, not
+          necessarily to the portions of an international project which are within
+          the boundaries of one country/area.
+        51: Capacity cutoffs mentioned above apply to the project as a whole, not
+          necessarily to the portions of an international project which are within
+          the boundaries of one country/area.
+        52: Information about the project's turbines, semicolon-separated.
+        53: ''
+        54: Used to link together multiple projects that are part of a collection
+          of related power-generating infrastructure but which should be considered
+          different plants due to distinct physical infrastructure, geographic separation,
+          and/or other factors such as ownership or operation. Left blank if not part
+          of a complex.
+        55: ''
+        56: ''
+        57: If percent ownership is known, format is CompanyA [X%]; CompanyB [Y%].
+        58: ''
+        59: Company that performs day-to-day operations and maintenance of the project.
+        60: ''
+        61: ''
+        62: ''
+        63: ''
+        64: ''
+        65: ''
+        66: ''
+        67: ''
+        68: ''
+        69: ''
+        70: ''
+        71: ''
+        72: ''
+        73: ''
+        74: ''
+        75: ''
+        76: ''
+        77: ''
+        78: ''
+        79: ''
+        80: Wiki page links not included for Below Threshold projects.
+    about_key: ''
+    acro: GHPT
+    data:
+      columns:
+      - Date Last Researched: object
+      - Country/Area 1: object
+      - Country/Area 2: object
+      - Project Name: object
+      - Project Name (local lang/script): object
+      - Other name(s): object
+      - Capacity (MW): int64
+      - Binational: object
+      - Country/Area 1 Capacity (MW): float64
+      - Country/Area 2 Capacity (MW): float64
+      - Turbines: object
+      - Status: object
+      - Complex: object
+      - Start Year: object
+      - Retired Year: object
+      - Owner: object
+      - Owner Name (local lang/script): object
+      - Operator: object
+      - Operator Name (local lang/script): object
+      - Technology Type: object
+      - River / Watercourse: object
+      - Latitude: float64
+      - Longitude: float64
+      - Location Accuracy: object
+      - City 1: object
+      - Local Area 1: object
+      - Major Area 1: object
+      - State/Province 1: object
+      - Subregion 1: object
+      - Region 1: object
+      - City 2: object
+      - Local Area 2: object
+      - Major Area 2: object
+      - State/Province 2: object
+      - Subregion 2: object
+      - Region 2: object
+      - GEM location ID: object
+      - GEM unit ID: object
+      - Wiki URL: object
+      columns2:
+      - null
+      info: DataFrame with 5663 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area 1;Country/Area 2
+    key: 15Mq4y-BiELe6WUijFUbJEvvV6sdjTKXdsq3yb_y16gY
+    name: Hydropower
+    off_name: Hydropower Power
+    release: April 2025
+    tabs:
+    - Data
+    - Below Threshold
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 7 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Bioenergy Power Tracker - September 25, 2024
+        1: "Copyright \xA9 Global Energy Monitor. Global Bioenergy Power Tracker,\
+          \ September 2024 release. Distributed under a Creative Commons Attribution\
+          \ 4.0 International License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Bioenergy Power Tracker,
+          September 2024 release" (See the CC license for attribution requirements
+          if sharing or adapting the data set.)'
+        3: 'Contact: Sophia Bauer, Project Manager, Global Bioenergy Power Tracker,
+          Global Energy Monitor - sophia.bauer@globalenergymonitor.org'
+        4: Methodology
+        5: September 2024 Release Notes
+        6: "This update covers all regions of the globe, and uses the United Nations\u2019\
+          \ Statistics Division definitions of region and subregion. "
+        7: The Global Bioenergy Power Tracker tracks utility-scale bioenergy power
+          station units with capacities of 30 megawatts (MW) or more globally. The
+          tracker includes every bioenergy unit at the 30 MW capacity threshold for
+          operating, announced, pre-construction and in-construction power station
+          units. In some cases, units may combust multiple fuel sources in addition
+          to bioenergy. Some units below the 30 MW global threshold are provided for
+          some countries when the data were readily available and can be found in
+          the "Less than 30 MW" data tab.
+        8: "Bioenergy fuel sources are based on the categories included in the chapter\
+          \ \u201CBioenergy,\u201D in the IPCC Special Report on Renewable Energy\
+          \ Sources and Climate Change Mitigation (2011)."
+        9: This release includes units that cofire bioenergy fuel sources alongside
+          other types of fuel, as well as units that burn bioenergy fuel sources at
+          power stations with other units that burn other types of fuel.
+        10: "The September 2024 release includes the change from the column name \u201C\
+          Country\u201D to \u201CCountry/Area\u201D. The Country/Area column presents\
+          \ energy data within various economic contexts, and the geographical unit\
+          \ does not strictly follow political boundaries."
+        11: The September 2024 release includes the standardization of subnational
+          location names for China.
+        12: 'The September 2024 release includes a new data field has been added to
+          indicate when a project phase is slated for hydrogen production. '
+        13: 'The September 2024 release includes a change to shelved and cancelled
+          statuses which have been broken down into two subcategories depending on
+          if there was an announcement of delay or cancellation, or if the status
+          is inferred by lack of observed progress. '
+        14: The September 2024 release includes the new format for GEM IDs. GEM ID
+          formats have changed from an L2+5 digit number to L1+11 digit number for
+          location IDs and a G2+5 digit number to a G1+11 digit number. Previous GEM
+          ID numbers have been preserved. For example, a previous GEM ID of L212345
+          is now L100000812345
+        15: The September 2024 release includes some case changes to the column headers
+          in the downloadable dataset, please see the Methodology page for more details.
+        16: Attribute Explanations
+        17: '"Status" column options'
+        18: announced
+        19: pre-construction
+        20: construction
+        21: shelved
+        22: shelved - inferred 2 y
+        23: operating
+        24: cancelled
+        25: cancelled - inferred 4 y
+        26: mothballed
+        27: retired
+        28: ''
+        29: 'Fuel column options: '
+        30: bioenergy - agricultural waste (biogas)
+        31: bioenergy - agricultural waste (solids)
+        32: bioenergy - agricultural waste (syngas)
+        33: bioenergy - agricultural waste (unknown)
+        34: bioenergy - biodiesel
+        35: bioenergy - ethanol
+        36: bioenergy - paper mill wastes
+        37: bioenergy - refuse (landfill gas)
+        38: bioenergy - refuse (municipal and industrial wastes)
+        39: bioenergy - refuse (syngas)
+        40: bioenergy - wastewater and sewage sludge (solids or biogas)
+        41: bioenergy - wood & other biomass (biocoal)
+        42: bioenergy - wood & other biomass (solids)
+        43: bioenergy - wood & other biomass (syngas)
+        44: bioenergy - unknown
+        45: coal - anthracite
+        46: coal - bituminous
+        47: coal - lignite
+        48: coal - subbituminous
+        49: coal - unknown
+        50: coal - waste coal
+        51: fossil gas - coalbed methane
+        52: fossil gas - gaseous propane
+        53: fossil gas - LNG
+        54: fossil gas - natural gas
+        55: fossil gas - unknown
+        56: fossil gas - waste heat from natural gas
+        57: fossil liquids - crude oil
+        58: fossil liquids - diesel
+        59: fossil liquids - fuel oil
+        60: fossil liquids - gasoline
+        61: fossil liquids - heavy fuel oil
+        62: fossil liquids - jet fuel
+        63: fossil liquids - kerosene
+        64: fossil liquids - light fuel oil
+        65: fossil liquids - liquefied petroleum gas
+        66: fossil liquids - naphtha
+        67: fossil liquids - petroleum coke
+        68: fossil liquids - unknown
+        69: fossil liquids - waste/other oil
+        70: industrial by-product - blast furnace gas
+        71: industrial by-product - coke oven gas
+        72: other - hydrogen (blue)
+        73: other - hydrogen (gray)
+        74: other - hydrogen (green)
+        75: other - hydrogen (unknown)
+        76: other - other
+        77: other - solar thermal
+        78: other - tires
+        79: ''
+        80: '"Conversion/Replacement?" column options'
+        81: gas to bioenergy conversion
+        82: coal to bioenergy conversion
+        83: oil to bioenergy conversion
+        84: no conversion
+        85: ''
+        86: Column name
+        87: Date last researched
+        88: Country/Area
+        89: Project Name
+        90: Unit Name
+        91: Project Name in Local Language / Script
+        92: Other Name(s)
+        93: Capacity (MW)
+        94: Fuel
+        95: Status
+        96: Conversion/Replacement?
+        97: Unit conversion year
+        98: Unit start year
+        99: Retired year
+        100: Hydrogen Capable
+        101: Operator
+        102: Operator name in local language / script
+        103: Owner
+        104: Owner name in local language / script
+        105: Latitude
+        106: Longitude
+        107: Location Accuracy
+        108: City
+        109: Local area (taluk, county)
+        110: Major area (prefecture, district)
+        111: State/Province
+        112: Subregion
+        113: Region
+        114: GEM location ID
+        115: GEM phase ID
+        116: Other IDs (location)
+        117: Other IDs (unit)
+        118: Wiki URL
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: Notes
+        18: The unit has been described in corporate or government plans but concrete
+          steps such as applying for permits have not yet been taken.
+        19: The unit is actively moving forward in seeking governmental approvals,
+          land rights, or financing.
+        20: The unit has site preparation and equipment installation underway.
+        21: The unit has had suspension of operation announced, or no progress has
+          been observed for at least two years.
+        22: Inferred status based on lack of observed progress for 2 years
+        23: The unit has been formally commissioned; commercial operation has begun.
+        24: A cancellation announcement for the unit has been made, or no progress
+          has been observed for at least four years.
+        25: Inferred status based on lack of observed progress for 4 years
+        26: The unit is disused, but not dismantled.
+        27: The unit has been decommissioned.
+        28: ''
+        29: Notes
+        30: Biogas is composed of methane (CH4), which is the primary component of
+          natural gas, at a relatively high percentage (50 to 75 percent), carbon
+          dioxide (CO2), hydrogen sulfide (H2S), water vapor, and trace amounts of
+          other gases. The energy in biogas can be used like natural gas to provide
+          heat, generate electricity, and power cooling systems, among other uses.
+        31: 'Agricultural byproducts can be used as a fuel source. Common examples
+          include sugar cane pulp (bagasse), rice husks, or palm kernal shells. '
+        32: "Syngas made from agricultural waste. To produce syngas, biomass is first\
+          \ broken down at high temperature (between 700-800\xB0C) and high pressure\
+          \ in a low-oxygen environment. Under these conditions, the biomass is converted\
+          \ into a mixture of gases, mainly carbon monoxide, hydrogen and methane\
+          \ (sometimes collectively called syngas). To produce a pure stream of biomethane,\
+          \ this syngas is cleaned to remove any acidic and corrosive components.\
+          \ The methanation process then uses a catalyst to promote a reaction between\
+          \ the hydrogen and carbon monoxide or CO2 to produce methane. Any remaining\
+          \ CO2 or water is removed at the end of this process."
+        33: This fuel type category captures agricultural wastes whose specifics are
+          unknown.
+        34: Biodiesel is a fuel manufactured domestically from vegetable oils, animal
+          fats, or recycled restaurant grease.
+        35: Ethanol is a clear, colorless alcohol made from a variety of biomass materials
+          called feedstocks. Ethanol is often made from food grains and crops with
+          high starch and sugar content, such as corn, sorghum, barley, sugar cane,
+          and sugar beets. Ethanol can also be made from grasses, trees, and agricultural
+          and forestry residues such as corn cobs and stocks, rice straw, sawdust,
+          and wood chips.
+        36: Paper mill wastes, sludges, waste water, and black liquor. Black liquor
+          is a byproduct of the paper production process that can be used as a source
+          of energy. Alkaline spent liquor is removed from digesters in the process
+          of chemically pulping wood. After evaporation, the residual "black" liquor
+          is burned as a fuel in a recovery furnace that permits the recovery of certain
+          basic chemicals.
+        37: Landfill gas (LFG) is a byproduct of the decomposition of organic material
+          in landfills. LFG is composed of roughly 50 percent methane (the primary
+          component of natural gas), 50 percent carbon dioxide (CO2) and a small amount
+          of non-methane organic compounds.
+        38: Refuse, also called municipal solid waste (MSW), or garbage, is combusted
+          to harness energy at waste incinerators. MSW contains 1) biogenic (plant
+          or animal products) materials such as paper, cardboard, food waste, grass
+          clippings, leaves, wood, and leather products; 2) non-biomass combustible
+          materials such as plastics and other synthetic materials made from petroleum;
+          3) Noncombustible materials such as glass and metals.
+        39: Syngas made from refuse. Syngas is produced through gasification, which
+          uses oxygen and water vapor to produce a combustible synthesis gas (syngas)
+          from organic compounds in the MSW, which can be used to generate electricity,
+          produce chemicals, liquid fuels, hydrogen (H2), etc.
+        40: Wastewater sludge can produce biogas through a process of thermal hydrolysis
+          and anaerobic digestion.
+        41: Biocoal is produced by processing dry biomass in an inert environment
+          (no oxygen) at high temperatures, a process referred to as pyrolysis. Depending
+          on the temperatures and the characteristics of the end product, the process
+          may also be referred to as torrefaction. This process is commonly carried
+          out using an indirect-fired rotary kiln.
+        42: Includes forestry products and byproducts, scrap lumber, lumber mill byproducts,
+          wood chips and pellets, agricultural crops grown for energy production,
+          etc.
+        43: "Syngas made from wood and other biomass. To produce syngas, biomass is\
+          \ first broken down at high temperature (between 700-800\xB0C) and high\
+          \ pressure in a low-oxygen environment. Under these conditions, the biomass\
+          \ is converted into a mixture of gases, mainly carbon monoxide, hydrogen\
+          \ and methane (sometimes collectively called syngas). To produce a pure\
+          \ stream of biomethane, this syngas is cleaned to remove any acidic and\
+          \ corrosive components. The methanation process then uses a catalyst to\
+          \ promote a reaction between the hydrogen and carbon monoxide or CO2 to\
+          \ produce methane. Any remaining CO2 or water is removed at the end of this\
+          \ process."
+        44: This category is used when the bioenergy fuel source is unknown
+        45: ''
+        46: ''
+        47: ''
+        48: ''
+        49: This category is used when the coal type is unknown
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: ''
+        59: ''
+        60: ''
+        61: ''
+        62: ''
+        63: ''
+        64: ''
+        65: ''
+        66: ''
+        67: ''
+        68: ''
+        69: ''
+        70: 'Blast furnace gas is a byproduct gas produced during the iron/steelmaking
+          process during the production of hot metal (pig iron) in a blast furnace,
+          where iron ore is reduced with coke to produce hot metal. '
+        71: 'Coke oven gas is a byproduct gas produced during the iron/steelmaking
+          process during the production of coke, through the distillation of coking
+          coal in coke ovens. '
+        72: ''
+        73: ''
+        74: ''
+        75: ''
+        76: ''
+        77: Concentrated solar energy is used to heat a fluid, usually a molten salt.
+          The heat is then transferred to water to run a steam turbine.
+        78: ''
+        79: ''
+        80: Notes
+        81: when a unit has been or will be converted from gas to bioenergy
+        82: when a unit has been or will be converted from coal to bioenergy
+        83: when a unit has been or will be converted from fossil oil to bioenergy
+        84: unit is not associated with a conversion
+        85: ''
+        86: Units
+        87: n/a
+        88: n/a
+        89: n/a
+        90: n/a
+        91: n/a
+        92: n/a
+        93: MW
+        94: n/a
+        95: n/a
+        96: ''
+        97: yyyy
+        98: yyyy
+        99: yyyy
+        100: n/a
+        101: n/a
+        102: n/a
+        103: n/a
+        104: n/a
+        105: decimal degrees
+        106: decimal degrees
+        107: approximate, exact
+        108: n/a
+        109: n/a
+        110: n/a
+        111: n/a
+        112: n/a
+        113: n/a
+        114: L2 + 5 digits
+        115: G2 + 5 digits
+        116: n/a
+        117: n/a
+        118: n/a
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+        27: ''
+        28: ''
+        29: ''
+        30: ''
+        31: ''
+        32: ''
+        33: ''
+        34: ''
+        35: ''
+        36: ''
+        37: ''
+        38: ''
+        39: ''
+        40: ''
+        41: ''
+        42: ''
+        43: ''
+        44: ''
+        45: ''
+        46: ''
+        47: ''
+        48: ''
+        49: ''
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: ''
+        59: ''
+        60: ''
+        61: ''
+        62: ''
+        63: ''
+        64: ''
+        65: ''
+        66: ''
+        67: ''
+        68: ''
+        69: ''
+        70: ''
+        71: ''
+        72: ''
+        73: ''
+        74: ''
+        75: ''
+        76: ''
+        77: ''
+        78: ''
+        79: ''
+        80: ''
+        81: ''
+        82: ''
+        83: ''
+        84: ''
+        85: ''
+        86: Definition
+        87: Date that the unit was last researched
+        88: Country in which the project is located (Unabbreviated)
+        89: Commonly used name
+        90: Common name of the project unit. Numerals are used if none were provided,
+          beginning with 1
+        91: Commonly used name in the locally used script
+        92: Alternative power station names, including the name in local script
+        93: Gross capacity, or best available data, of the project in megawatts rounded
+          to whole number. The summed nameplate capacity of all operating units regardless
+          of unit capacity.
+        94: see rows 30-79 above
+        95: see rows 18-28 above
+        96: see rows 81-85 above
+        97: Year the unit was or is projected to be converted to bioenergy
+        98: The year the unit was commissioned, regardless of fuel type
+        99: Year the plant is taken offline
+        100: If the unit is capable of producing hydrogen
+        101: The company that operates the project
+        102: Company name that operates the project in the locally used script
+        103: The immdiate owner of the plant
+        104: Company name that directly owns the project in the locally used script
+        105: Latitude, assumed WGS84 (google maps), of the project (not by unit)
+        106: Longitude, assumed WGS84 (google maps), of the project (not by unit)
+        107: Location is Approximate based by using nearest city or other information
+          in research, or Location is Exact based on visibility on map or given in
+          research
+        108: City, town, or village where project is located
+        109: 'County/taluk where project is located '
+        110: Prefecture or district where project is located
+        111: Subnational unit where project is located
+        112: Subregion location based on definitions by the United Nations Statistics
+          Division https://unstats.un.org/unsd/methodology/m49/
+        113: Region location based on definitions by the United Nations Statistics
+          Division https://unstats.un.org/unsd/methodology/m49/
+        114: GEM generated ID unique for each project
+        115: GEM generated ID unique for each unit
+        116: 'Lists of power station IDs from other systems. For example, an ID from
+          the World Resources Institute is reported as "WRI: WRI1002265"'
+        117: Lists of power station unit IDs from other systems.
+        118: URL of existing or planned GEM.wiki pages
+      3:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+        27: ''
+        28: ''
+        29: Reference
+        30: https://www.epa.gov/agstar/how-does-anaerobic-digestion-work
+        31: https://en.wikipedia.org/wiki/Bagasse
+        32: https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth/an-introduction-to-biogas-and-biomethane
+        33: ''
+        34: https://afdc.energy.gov/fuels/biodiesel_basics.html
+        35: https://www.eia.gov/energyexplained/biofuels/ethanol.php
+        36: "1) https://www.eia.gov/energyexplained/biomass/wood-and-wood-waste.php;\
+          \ \n2) https://www.hazardouswasteexperts.com/paper-and-pulp-waste-basics/;\
+          \ \n3) https://www.eia.gov/tools/glossary/index.php?id=Black%20liquor"
+        37: https://www.epa.gov/lmop/basic-information-about-landfill-gas
+        38: https://www.eia.gov/energyexplained/biomass/waste-to-energy.php
+        39: https://netl.doe.gov/research/coal/energy-systems/gasification/gasifipedia/waste
+        40: https://www.eia.gov/energyexplained/biomass/landfill-gas-and-biogas.php;
+          https://www.veolia.com/en/solution/sewage-sludge-green-energy-biogas-wastewater
+        41: https://feeco.com/biocoal-biomass-emerging-opportunity-renewable-energy/
+        42: https://www.eia.gov/energyexplained/biomass/wood-and-wood-waste.php
+        43: https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth/an-introduction-to-biogas-and-biomethane
+        44: ''
+        45: ''
+        46: ''
+        47: ''
+        48: ''
+        49: ''
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: ''
+        59: ''
+        60: ''
+        61: ''
+        62: ''
+        63: ''
+        64: ''
+        65: ''
+        66: ''
+        67: ''
+        68: ''
+        69: ''
+        70: '1) https://worldsteel.org/publications/policy-papers/co-product-position-paper/
+
+          2) https://www.ispatguru.com/blast-furnace-gas-its-characteristics-and-safety-requirements/
+
+          3) https://www.sciencedirect.com/topics/engineering/blast-furnace'
+        71: '1) https://worldsteel.org/publications/policy-papers/co-product-position-paper/
+
+          2) https://www.ispatguru.com/blast-furnace-gas-its-characteristics-and-safety-requirements/
+
+          3) https://www.sciencedirect.com/topics/engineering/blast-furnace'
+        72: ''
+        73: ''
+        74: ''
+        75: ''
+        76: ''
+        77: ''
+        78: ''
+        79: ''
+        80: ''
+        81: ''
+        82: ''
+        83: ''
+        84: ''
+        85: ''
+        86: Notes
+        87: ''
+        88: ''
+        89: Preference is for a government provided name. Without that information
+          use the name the owner or operating company uses.
+        90: Roman numerals are changed to numbers. If the Sponsor uses non-sequential
+          numbers or other characters, those are used.
+        91: Left blank for local languages that use the roman/latin alphabet. Otherwise
+          local name in local script provided if possible
+        92: Semi-colon separated
+        93: ''
+        94: Semi-colon separated
+        95: ''
+        96: ''
+        97: ''
+        98: ''
+        99: This includes mothballed plants - whenever the unit stops operating.
+        100: ''
+        101: Company that performs day-to-day operations and maintenance of the project
+        102: Left blank for local languages use the roman/latin alphabet. Otherwise
+          operator name in local script included if possible
+        103: ''
+        104: Left blank for local languages that use the roman/latin alphabet. Otherwise
+          direct owner name included in local script if possible
+        105: ''
+        106: ''
+        107: ''
+        108: ''
+        109: ''
+        110: ''
+        111: ''
+        112: ''
+        113: ''
+        114: ''
+        115: ''
+        116: ''
+        117: ''
+        118: ''
+    about_key: ''
+    acro: GBPT
+    data:
+      columns:
+      - Date last researched: object
+      - Country/Area: object
+      - Project Name: object
+      - Unit Name: object
+      - Project Name in Local Language / Script: object
+      - Other Name(s): object
+      - Capacity (MW): float64
+      - Fuel: object
+      - Status: object
+      - Conversion/Replacement?: object
+      - Unit conversion year: object
+      - Start Year: object
+      - Retired Year: object
+      - Hydrogen Capable: object
+      - Operator(s): object
+      - Operator Name(s) in Local Language / Script: object
+      - Owner(s): object
+      - Owner Name(s) in Local Language / Script: object
+      - Latitude: object
+      - Longitude: object
+      - Location Accuracy: object
+      - City: object
+      - Local Area (taluk, county): object
+      - Major Area (prefecture, district): object
+      - State/Province: object
+      - Subregion: object
+      - Region: object
+      - GEM location ID: object
+      - GEM phase ID: object
+      - Other IDs (location): object
+      - Other IDs (unit/phase): object
+      - Wiki URL: object
+      columns2:
+      - null
+      info: DataFrame with 2474 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1WRRFRuR9mWxZpko-VMYH5xm0LzRX_qM7W73nGGi4Jmg
+    name: Bioenergy
+    off_name: Bioenergy Power
+    release: September 2024
+    tabs:
+    - Data
+    - Below Threshold

@@ -1,0 +1,801 @@
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 1 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Oil and Gas Plant Tracker - June 2025
+        1: "Copyright \xA9 Global Energy Monitor. Global Oil and Gas Plant Tracker,\
+          \ June 2025 release. Distributed under a Creative Commons Attribution 4.0\
+          \ International License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Oil and Gas Plant
+          Tracker, June 2025 release" (See the CC license for attribution requirements
+          if sharing or adapting the data set.)'
+        3: 'Contact: Jenny Martos, Project Manager, Global Energy Monitor - jenny.martos@globalenergymonitor.org'
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: Notes
+        5: 1. For background, additional infomation, and references, see wiki pages
+          for the power station (column A)
+        6: 2. For the Methodology, see https://globalenergymonitor.org/projects/global-oil-gas-plant-tracker/methodology/
+        7: 3. For summary statistics by country/area, region, etc., see "Summary Data"
+          at https://globalenergymonitor.org/projects/global-oil-gas-plant-tracker/summary-data/
+        8: 4. For links to reports using GOGPT data, see "Reports & Briefings" at
+          https://globalenergymonitor.org/projects/global-oil-gas-plant-tracker/reports-briefings/
+        9: 5. This database only includes oil and gas-fired generating units 20 MW
+          and larger for the European Union and United Kingdom, and units 50 MW and
+          larger elsewhere globally.
+        10: '6. The Global Energy Monitor website provides a mapping tool for this
+          data: https://globalenergymonitor.org/projects/global-oil-gas-plant-tracker/tracker/'
+        11: "7. Global Energy Monitor has transitioned to using the United Nations\u2019\
+          \ region and subregion definitions."
+        12: "8. Global Energy Monitor has adopted the name \u2018T\xFCrkiye\u2019\
+          \ as a replacement for \u2018Turkey\u2019."
+        13: 9. Version 2 of the February 2023 data incorporated minor changes to the
+          Wiki URLs column.
+        14: ''
+        15: Status definitions
+        16: announced
+        17: pre-construction
+        18: construction
+        19: operating
+        20: shelved
+        21: cancelled
+        22: mothballed
+        23: retired
+        24: ''
+        25: "For more information on plant ownership check out the\_Global Energy\
+          \ Ownership Tracker (https://globalenergymonitor.org/projects/global-energy-ownership-tracker/):\_\
+          The tracker maps each level of the chain from the direct owner (as in, the\
+          \ lowest-level identified owner in the chain of ownership) up to their highest-level\
+          \ ultimate parents (e.g., corporations, investment firms, and governments).\
+          \ Ownership links are reported with the percentage of ownership, including\
+          \ owners that have controlling interest as well as those with minority,\
+          \ non-controlling interests (if over a threshold of 5% ownership). Companies\
+          \ IDs, such as PermIDs, are also included."
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: Projects that have been publicly reported but have not yet moved actively
+          forward by applying for permits or seeking land, material, or financing.
+        17: Projects that are actively moving forward in seeking governmental approvals,
+          land rights, or financing.
+        18: Site preparation and other activities are underway.
+        19: The plant has been formally commissioned; commercial operation has begun.
+        20: Two years have passed with no action on a project after the project proposal.
+        21: "A cancellation announcement has been made. The status is marked as \u2018\
+          cancelled \u2013 inferred 4 y\u2019 if no progress has been observed for\
+          \ at least four years."
+        22: The project is disused, but not dismantled.
+        23: The project has been decommissioned; this term is also used if the plant
+          has been destroyed by war.
+        24: ''
+        25: ''
+    about_key: ''
+    acro: GOGPT
+    data:
+      columns:
+      - Wiki URL: object
+      - Country/Area: object
+      - Plant name: object
+      - Plant Name in Local Language / Script: object
+      - Other Name(s): object
+      - Unit name: object
+      - Fuel: object
+      - Capacity (MW): float64
+      - Status: object
+      - Turbine/Engine Technology: object
+      - Equipment Manufacturer/Model: object
+      - CHP: object
+      - Hydrogen capable?: object
+      - CCS attachment?: object
+      - Conversion/replacement?: object
+      - Conversion from/replacement of (fuel): object
+      - Conversion from/replacement of (GEM unit ID): object
+      - Conversion to (fuel): object
+      - Conversion to (GEM unit ID): object
+      - Start year: object
+      - Retired year: object
+      - Planned retire: object
+      - Operator(s): object
+      - Owner(s): object
+      - Parent(s): object
+      - Latitude: object
+      - Longitude: object
+      - Location accuracy: object
+      - City: object
+      - Local area (taluk, county): object
+      - Major area (prefecture, district): object
+      - State/Province: object
+      - Subregion: object
+      - Region: object
+      - Other IDs (location): object
+      - Other IDs (unit): object
+      - Captive industry use: object
+      - Captive industry type: object
+      - Captive non-industry use: object
+      - GEM location ID: object
+      - GEM unit ID: object
+      columns2:
+      - null
+      info: DataFrame with 13895 rows
+    data_official: {}
+    fuelcol: Fuel
+    geocol: Country/Area
+    key: 1cy0A7k0GoB2b_b2wesObcAvts0GbXa7go7FVE_bHpBc
+    name: Oil & Gas Plants
+    off_name: Oil and Gas Plant
+    release: January 2025
+    tabs:
+    - Gas & Oil Units
+    - sub-threshold units
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 2 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: "Copyright \xA9 Global Energy Monitor. Global Coal Plant Tracker, January\
+          \ 2025 release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        1: 'Recommended Citation: "Global Energy Monitor, Global Coal Plant Tracker,
+          January 2025 release" (See the CC license for attribution requirements if
+          sharing or adapting the data set.)'
+        2: Global Coal Plant Tracker - January 2025
+        3: 'Contact: Christine Shearer, Project Manager, Global Energy Monitor - christine.shearer@globalenergymonitor.org'
+        4: ''
+        5: About
+        6: 'The Global Coal Plant Tracker includes global coal-fired units that are
+          30 megawatts (MW) or larger within the following parameters: all operating/mothballed
+          units; all units retired since 2000; and all units proposed since 2010.'
+        7: ''
+        8: Notes
+        9: 1. The "Summaries (excl China)" tab provides proposal summaries for projects
+          outside of China with Announced, Pre-permit, Permitted, and Shelved Units.
+          See gem.wiki for full details and to provide feedback.
+        10: 2. For the GCPT Methodology, see https://globalenergymonitor.org/projects/global-coal-plant-tracker/methodology/
+        11: 3. For CO2 calculation method, see "Estimating carbon dioxide emissions
+          from coal plants" at https://www.gem.wiki/Estimating_carbon_dioxide_emissions_from_coal_plants
+        12: 4. For summary statistics by province, country, region, etc., see "Summary
+          Data" at https://globalenergymonitor.org/projects/global-coal-plant-tracker/summary-data/
+        13: 5. For links to GEM reports using GCPT data, see "Reports & Briefings"
+          at https://globalenergymonitor.org/projects/global-coal-plant-tracker/reports-briefings/
+        14: 6. This database only includes coal-fired generating units 30 MW and larger.
+        15: '7. The Global Energy Monitor website provides a mapping tool for this
+          data: https://globalenergymonitor.org/projects/global-coal-plant-tracker/tracker/'
+        16: 8. Units converted from burning primarily coal to another fuel are noted
+          in column U, and the GEM ID of the new converted unit in column V.
+        17: 9. Units receiving payments from China's new capacity payment mechanism
+          are identified in column AM. More information can be found at https://www.gem.wiki/China_Coal_Capacity_Payment_Mechanism
+        18: '10. For a spreadsheet of status changes over time (2014 to 2024), or
+          planned retirement dates over time (2017-2024), please contact Global Energy
+          Monitor at the email above. '
+        19: 11. Future versions of the GCPT will include CHP data for all units, not
+          just captive units. For more information or an early preview of the data
+          contact GEM at the email above.
+        20: '12. For more information on coal plant ownership see the Global Energy
+          Ownership Tracker (GEOT): https://globalenergymonitor.org/projects/global-energy-ownership-tracker/.
+          The GEOT maps each level of the ownership chain from the direct owner (the
+          lowest-level identified owner in the chain of ownership) to their highest-level
+          ultimate parents (e.g., corporations, investment firms, and governments).
+          Ownership links are reported with the percentage of ownership, including
+          owners that have controlling interest as well as those with minority, non-controlling
+          interests (if over a threshold of 5% ownership). Companies IDs, such as
+          PermIDs, are also included.'
+        21: ''
+        22: Status definitions
+        23: Announced
+        24: Pre-permit
+        25: Permitted
+        26: Construction
+        27: Shelved
+        28: Cancelled
+        29: Operating
+        30: Mothballed
+        31: Retired
+        32: ''
+        33: CO2 Annual and Lifetime Estimates
+        34: Metholology
+        35: Note
+        36: Lifetime
+        37: Heat rate
+        38: Emission factor
+        39: Capacity factor
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: "Projects that have appeared in corporate or governmental planning documents\
+          \ but have not yet moved actively forward by applying for permits or seeking\
+          \ land, coal, or financing.\t\t\t\t"
+        24: 'Projects that have actively moved forward in one or more of the following
+          ways: applying for environmental permits, acquiring land, acquiring coal,
+          acquiring water rights, acquiring transmission arrangements, or securing
+          financing. In India the key criterion for moving a project from "announced"
+          to "pre-permit" is the existence of a "terms of reference" (TOR) letter
+          by the Ministry of Environment, Forests, and Climate Change. In China, "pre-permit"
+          means a feasibility study has been completed.'
+        25: Projects that have secured all environmental permits but have not broken
+          ground. In India the key criterion for moving a project from "pre-permit"
+          to "permitted" is the approval of an "environmental clearance" (EC) by the
+          Ministry of Environment, Forests, and Climate Change. In China, "permitted"
+          means a plant has received a permit from the National Development and Reform
+          Commission (NDRC), allowing for construction, or the equivalent approval
+          at the province level.
+        26: Projects where physical construction (i.e. concrete and steel, not just
+          a ground-breaking ceremony or early site preparation) has begun.
+        27: Projects where sufficient evidence is found to indicate that a project
+          is no longer moving forward, but not enough to declare it definitively cancelled.
+          Projects where construction has been put on hold are also considered "shelved."
+          A project that shows no activity over a period of 2 years is categorized
+          as "shelved" unless there is evidence to the contrary.
+        28: In some cases a sponsor announces that it has cancelled a project. More
+          often a project fails to advance and then quietly disappears from related
+          documents. In addition, a plant that shows no activity or with no known
+          developments over a period of 4 years is categorized as "cancelled," unless
+          there is evidence to the contrary. Proposed projects that are switched to
+          natural gas are considered "cancelled" as coal plants.
+        29: Units that have been formally commissioned or that have entered commercial
+          operation.
+        30: Units that have been deactivated or put into an inactive state but are
+          not retired.
+        31: Units that have been permanently decommissioned or converted to another
+          fuel.
+        32: ''
+        33: ''
+        34: For CO2 calculation method, see "Estimating carbon dioxide emissions from
+          coal plants" at https://www.gem.wiki/Estimating_carbon_dioxide_emissions_from_coal_plants
+        35: The GCPT estimates for CO2 emissions are intended to provide guidance
+          on overall country and regional emissions over the lifecycle of the existing
+          and proposed fleet of plants. They are not intended to provide detailed
+          impact analysis for particular plants. For this reason, the average global
+          capacity factor is used for all plants. In general, newer plants will tend
+          to have higher capacity factors than the average, and older plants will
+          have lower capacity factors than the average. Similarly, heat rates and
+          emission factors represent broad performance; these factors will differ
+          for particular plants and coal supplies.
+        36: Lifetime emissions assume a plant lifetime of 35 years, based on the global
+          average retirement age of 37 years. Plants older than 35 years are assumed
+          to operate an additional 5 years. Plants with a planned retirement date
+          are assumed to cease operations that year.
+        37: Heat rate is based on type of combustion technology, with performance
+          penalties for older and smaller units. More discussion at https://www.gem.wiki/Estimating_carbon_dioxide_emissions_from_coal_plants
+        38: Based on type of coal using the 2006 IPPC Guidelines for National Greenhouse
+          Inventories, Table 2.2, page 2.16.
+        39: 55% global average, based on GEM's global operating coal power capacity
+          and Ember's global coal power generation data (2023).
+    about_key: ''
+    acro: GCPT
+    data:
+      columns:
+      - GEM unit/phase ID: object
+      - GEM location ID: object
+      - Country/Area: object
+      - Wiki URL: object
+      - Plant name: object
+      - Unit name: object
+      - Plant name (other): object
+      - Plant name (local): object
+      - Owner: object
+      - Owner GEM Entity ID: object
+      - Parent: object
+      - Parent GEM Entity ID: object
+      - Capacity (MW): float64
+      - Status: object
+      - Start year: object
+      - Retired year: object
+      - Planned retirement: object
+      - Combustion technology: object
+      - Coal type: object
+      - Coal source: object
+      - Conversion to (fuel): object
+      - Conversion to (GEM unit ID): object
+      - Alternate Fuel: object
+      - Location: object
+      - Local area (taluk, county): object
+      - Major area (prefecture, district): object
+      - Subnational unit (province, state): object
+      - Subregion: object
+      - Region: object
+      - Latitude: float64
+      - Longitude: float64
+      - Location accuracy: object
+      - Permits: object
+      - Permit Date: object
+      - Permit Parsed: object
+      - Captive: object
+      - Captive industry use: object
+      - Captive residential use: object
+      - China Capacity Payment Recipient: object
+      - Plant age (years): int64
+      - Capacity factor: float64
+      - Heat rate (Btu per kWh): float64
+      - Emission factor (kg of CO2 per TJ): int64
+      - Annual CO2 (million tonnes / annum): float64
+      - Remaining plant lifetime (years): int64
+      - Lifetime CO2 (million tonnes): float64
+      columns2:
+      - null
+      info: DataFrame with 14146 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1jUbsItBq_CVXy0dUxCP7APHfstDL85BaykCXYURagX4
+    name: Coal Plants
+    off_name: Coal Plant
+    release: January 2025
+    tabs:
+    - Units
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: internal
+    needed_geo: []
+    pm:
+    - all
+    source:
+    - Oil & Gas Plants
+    - Coal Plants
+    - Solar
+    - Wind
+    - Nuclear
+    - Hydropower
+    - Bioenergy
+    - Geothermal
+    - Coal Terminals
+    - Oil & Gas Extraction
+    - Coal Mines
+    - LNG Terminals
+    - Gas Pipelines
+    - Oil Pipelines
+    trackers: List with 3 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: Global Solar Power Tracker - February 2025
+        1: "Copyright \xA9 Global Energy Monitor. Global Solar Power Tracker, February\
+          \ 2025 release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        2: 'Recommended Citation: "Global Energy Monitor, Global Solar Power Tracker,
+          February 2025 release" (See the CC license for attribution requirements
+          if sharing or adapting the data set.)'
+        3: "Records with a TZ ID in the Other IDs (unit/phase) column were partially\
+          \ or fully sourced from the TransitionZero, Solar Asset Mapper, May 2024.\
+          \ \nCopyright \xA9 TransitionZero, Solar Asset Mapper, December 2024. Distributed\
+          \ under a Creative Commons Attribution 4.0 International License."
+        4: 'Contact: Kasandra O''Malia, Global Solar Power Tracker Project Manager,
+          Global Energy Monitor - kasandra.omalia@globalenergymonitor.org'
+        5: Methodology
+        6: ''
+        7: February 2025 Release Notes
+        8: "This update covers research on Africa, Americas, Asia, and Oceania as\
+          \ defined by the United Nations\u2019 region definitions, as well as global\
+          \ updates to 2024 operating projects."
+        9: The tracker capacity threshold is 1 MW. Due to research methodology differences,
+          projects above 20 MW are published in a separate tab.
+        10: Records with a WKSL ID in the Other IDs (unit/phase) column were partially
+          or fully sourced from the wiki-solar.org April, 2023 proprietary dataset.
+        11: ''
+        12: Thresholds for Data Categories
+        13: 20 MW+
+        14: 1-20 MW
+        15: Solar farm capacity cut-off, Global
+        16: ''
+        17: Definitions
+        18: Column
+        19: Status
+        20: Status
+        21: Status
+        22: Status
+        23: Status
+        24: Status
+        25: Status
+        26: Status
+        27: ''
+        28: Columns
+        29: Column Name
+        30: Date Last Researched
+        31: Country/Area
+        32: Project Name
+        33: Phase Name
+        34: Project Name in Local Language / Script
+        35: Other Name(s)
+        36: Capacity (MW)
+        37: Capacity Rating
+        38: Technology Type
+        39: Status
+        40: Start year
+        41: Retired year
+        42: Operator
+        43: Operator Name in Local Language / Script
+        44: Owner
+        45: Owner Name in Local Language / Script
+        46: Hydrogen
+        47: Latitude
+        48: Longitude
+        49: Location accuracy
+        50: City
+        51: Local area (taluk, county)
+        52: Major area (prefecture, district)
+        53: State/Province
+        54: Subregion
+        55: Region
+        56: Other IDs (location)
+        57: Other IDs (unit/phase)
+        58: GEM location ID
+        59: GEM phase ID
+        60: Wiki URL
+      1:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: Greater than or equal to 20 MW
+        14: Greater than 1 MW, but smaller than 20 MW
+        15: Projects smaller than 1 MW are not included
+        16: ''
+        17: ''
+        18: Full Name
+        19: operating
+        20: construction
+        21: pre-construction
+        22: announced
+        23: shelved
+        24: mothballed
+        25: retired
+        26: cancelled
+        27: ''
+        28: ''
+        29: Units
+        30: yyyy/mm/dd
+        31: n/a
+        32: n/a
+        33: n/a
+        34: n/a
+        35: n/a
+        36: Megawatt (MW)
+        37: MWac, MWp/dc, unknown
+        38: PV, Solar Thermal, Assumed PV
+        39: see above
+        40: yyyy
+        41: yyyy
+        42: n/a
+        43: n/a
+        44: n/a
+        45: n/a
+        46: True, blank
+        47: decimal degrees
+        48: decimal degrees
+        49: approximate, exact
+        50: n/a
+        51: n/a
+        52: n/a
+        53: n/a
+        54: n/a
+        55: n/a
+        56: n/a
+        57: n/a
+        58: L1+11 digits
+        59: G1+11 digits
+        60: n/a
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: Notes
+        19: Commercial operation date achieved
+        20: Equipment installation has begun (not just clearing/roads)
+        21: Projects that are actively moving forward in seeking governmental approvals,
+          land rights, or financing
+        22: "Projects that been publicly reported but have not yet moved actively\
+          \ forward by applying for permits or seeking land, material, or financing.\
+          \ Examples: (1) projects are the potential \u201CPhase 2\u201D at a location\
+          \ where \u201CPhase 1\u201D is currently under development, (2) Projects\
+          \ that are described in long-range company or governmental planning documents."
+        23: Suspension announced. The status is marked as "shelved - inferred 2y"
+          if no updates have been published in 2 or more years.
+        24: Disused but not dismantled
+        25: Dismantled
+        26: Cancellation announced. The status is marked as "cancelled - inferred
+          4y" if no updates have been publishe din 4 or more years.
+        27: ''
+        28: ''
+        29: Definition
+        30: Date that this project was last researched by the researcher
+        31: Country or area the project is located in (Unabbreviated)
+        32: Commonly used name
+        33: Common name of the project phase
+        34: Commonly used name in the locally used script
+        35: Alternative names, including the name in local script
+        36: Nameplate capacity, or best available data, of the phase in megawatts
+          rounded to its nearest tenth.
+        37: The reported capacity rating, unknown selected if not provided
+        38: If the solar installation uses PV (Photovoltaic) technology to create
+          a current or uses heat from the sun to run a turbine
+        39: see rows 19-26 above
+        40: Year the project is or is expected to be commissioned
+        41: Year the plant is taken offline
+        42: The company that operates the project
+        43: Company name that operates the project in the locally used script
+        44: The company that directly owns the plant
+        45: Company name that directly owns the project in the locally used script
+        46: True if a project phase is dedicated for green hydrogen production
+        47: Latitude, assumed WGS84 (google maps), of the project phase
+        48: Longitude, assumed WGS84 (google maps), of the project phase
+        49: Location is Approximate based on using nearest city or other information
+          in data sources, or Location is Exact when explicitly provided in data source
+        50: City, town, village, or township (China) where project is located
+        51: County, taluk, or district (China) where project is located
+        52: Prefecture, district, or municipality (China) where project is located
+        53: Subnational unit where project is located
+        54: Subregion location based on United Nations definition
+        55: Region location based on United Nations definition
+        56: Location identifier from external datasets
+        57: Unit or Phase identifier from external datasets
+        58: GEM generated ID unique for each project
+        59: GEM generated ID unique for each phase
+        60: URL of existing, footnoted factsheet GEM.wiki page
+      3:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+        27: ''
+        28: ''
+        29: Notes
+        30: ''
+        31: The Country/Area column presents energy data within various economic contexts,
+          and the geographical unit does not strictly follow political boundaries.
+        32: Preference is for a government provided name. Without that information,
+          the name the owner or operating company uses was taken, or the name was
+          generated based on project location.
+        33: Roman numerals are changed to numbers. If the Owner uses non-sequential
+          numbers or other characters, those are used.
+        34: Left blank for local languages that use the roman/latin alphabet. Otherwise
+          local name in local script provided if possible.
+        35: ''
+        36: Please refer to "Thresholds for Data Categories" section above.
+        37: Capacity may be reported as the DC / peak value the arrays could provide
+          or as the AC value of what will be tied into the grid. This is often not
+          specified and could be either value when reported as just 'MW'.
+        38: Projects for which no information could be found specifying the technology
+          type are listed as "Assumed PV" because PV is by far the most common technology.
+        39: ''
+        40: Latest date was taken when original data source provided a range; Start
+          years not included for projects that are cancelled or shelved.
+        41: ''
+        42: Company that performs day-to-day operations and maintenance of the project.
+        43: Left blank for local languages use the roman/latin alphabet. Otherwise
+          operator name in local script included if possible.
+        44: ''
+        45: Left blank for local languages that use the roman/latin alphabet. Otherwise
+          direct owner name included in local script if possible.
+        46: ''
+        47: ''
+        48: ''
+        49: Exact locations feature 4 decimal places for Latitude and Longitude fields.
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: Previous GEM ID numbers have been preserved. For example, a previous GEM
+          ID of L812345 is now L100000812345.
+        59: Previous GEM ID numbers have been preserved. For example, a previous GEM
+          ID of G812345 is now G100000812345.
+        60: ''
+    about_key: ''
+    acro: GSPT
+    data:
+      columns:
+      - Date Last Researched: object
+      - Country/Area: object
+      - Project Name: object
+      - Phase Name: object
+      - Project Name in Local Language / Script: object
+      - Other Name(s): object
+      - Capacity (MW): float64
+      - Capacity Rating: object
+      - Technology Type: object
+      - Status: object
+      - Start year: object
+      - Retired year: object
+      - Operator: object
+      - Operator Name in Local Language / Script: object
+      - Owner: object
+      - Owner Name in Local Language / Script: object
+      - Hydrogen: object
+      - Latitude: float64
+      - Longitude: float64
+      - Location accuracy: object
+      - City: object
+      - Local area (taluk, county): object
+      - Major area (prefecture, district): object
+      - State/Province: object
+      - Subregion: object
+      - Region: object
+      - GEM location ID: object
+      - GEM phase ID: object
+      - Other IDs (location): object
+      - Other IDs (unit/phase): object
+      - Wiki URL: object
+      columns2:
+      - null
+      info: DataFrame with 75689 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1bUTPRTmIqu7URVECm66NGr_DF7v32UUOzBaBf1dNawk
+    name: Solar
+    off_name: Solar Power
+    release: February 2025
+    tabs:
+    - 20 MW+
+    - 1-20 MW

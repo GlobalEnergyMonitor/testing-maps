@@ -681,45 +681,6 @@ def find_missing_cap(df):
         
     return df
 
-# def insert_incomplete_WKTformat_ggit_eu(df_to_drop):
-#     # df_to_drop = df_to_drop.copy() # df to drop
-#     # by project id that we know were cut off because not json file
-#     # insert json into geometry
-#     # create geometry column 
-#     for col in df_to_drop.columns:
-#         print(col)
-#     input('find ProjectID in df_map / df_to_drop')
-#     # set up fixed ggit file pd
-#     ggit_routes = gpd.read_file(ggit_routes_updated)    
-#     ggit_routes = ggit_routes[['ProjectID', 'geometry']]
-#     # print(ggit_routes['geometry'])
-#     # input('this should not be empty ggit routes geo')
-#     # df_to_drop.to_csv(f'issues/check_out_df_to_drop_cols_before_merge_routes {iso_today_date}.csv')
-
-#     # Merge ggit_routes with the main gdf on 'id'
-#     for col in df_to_drop.columns:
-#         print(col)
-#     input('find ProjectID in df_to_drop')
-#     df_to_drop = df_to_drop.merge(ggit_routes[['ProjectID', 'geometry']], on='ProjectID', how='left', suffixes=('', '_new'))    
-    
-#     merged_df = df_to_drop.drop(columns='geometry').merge(ggit_routes, on='ProjectID', how='left')
-#     # Update the 'route' column in gdf with the new values where there is a match
-#     # print(f'this is length of df_to_drop {len(df_to_drop)} should be 10')
-#     # input('check')
-#     # df_to_drop.drop(columns=['geometry'], inplace=True)
-#     # df_to_drop['geometry'] = df_to_drop['geometry_new']
-#     # # Drop the temporary 'route_new' column
-#     # df_to_drop.drop(columns=['geometry_new'], inplace=True)
-#     df_to_drop.to_csv(f'issues/check_out_df_to_drop_cols_after_merge_routes {iso_today_date}.csv')
-#     print(f'done issues/check_out_df_to_drop_cols_after_merge_routes {iso_today_date}.csv')
-#     # drop row if geometry equals none
-#     # df_to_drop = df_to_drop[df_to_drop['geometry'].notna()]
-#     # print(df_to_drop['tracker-acro'])
-#     # print(df_to_drop)
-#     # input('check this after merge and drop geo, should be 10!')
-
-#     return merged_df
-
 def drop_internal_tabs(df):
     df = df.drop(['tracker-acro','official_name','country_to_check'], axis=1)
     print(df.columns)
@@ -1161,7 +1122,7 @@ def map_ready_statuses(cleaned_dict_map_by_one_gdf_with_conversions):
         gdf_map_ready_no_status = gdf_map_ready.loc[mask_status_empty]
         # # # ##(input(f'check no status df: {gdf_map_ready_no_status}')
 
-        gdf_map_ready_no_status.to_csv(f'issues/no-status-{mapname}_{iso_today_date}.csv')
+        gdf_map_ready_no_status.to_csv(f'../issues/no-status-{mapname}_{iso_today_date}.csv')
         # make sure all statuses align with no space rule
         # gdf_map_ready['status'] = gdf_map_ready['status'].apply(lambda x: x.strip().replace(' ','-'))
         gdf_map_ready['status_legend'] = gdf_map_ready['status_legend'].apply(lambda x: x.strip().replace('_','-'))
@@ -1197,7 +1158,7 @@ def map_ready_countries(cleaned_dict_by_map_one_gdf_with_better_statuses):
             print(f'Check out which rows are empty for countries for map: {mapname}')
             print(empty_areas)
             # #(input('Remove above')
-            empty_areas.to_csv(f'issues/empty-areas-{tracker_sel}{iso_today_date}.csv')
+            empty_areas.to_csv(f'../issues/empty-areas-{tracker_sel}{iso_today_date}.csv')
 
         # this formats subnational area for detail maps
         # we would also want to overwrite the subnat and say nothing ""
@@ -1475,103 +1436,6 @@ def create_search_column(dict_of_gdfs):
         # print(dict_of_gdfs_with_search.keys)
         # print('above are keys in dict_of_gdfs_with_search')
     return dict_of_gdfs_with_search
-
-# def last_min_fixes_eu(one_gdf_by_maptype):
-#     one_gdf_by_maptype_fixed = {}
-#     # # printone_gdf_by_maptype.keys())
-#     # # # ##(input('check that GIPT is in the above')
-#     for mapname, gdf in one_gdf_by_maptype.items():            # do filter out oil
-#         gdf = gdf.copy()
-#         # handle situation where Guinea-Bissau IS official and ok not to be split into separate countries
-#         gdf['areas'] = gdf['areas'].apply(lambda x: x.replace('Guinea,Bissau','Guinea-Bissau'))
-
-#         # something is happening when we concat, we lose goget's name ...
-#         # gdf_empty_name = gdf[gdf['name']=='']
-#         # # # printf"This is cols for gdf: {gdf.columns}")
-#         gdf['name'].fillna('',inplace=True)
-#         gdf['name'] = gdf['name'].astype(str)
-#         gdf['capacity'].fillna('',inplace=True)
-
-#         gdf['wiki-from-name'] = gdf.apply(lambda row: f"https://www.gem.wiki/{row['name'].strip().replace(' ', '_')}", axis=1)
-#         # row['url'] if row['url'] != '' else
-#         # handles for empty url rows and also non wiki cases SHOULD QC FOR THIS BEFOREHAND!! TO QC
-#         # need to switch to '' not nan so can use not in
-#         gdf['url'].fillna('',inplace=True)
-#         gdf['url'] = gdf.apply(lambda row: row['wiki-from-name'] if 'gem.wiki' not in row['url'] else row['url'], axis=1)
-
-
-#         gdf.columns = [col.replace('_', '-') for col in gdf.columns]
-#         gdf.columns = [col.replace('  ', ' ') for col in gdf.columns]
-#         gdf.columns = [col.replace(' ', '-') for col in gdf.columns]
-
-
-#         # if 'fuel-filter' not in gdf.columns:
-#         #     input('issue here')
-#         # gdf['tracker-acro'] = gdf['tracker-acro']
-#         # let's also look into empty url, by tracker I can assign a filler
-
-#         # gdf['url'] = gdf['url'].apply(lambda row: row[filler_url] if row['url'] == '' else row['url'])
-
-#         # gdf['capacity'] = gdf['capacity'].apply(lambda x: x.replace('--', '')) # can't do that ...
-
-#         # translate acronyms to full names
-
-#         gdf['tracker-display'] = gdf['tracker-custom'].map(tracker_to_fullname)
-#         gdf['tracker-legend'] = gdf['tracker-custom'].map(tracker_to_legendname)
-#         # # # printset(gdf['tracker-display'].to_list()))
-#         # # # printf'Figure out capacity dtype: {gdf.dtypes}')
-#         gdf['capacity'] = gdf['capacity'].apply(lambda x: str(x).replace('--', ''))
-#         gdf['capacity'] = gdf['capacity'].apply(lambda x: str(x).replace('*', ''))
-
-
-#         # print all na rows to csv
-#         # na_rows = gdf[gdf['geometry'].isna()]
-#         # print(len(na_rows))
-#         # na_rows.to_csv(f'/content/drive/MyDrive/output_from_colab/na-rows-{mapname}.csv')
-#         # input('check length of na rows')
-#         # for row in na_rows.index:
-#         #     # find situations where lat and lng are both null
-#         #     lat = gdf.loc[row, 'latitude']
-#         #     lng = gdf.loc[row, 'longitude']
-#         #     if pd.isna(lat) and pd.isna(lng):
-#         #       print(row)
-
-#         test = gdf[gdf['name']=='Montoir LNG Terminal']
-#         print(test['geometry'])
-#         print(len(gdf))
-#         gdf.dropna(subset=['geometry'],inplace=True)
-#         print(len(gdf))
-#         # gdf_null_geo = gdf[gdf['geometry']== 'null']
-#         gdf = gdf[gdf.geometry.notnull()]
-#         # drop null geo
-#         # gdf.drop(gdf_null_geo.index, inplace=True)
-#         # print(len(gdf_null_geo))
-#         print(len(gdf))
-#         # input('check after dropped null')
-
-#         # issues_coords.to_df.to_csv(f'/content/drive/MyDrive/output_from_colab/issue_coords.csv')
-#         # put dict to df to csv
-#         issues_coords_df = pd.DataFrame.from_dict(issues_coords, orient='index')
-#         issues_coords_df.to_csv(f'{tracker_folder_path}/issues/issue_coords.csv')
-
-#         year_cols = ['start-year', 'prod-year-gas']
-
-#         for col in year_cols:
-#             gdf[col] = gdf[col].apply(lambda x: str(x).split('.')[0])
-#             gdf[col].replace('-1', 'not stated')
-
-#         if mapname == 'europe':
-#             # print(mapname)
-#             gdf = pci_eu_map_read(gdf)
-#             # gdf = assign_eu_hydrogen_legend(gdf)
-#             # gdf = manual_lng_pci_eu_temp_fix(gdf)
-#             # gdf = swap_gas_methane(gdf)
-#             print(gdf['areas'])
-#             input('check areas for europe goget')
-
-#         one_gdf_by_maptype_fixed[mapname] = gdf
-
-#     return one_gdf_by_maptype_fixed
 
 
 def last_min_fixes(one_gdf_by_maptype):
@@ -2491,28 +2355,28 @@ def clean_about_df(df):
 
 def rebuild_countriesjs(mapname, newcountriesjs):
 
-        prev_countriesjs = f'{tracker_folder_path}{mapname}/countries.js'
-        default = f"{'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/src/countries.js'}"
+        prev_countriesjs = f'{tracker_folder_path}{mapname}/countries.json'
+        default = f"{'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/src/countries.json'}"
      
         print(prev_countriesjs)
-        print('The above is from the existing countries.js file if it exists in the map folder')
+        print('The above is from the existing countries.json file if it exists in the map folder')
         # prev_countriesjs = pd.read_csv(prev_countriesjs)
         # print(prev_countriesjs)
         
         # or try except FileNotFoundError 
         if os.path.exists(prev_countriesjs):
-            if prev_countriesjs.endswith('.js'):
+            if prev_countriesjs.endswith('.json'):
                 with open(prev_countriesjs, 'r') as js_file:
                     prev_countriesjs = js_file.read()
-                    print("JavaScript content:")
+                    print("JSON content:")
                     print(prev_countriesjs)
             else:
-                print("The file is not a JavaScript file.")
+                print("The file is not a JSON file.")
         else:
-            print(f"File not found. Using default countries.js from {default}")
+            print(f"File not found. Using default countries.json from {default}")
             with open(default, 'r') as js_file:
                 prev_countriesjs = js_file.read()
-                print("Default JavaScript content:")
+                print("Default JSON content:")
                 print(prev_countriesjs)
         
         # cycle through folder to find new countries.js file and do a comparison
@@ -2654,8 +2518,12 @@ def rename_cols(df):
     print(f'Cols after: {df.columns}')
     return df
 
+def reduce_cols(df):
+    print('Finish writing this function to make a lightweight gipt map for homepage!')
+    # name, url, capacity, status, type, owner, lat, lng, subnat
     
-     
+    
+    return df     
 
 def remove_missing_coord_rows(df):
     df['lng'] = df['lng'].fillna('')

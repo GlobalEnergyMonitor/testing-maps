@@ -20,11 +20,10 @@ tracker = 'gmet'
 
 local_file_path = f'/Users/gem-tah/Desktop/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/gmet/test/{today_date}ready_to_be_manipulated.csv'
 
-path_for_download_and_map_files = gem_path + tracker + '/compilation_output/' + iso_today_date_folder
+path_for_download_and_map_files = gem_path + gitpages_mapname[tracker] + '/compilation_output/' + iso_today_date_folder
 os.makedirs(path_for_download_and_map_files, exist_ok=True)
-path_for_download_and_map_files_test = gem_path + tracker + '/test/'
+path_for_download_and_map_files_test = gem_path + gitpages_mapname[tracker] + '/test/'
 os.makedirs(path_for_download_and_map_files_test, exist_ok=True)
-
 
 gmet_key = '10dMKhNtHh6gPDZllkLX1Yj7HBlKa9UP7h66AU9D1B8w'
 gmet_tabs = ['Coal Mines', 'Oil and Gas Extraction Areas', 'Oil and Gas Reserves', 'Plumes'] # Pipelines

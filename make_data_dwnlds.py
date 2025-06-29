@@ -113,8 +113,13 @@ def make_data_dwnlds(tracker):
         # try:
         # write to xls
         # THEN turn that xls into a df and then parquet for multi-tracker dd to parquet and s3
-        path_dwn = gem_path + map_obj.name + '/compilation_output/'
-        path_tst = gem_path + map_obj.name + '/testing/'
+        if map_obj.name in gitpages_mapname.keys():
+            
+            path_dwn = gem_path + gitpages_mapname[map_obj.name] + '/compilation_output/'
+            path_tst = gem_path + gitpages_mapname[map_obj.name] + '/testing/'
+        else:
+            path_dwn = gem_path + map_obj.name + '/compilation_output/'
+            path_tst = gem_path + map_obj.name + '/testing/'            
         os.makedirs(path_dwn, exist_ok=True)
         os.makedirs(path_tst, exist_ok=True)
         xlsfile = f'{path_dwn}{map_obj.name}-data-download_{new_release_date}_{iso_today_date}.xlsx'
