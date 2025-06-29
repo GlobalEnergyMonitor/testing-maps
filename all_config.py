@@ -8,8 +8,8 @@ from creds import *
 import logging
 
 trackers_to_update = ['Cement and Concrete']# official tracker tab name in map tracker log sheet
-new_release_date = 'June_2025' # for within about page NEEDS TO BE FULL MONTH
-releaseiso = '2025-06'
+new_release_date = 'July_2025' # for within about page NEEDS TO BE FULL MONTH
+releaseiso = '2025-07'
 simplified = False # True False
 priority = ['gcct'] # europe # NOTE NEEDS TO BE [''] to be skipped NEEDS TO BE mapname in map_tab internal
                     # africa

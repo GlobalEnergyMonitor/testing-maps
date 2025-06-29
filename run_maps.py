@@ -21,6 +21,7 @@ for tracker in tqdm(trackers_to_update, desc='Running'):
         input('Confirm above')                  
               
     elif tracker == 'Cement and Concrete':
+        # TODO jun 29 2025 for next release add in processing step a statusDisplay where it's lower case and no hyphen in op pre ret status
         print('Creating global map for Cement and Concrete then dependent maps and dd')
         # add a comparison between all_config column dictionary and new file
         # make data downloads 

@@ -84,8 +84,9 @@ def make_map(list_of_map_objs):
                     tracker_obj.gcct_changes()         
             
             
-            # [print(col) for col in tracker_obj.data.columns if col == 'fuel-filter']
-            # # input('Is fuel filter printed?')
+            [print(tracker_obj.data[col]) for col in tracker_obj.data.columns if col == 'Clinker Capacity (millions metric tonnes per annum)']
+            [print(tracker_obj.data[col]) for col in tracker_obj.data.columns if col == 'Cement Capacity (millions metric tonnes per annum)']
+            input('Is cement and clinker capacities printed for gcct?')
             
             # this should happen to ALL
             # clean_capacity and coordinate qc
