@@ -1,0 +1,4 @@
+﻿name,capacity,lat,lng,status,country/area,gem-location-id
+A: 100,100,0,30,operating,Egypt,343
+B: 1000,1000,0,30.2,operating,Egypt,32535
+C: 10000,10000,0,30.4,operating,Egypt,3453646
