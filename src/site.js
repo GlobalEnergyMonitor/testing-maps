@@ -1279,10 +1279,10 @@ function buildGistTable(all_details_gist) {
             // Assume format: "prod method "capacity (ttpa)" capacity"
             let prodMethod = tupleLike;
             let capacity = '';
-            // prod method is all before "capacity (ttpa)" and capacity is all after
+            // prod method is all before "capacity (ttpa)" minus steel and capacity is all after
             let match = tupleLike.match(/(.+?)\s*capacity\s*\(ttpa\)\s*(.*)/i);
             if (match) {
-                prodMethod = match[1].trim();
+                prodMethod = match[1].trim().replace('steel', '');
                 capacity = match[2].replace(/,/g, '');
             }
             tableHtml += `<tr><td>${status}</td><td>${prodMethod}</td><td>${capacity}</td></tr>`;
