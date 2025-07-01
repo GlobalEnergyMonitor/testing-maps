@@ -474,8 +474,8 @@ function addPointLayer() {
         ];
     }
 
-    let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
-    // TODO
+    let interpolateExpression = ('interpolate' in config ) ? config.interpolate : ["linear"];// ["linear"];//["exponential", .5];
+    console.log(interpolateExpression)
     // find out the current zoom level
     // bins for each zoom stage and override the config min max radius 
     paint['circle-radius'] = [
