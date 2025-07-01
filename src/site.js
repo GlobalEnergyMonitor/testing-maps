@@ -1553,7 +1553,7 @@ function displayDetails(features) {
             // detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
             // '<span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
             detail_text += '';
-
+        }
 // assign color if equal to status field BUT ignore the capacity part when no capacity label
 // here is where we can lowercase status so it matches other info in popup since there is no special table here
         else {
