@@ -28,9 +28,15 @@ const popup = new mapboxgl.Popup({
     closeOnClick: false
 });
 
+// add new navigation features
+map.scrollZoom.enable();
+map.boxZoom.enable();
+map.dragRotate.enable();
 
 map.doubleClickZoom.enable();
 
+// declare this so you can customize features depending on if it's first load or filtering
+let initialLoad = true;
 
 map.on('load', function () {
     if (config.projection != 'globe'){
@@ -50,6 +56,206 @@ function determineZoom() {
 }
 
 
+function getStandardDeviation (array) {
+    if (!array || array.length === 0) {return 0;}
+
+    const n = array.length
+    const mean = array.reduce((a, b) => a + b) / n
+    return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+    }
+
+function findDensity(gridSize = 10) {
+    /* This function augmnts the getBoundingBox function so that if there are anomolies they do not skew the "should be" center
+    So for issues like Reunion island being technically part of France, or the typo of a oil plant that has South Dakota listed but 
+    is in Mongolia
+    */
+
+    // get the average bounding box or center for all features listed
+    // or for majority of features listed 
+    // and then exclude the feature(s) whos center is too far from the average
+    // OR try to see if you can measure the density of a layer and have the bounding box prefer a dense view instead of 
+    // the ocean or a north or south pole
+
+    // Find the densest region of features using a grid-based approach.
+    // gridSize: size of grid cell in degrees (default 1 degree)
+
+
+    features = config.processedGeoJSON.features
+    // handle for no features returned
+    if (!features.length) {
+        console.warn('No features returned will not zoom in or fly');
+        // TODO figure out zoom out and respin
+        // maybe clear out filter after message saying nothing found
+        // if (map.getZoom() < 12) {
+        //     map.setZoom(12);
+        // }
+        return null;
+    } else {
+
+        // Collect all coordinates acccount for point, multipoint, linestring, multi line string
+        let allCoords = [];
+        features.forEach(f => {
+            let coords = [];
+            if (f.geometry && f.geometry.type === "Point") {
+                coords = [f.geometry.coordinates];
+            } else if (f.geometry && f.geometry.coordinates && f.geometry.coordinates.length) {
+                coords = f.geometry.coordinates.flat(Infinity)
+                    .filter(c => Array.isArray(c) && c.length === 2 && isFinite(c[0]) && isFinite(c[1]))
+                    .map(c => [c[0], c[1]]);
+            }
+            // Ensure coords is always an array of [lng, lat]
+            if (Array.isArray(coords[0])) {
+                coords.forEach(c => {
+                    if (Array.isArray(c) && c.length === 2 && isFinite(c[0]) && isFinite(c[1])) {
+                        allCoords.push([c[0], c[1]]);
+                    }
+                });
+            } else if (coords.length === 2 && isFinite(coords[0]) && isFinite(coords[1])) {
+                allCoords.push([coords[0], coords[1]]);
+            }
+        });
+
+        if (allCoords.length === 0) {
+            // If nothing is selected, reset to initial center and resume spinning
+            userInteracting = false;
+            spinGlobe();
+            // Return a small bounds around the initial center to trigger fitBounds
+            const center = config.center;
+            const pad = 0.5;
+            return [
+                [center[0] - pad, center[1] - pad], // SW
+                [center[0] + pad, center[1] + pad]  // NE
+            ];
+        }
+        console.log('len of allC' + allCoords.length)
+        // Build grid and count points in each cell
+        const grid = {};
+        allCoords.forEach(([lng, lat]) => {
+            // Round to grid cell
+            const x = Math.floor(lng / gridSize);
+            const y = Math.floor(lat / gridSize);
+            const key = `${x},${y}`;
+            if (!grid[key]) grid[key] = [];
+            grid[key].push([lng, lat]);
+        });
+
+        // Find the cell with the most points
+        let maxCell = null;
+        let maxCount = 0;
+        Object.entries(grid).forEach(([key, points]) => {
+            if (points.length > maxCount) {
+                maxCount = points.length;
+                maxCell = key;
+            }
+        });
+        // Get the densest cell's bounding box
+        const [cellX, cellY] = maxCell.split(',').map(Number);
+        const minLng = cellX * gridSize;
+        const minLat = cellY * gridSize;
+        const maxLng = minLng + gridSize;
+        const maxLat = minLat + gridSize;
+
+
+        // find difference between min and max lng to see if should return null
+        let diffLng = Math.abs(minLng - maxLng)
+        // if absolute value of diff is more than 179 return null
+        if (diffLng > 270) {
+            console.log('Greater than 270: ' + diffLng)
+            return null;
+        }
+        console.log('diffLng: ' + diffLng)
+
+        console.log('SW['+ minLng +',' + minLat +']')
+        console.log('NE['+ maxLng +',' + maxLat +']')
+    
+
+        // Optionally, expand the bounding box slightly for better fit
+        // if one feature padding of .5 else ... 
+        const pad = 0;
+        return [
+            [minLng - pad, minLat - pad], // SW
+            [maxLng + pad, maxLat + pad]  // NE
+        ];
+    }
+}
+
+function getBoundingBox(features) {
+    // this function will result in two coordinate pairings that look like the example below
+    // it'll be used by the mapbox fitbounds() method to re orient the map based off of the locations of selected / filtered projects or map assets
+    // those projects can be selected by the user in four ways:
+    // 1.) adjusting the legend filters on status or project type -- rarely will be fitBounds eligible
+    // 2.) selecting a country or continent from the dropdown -- TODO implement std dev but done, instead using density but with a maxZoom
+    // 3.) searching by name of the project in the search bar -- done
+    // 4.) clicking an asset // USE flyTo DONE
+    // TODO if user interacting do not initiate fitBounds ... do we wait? 
+    // sometimes only one project or asset will be returned 
+    // in most cases though many projects will be returned
+    // this function should calculate the most relevant bounding box that helps focus and zoom the user into their area of interest on the map
+    // [32.958984, -5.353521], // [lng, lat] - southwestern corner of the bounds
+    // [43.50585, 5.615985] // [lng, lat] - northeastern corner of the bounds
+
+    // If no features provided, use currently filtered features
+    if (!features) {
+        features = config.processedGeoJSON && config.processedGeoJSON.features
+            ? config.processedGeoJSON.features
+            : [];
+    }
+    if (!features.length) {
+
+        // Return a small bounds around the initial center to trigger fitBounds
+        return null;
+
+    }
+    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+    features.forEach(f => {
+        let coords = f.geometry && f.geometry.type === "Point"
+            ? f.geometry.coordinates
+            : (f.geometry && f.geometry.coordinates && f.geometry.coordinates.length
+                ? f.geometry.coordinates.flat(Infinity)
+                : []);
+        // Handle both Point and LineString/MultiPoint/MultiLineString
+        if (Array.isArray(coords[0])) {
+            coords.forEach(c => {
+                if (Array.isArray(c) && c.length === 2) {
+                    minLng = Math.min(minLng, c[0]);
+                    minLat = Math.min(minLat, c[1]);
+                    maxLng = Math.max(maxLng, c[0]);
+                    maxLat = Math.max(maxLat, c[1]);
+                }
+            });
+        } else if (coords.length === 2) {
+            minLng = Math.min(minLng, coords[0]);
+            minLat = Math.min(minLat, coords[1]);
+            maxLng = Math.max(maxLng, coords[0]);
+            maxLat = Math.max(maxLat, coords[1]);
+        }
+    });
+    // If only one point, expand bounds slightly for better fit
+    if (minLng === maxLng && minLat === maxLat) {
+        const pad = 0.1;
+        minLng -= pad; maxLng += pad;
+        minLat -= pad; maxLat += pad;
+    }
+
+    // find difference between min and max lng to see if should return null
+    let diffLng = Math.abs(minLng - maxLng)
+    // if absolute value of diff is more than 179 return null
+    if (diffLng > 270) {
+        console.log('Greater than 270: ' + diffLng)
+        return null;
+    }
+    console.log('diffLng: ' + diffLng)
+
+    console.log('SW['+ minLng +',' + minLat +']')
+    console.log('NE['+ maxLng +',' + maxLat +']')
+    
+
+
+    return [
+        [minLng, minLat], // SW
+        [maxLng, maxLat]  // NE
+    ];
+}
 /*
   load data in various formats, and prepare for use in application
 */
@@ -144,9 +350,9 @@ function addGeoJSON(jsonData) {
             if (feature.properties[config['countryField']]){
                 config.geojson.features.push(feature);
             }
-            else {
-                console.log(feature)
-            }
+            // else {
+            //     console.log(feature)
+            // }
         });
 
     }
@@ -321,7 +527,75 @@ function findLinkedAssets() {
         config.processedGeoJSON.features.push(features[0]);
 
     });
+    if (initialLoad == true) {
+        // Do not go through fitBounds on initialLoad 
+        userInteracting = false;
+        spinGlobe();
+    } else {
+
+        // Try here for fitBounds
+        // if map projection is not mercator or globe do not do fitbounds 
+        if (config.projection == 'globe'){
+            // fit to the highlighted projects and zoom in
+            // let boundingBoxSet = getBoundingBox()
+            let boundingBoxSet = findDensity(); // better function that will avoid anomalies and poles
+            // TODO find size of bounding box and then determine max zoom so if its small or less features higher zoom less map
+            // if larger or more features or many dense clusters then low zoom more map
+
+            // if there are no search terms or filters
+            // zoom out and spin 
+            
+
+            if (boundingBoxSet) {
+                // find diff 
+                // if difference between max and min longitude is more than 179  +/- 
+                // return to center and start spinning
+                // getZoom
+                // if (diff within range){
+                map.fitBounds(boundingBoxSet, {
+                    padding: {top: 10, bottom:25, left: 15, right: 5},
+                    // maxZoom: {4},
+                    // linear: true,
+                    maxZoom: 2,
+                    // pitch: 0,
+                    // bearing: 0,
+                    // offset: [0,0]
+                });
+                // }else {
+                    
+                // }
+            } else {
+                // if null for no features
+                // return back to start
+                // If nothing is selected, reset to initial center and resume spinning
+
+                // Using easeTo options. jumpTo without animation
+                // or try resetNorth and resetNorthPitch
+                map.jumpTo({
+                    center: [0, 0],
+                    zoom: 1,
+
+                })
+                userInteracting = false;
+                spinGlobe();
+                // map.easeTo({
+                //     center: [0,0],
+                //     zoom: 1,
+                //     speed: 0.2, // easeTo
+                //     curve: 1, // easeTo
+                //     duration: 1000, // easeTo
+                //     easing(t) { // easeTo
+                //         return t;
+                //     }
+                // })
+
+            }
+            console.log('Just fired fitBounds in filterGeoJson')
+
+        }
 }
+}
+
 function generateIcon(icon) {
     let label = JSON.stringify(icon);
     if (map.hasImage(label)) return;
@@ -462,6 +736,8 @@ function addLayers() {
 
     addEvents();
 }
+
+
 function addPointLayer() {
      // First build circle layer
     //  build style json for circle-color based on config.color
@@ -648,25 +924,60 @@ function addLineLayer() {
     );
 }
 
-function addEvents() {
 
+
+function addEvents() {
+    
     // Example trigger of a BoxZoomEvent of type "boxzoomstart"
     map.on('zoomend', (e) => {
 
         currZoom = map.getZoom();
         console.log('currZoom', currZoom);
         
-        // event type: boxzoomstart
+    });
+
+    map.on('zoomstart', (e)=> {
+        userInteracting = true;
+        spinGlobe();
     });
 
     map.on('click', (e) => {
         userInteracting = true;
         spinGlobe();
+
         const bbox = [ [e.point.x - config.hitArea, e.point.y - config.hitArea], [e.point.x + config.hitArea, e.point.y + config.hitArea]];
         const selectedFeatures = getUniqueFeatures(map.queryRenderedFeatures(bbox, {layers: config.layers}), config.linkField).sort((a, b) => a.properties[config.nameField].localeCompare(b.properties[config.nameField]));
-
+        // Print out key-value pairs of each object in selectedFeatures to find lat lng 
+        // selectedFeatures.forEach((feature, idx) => {
+        //     console.log(`Feature ${idx}:`);
+        //     Object.entries(feature.properties).forEach(([key, value]) => {
+        //     console.log(`  ${key}: ${value}`);
+        //     });
+        // });
 
         if (selectedFeatures.length == 0) return;
+
+        let bboxClick = getBoundingBox(selectedFeatures)
+        console.log('bboxClick: ' + bboxClick)
+        // map.flyTo(bbox, {
+        //         minZoom: 4,
+        //         });
+        
+        // TODO adjust zoom level at this point with jumpTo or easeTo or setZoom
+        // let curr_zoom = map.getZoom();
+        // // 0 and 22
+        // let new_zoom = curr_zoom * 2
+
+        // // TODO deal with centering of the lat lng if clicking one point then use the lat lng not bounding box July 3
+        map.easeTo({
+            zoom: 4,
+            speed: 0.7, // easeTo
+            curve: 1, // easeTo
+            duration: 1000, // easeTo
+            easing(t) { // easeTo
+                return t;
+            }
+        });
 
         const links = selectedFeatures.map(
             (feature) => feature.properties[config.linkField]
@@ -676,7 +987,14 @@ function addEvents() {
 
         if (selectedFeatures.length == 1) {
             config.selectModal = '';
+            console.log(bboxClick[0], bboxClick[1]) // use these for specific lat lng 
+            // fly and zoom in whenever one is selected 
+            // map.flyTo({
+            //         center: [lat, lng],
+            //         minZoom: 4,
 
+            //         });
+            
             displayDetails(config.linked[selectedFeatures[0].properties[config.linkField]]); // where displayDetails is called
             // commenting this out because it creates a bug in summary capacity section 
             // if (config.tiles) {
@@ -721,6 +1039,8 @@ function addEvents() {
         }); 
     });
 
+
+
     $('#basemap-toggle').on("click", function() {
         if (config.baseMap == "Streets") {
            // $('#basemap-toggle').text("Streets");
@@ -743,10 +1063,16 @@ function addEvents() {
         }
     });
 
-    $('#reset-all-button').on("click", function() {
-        enableResetAll(); // change this so it only clears search not all filtering of legend
-    });
 
+    // on reset with All and clear search make it not zoom in on China 
+    // spinglobe again
+
+    $('#reset-all-button').on("click", function() {
+        enableClearSearch(); // change this so it only clears search not all filtering of legend
+        userInteracting = false;
+        spinGlobe();
+
+    });
 
     $('#collapse-sidebar').on("click", function() {
         $('#filter-form').hide();
@@ -970,6 +1296,12 @@ function countFilteredFeatures() {
     });
 }
 function filterData() {
+        // reassign initialLoad so that fly to / fitBounds / findDensity does not use default bbox
+    if (initialLoad === true){
+        initialLoad = false;
+        userInteracting = true;
+    }
+
     // // show
     $('#spinner-container').removeClass('d-none')
     $('#spinner-container').addClass('d-flex')
@@ -1000,6 +1332,7 @@ function filterTiles() {
     config.filterExpression = [];
     // TODO apply diacritic solution here for GIPT as well
     if (config.searchText.length >= 3) {
+        
         let searchExpression = ['any'];
         config.selectedSearchFields.split(',').forEach((field) => {
             // let mapValue = removeDiacritics(field); // too slow so we'll do it the data input way for removing diacritics in search
@@ -1075,6 +1408,7 @@ function filterGeoJSON() {
             if (! filterStatus[field].includes(feature.properties[field])) include = false;
         }
         if (config.searchText.length >= 3) {
+            userInteracting = true;
             if (config.selectedSearchFields.split(',').filter((field) => {
                 // remove diacritics from mapValue
                 if (feature.properties[field] != null){
@@ -1090,6 +1424,7 @@ function filterGeoJSON() {
         }
         
         if (config.selectedCountries.length > 0) {
+            userInteracting = true;
             // Check if any of the selected countries are associated with the project
             const projectCountries = feature.properties[config.countryField].split(';').map(country => country.trim());
 
@@ -1107,6 +1442,7 @@ function filterGeoJSON() {
     });
     // config.processedGeoJSON = JSON.parse(JSON.stringify(filteredGeoJSON));
     config.processedGeoJSON = filteredGeoJSON;
+    spinGlobe();
     findLinkedAssets();
     config.tableDirty = true;
     updateTable();
@@ -1815,14 +2151,14 @@ function enableSearchSelect() {
 
     config.selectedSearchFields = allSearchFields.join(',');
 }
+function enableClearSearch() {
 
-function enableResetAll() {
     // need to also handle for table view - it works the same no special handling needed.
 
-    // clear country filter by returning selectedCountryLabel to 'All' DONE!
-    $('#selectedCountryLabel').text("all");
-    config.selectedCountryText = '';
-    config.selectedCountries = [];
+    // // clear country filter by returning selectedCountryLabel to 'All' DONE!
+    // $('#selectedCountryLabel').text("all");
+    // config.selectedCountryText = '';
+    // config.selectedCountries = [];
     
     // // clear search text by making search text ''
     config.searchText = ''; 
@@ -1844,10 +2180,50 @@ function enableResetAll() {
     //         toggleFilter(this.dataset.checkid);
     //     }
     // }); 
+
+    // // start the spinner
+    // $('#spinner-container-filter').removeClass('d-none')
+    // $('#spinner-container-filter').addClass('d-flex')
+
     // then filter data
     filterData();
+    // and start spinning again like from initial load
+    // userInteracting = false;
+    // spinGlobe();
 
-}  
+}
+// function enableResetAll() {
+//     // need to also handle for table view - it works the same no special handling needed.
+
+//     // clear country filter by returning selectedCountryLabel to 'All' DONE!
+//     $('#selectedCountryLabel').text("all");
+//     config.selectedCountryText = '';
+//     config.selectedCountries = [];
+    
+//     // // clear search text by making search text ''
+//     config.searchText = ''; 
+//     $('#search-text').val('');
+
+//     // put search field category back to all
+//     let allSearchFields = [];
+//     Object.keys(config.searchFields).forEach((field_label) => {
+//         allSearchFields = allSearchFields.concat(config.searchFields[field_label]);
+//     });
+//     config.selectedSearchFields = allSearchFields.join(',');
+//     $('#selectedSearchLabel').text("all");
+
+//     // this removes the functionality that was clearing all filters when you only wnat to clear the search box
+//     // clear legend by checking checked boxes DONE! 
+//     // $('.filter-row').each(function() {
+//     //     if (! $('#' + this.dataset.checkid)[0].checked) {
+//     //         $('#' + this.dataset.checkid)[0].checked = true;
+//     //         toggleFilter(this.dataset.checkid);
+//     //     }
+//     // }); 
+//     // then filter data
+//     filterData();
+
+// }  
 
 
 
