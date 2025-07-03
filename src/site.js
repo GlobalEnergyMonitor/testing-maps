@@ -45,6 +45,7 @@ function determineZoom() {
     if (window.innerWidth < 1000) { modifier = 500; }
     else if (window.innerWidth < 1500) { modifier = 575; }
     let zoom = config.zoomFactor * (window.innerWidth - modifier) / modifier;
+    console.log(zoom)
     return zoom;
 }
 
@@ -474,24 +475,48 @@ function addPointLayer() {
         ];
     }
 
-    let interpolateExpression = ('interpolate' in config ) ? config.interpolate : ["exponential", .5];//["linear"];//["exponential", .5];
+    let interpolateExpression = ('interpolate' in config ) ? config.interpolate : ["linear"];//["linear"];//["exponential", .5];
     console.log(interpolateExpression)
-    // find out the current zoom level
-    // bins for each zoom stage and override the config min max radius 
-    paint['circle-radius'] = [
-        "interpolate", ["linear"], ["zoom"],
-        1, ["interpolate", interpolateExpression,
-            ["to-number",["get", config.capacityField]],
-            config.minPointCapacity, config.minRadius,
-            config.maxPointCapacity, config.maxRadius
-        ],
-        10, ["interpolate", interpolateExpression,
-            ["to-number",["get", config.capacityField]],
-            config.minPointCapacity, config.highZoomMinRadius,
-            config.maxPointCapacity, config.highZoomMaxRadius
-        ],
 
-    ];
+    if (config.sqrt === true) {
+        console.log('sqrt true')
+        // sqrtCapacity = ['sqrt', ['get', config.capacityField]] 
+        // Calculate actual square roots as numbers, not Mapbox expressions
+        const sqrtMin = Math.sqrt(config.minPointCapacity);
+        const sqrtMax = Math.sqrt(config.maxPointCapacity);
+        console.log(sqrtMin, sqrtMax)
+
+        paint['circle-radius'] = [
+            "interpolate", ["linear"], ["zoom"],
+            1, ["interpolate", interpolateExpression,
+                ['sqrt',["to-number", ['get', config.capacityField]]],
+                sqrtMin, config.minRadius,
+                sqrtMax, config.maxRadius
+            ],
+            10, ["interpolate", interpolateExpression,
+                ['sqrt',["to-number", ['get', config.capacityField]]],
+                sqrtMin, config.highZoomMinRadius,
+                sqrtMax, config.highZoomMaxRadius
+            ],
+
+        ];
+    }
+    else {
+        paint['circle-radius'] = [
+            "interpolate", ["linear"], ["zoom"],
+            1, ["interpolate", interpolateExpression,
+                ["to-number",["get", config.capacityField]],
+                config.minPointCapacity, config.minRadius,
+                config.maxPointCapacity, config.maxRadius
+            ],
+            10, ["interpolate", interpolateExpression,
+                ["to-number",["get", config.capacityField]],
+                config.minPointCapacity, config.highZoomMinRadius,
+                config.maxPointCapacity, config.highZoomMaxRadius
+            ],
+
+        ];
+    }
 
     
     map.addLayer({
@@ -582,7 +607,7 @@ function addLineLayer() {
     let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
 
     paint['line-width'] = [
-        "interpolate", ["exponential", .5], ["zoom"],
+        "interpolate", ["linear"], ["zoom"],
         1, ["interpolate", interpolateExpression,
             ["to-number",["get", config.capacityField]],
             config.minLineCapacity, config.minLineWidth,

@@ -6,6 +6,7 @@ var config = {
         ],
     tileSourceLayer: 'integrated',
 
+    sqrt: true,
     projection: 'globe',
     color: { /* will be processed both into style json for paint circle-color property, and for legend. 
             what's right property name?? is color also listing values used in the summary? 
@@ -43,7 +44,6 @@ var config = {
     highZoomMaxRadius: 32,
 
     interpolate: ["cubic-bezier", 0, 0, 0, 1],
-    // interpolate: ["exponential", .5],
     filters: [
         {
             field: 'type',

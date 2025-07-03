@@ -7,6 +7,7 @@ var site_config = {
 
     center: [0, 0],
     projection: 'naturalEarth',
+    sqrt: false, // default so can apply sqrt refactor test to only select maps but adjust in site.js
 
     /* Zoom level that asset detail cards open at; this is a good one to override in tracker config,
      depending on scale of facilities */
