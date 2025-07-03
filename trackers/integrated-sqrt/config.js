@@ -5,6 +5,8 @@ var config = {
         'https://mapsintegrated.nyc3.cdn.digitaloceanspaces.com/maps/integrated-2025-04-30/{z}/{x}/{y}.pbf'
         ],
     tileSourceLayer: 'integrated',
+
+    sqrt: true,
     projection: 'globe',
     color: { /* will be processed both into style json for paint circle-color property, and for legend. 
             what's right property name?? is color also listing values used in the summary? 
@@ -41,7 +43,7 @@ var config = {
     highZoomMinRadius: 4,
     highZoomMaxRadius: 32,
 
-    interpolate: ["cubic-bezier", 0, 0, 0, 1],
+    // interpolate: ["cubic-bezier", 0, 0, 0, 1],
     filters: [
         {
             field: 'type',

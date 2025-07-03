@@ -185,7 +185,7 @@ function addTiles() {
     map.addSource('assets-source', {
         'type': 'vector',
         'tiles': config.tiles,
-        'minzoom': 1,
+        'minzoom': 0,
         'maxzoom': 10 // ?
     });
 
@@ -531,6 +531,7 @@ function addPointLayer() {
     config.layers.push('assets-points');
 
 
+    // TODO for sqrt solution adjust icon-size value July 3 2025
     // Add layer with proportional icons
     map.addLayer({
         'id': 'assets-symbol', 
