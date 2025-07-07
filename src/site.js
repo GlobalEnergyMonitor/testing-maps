@@ -553,10 +553,10 @@ function findLinkedAssets() {
                 // getZoom
                 // if (diff within range){
                 map.fitBounds(boundingBoxSet, {
-                    padding: {top: 10, bottom:25, left: 15, right: 5},
+                    // padding: {top: 10, bottom:25, left: 15, right: 5},
                     // maxZoom: {4},
                     // linear: true,
-                    maxZoom: 2,
+                    maxZoom: 10,
                     // pitch: 0,
                     // bearing: 0,
                     // offset: [0,0]
@@ -638,14 +638,7 @@ function generateIcon(icon) {
     });
 }
 function setMinMax() {
-    // If I can find a way to incorporate the linked asset calculation in this or before
-    // this runs then we would be closer to solving the area-based scaling issue
 
-
-    // Maisie says we should show the full range
-    // which is smallest unit, and largest project level capacity
-    // We could remove these defaults and then returns a error if no value is assigned to the min and max keys
-    // But could be okay to not use project-level since easier in JS and biggest might be a project with one unit
     config.maxPointCapacity = 0;
     config.minPointCapacity = 1000000;
     config.maxLineCapacity = 0;
@@ -664,8 +657,7 @@ function setMinMax() {
         // vice versa for min capacity
         // later this is used to size the assets along smoothly by interpolation across the width between min and maxPoint and LineWidth
         // this min and max Line and Point Capacity is crucial to the scaling, along with the unit's capacity
-        // we need to be using the summed project's capacity not the unit's capacity to inform this, 
-        // either later in addPointLayer where we consider the unit's capacity during interpolation, or here where we find the min and max unit size
+
         if (parseFloat(feature.properties[config.capacityField]) > config[maxCapacityKey]) {
             config[maxCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
         }
@@ -756,8 +748,6 @@ function addPointLayer() {
 
     if (config.sqrt === true) {
         console.log('sqrt true')
-        // sqrtCapacity = ['sqrt', ['get', config.capacityField]] 
-        // Calculate actual square roots as numbers, not Mapbox expressions
         const sqrtMin = Math.sqrt(config.minPointCapacity);
         const sqrtMax = Math.sqrt(config.maxPointCapacity);
         console.log(sqrtMin, sqrtMax)
@@ -807,30 +797,62 @@ function addPointLayer() {
     config.layers.push('assets-points');
 
 
-    // TODO for sqrt solution adjust icon-size value July 3 2025
     // Add layer with proportional icons
-    map.addLayer({
-        'id': 'assets-symbol', 
-        'type': 'symbol',
-        'source': 'assets-source',
-        'filter': ["==",["geometry-type"],'Point'],
-        ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-        'layout': {
-            'icon-image': ["get", "icon"],
-            'icon-allow-overlap': true,
-            'icon-size': [
-                "interpolate", ["linear"], ["zoom"],
-                1, ['interpolate', interpolateExpression,
-                    ["to-number", ["get", config.capacityField]],
-                    config.minPointCapacity, config.minRadius * 2 / 64,
-                    config.maxPointCapacity, config.maxRadius * 2 / 64],
-                10, ['interpolate', interpolateExpression,
-                    ["to-number", ["get", config.capacityField]],
-                    config.minPointCapacity, config.highZoomMinRadius * 2 / 64,
-                    config.maxPointCapacity, config.highZoomMaxRadius * 2 / 64]
-            ]
-        }
-    });
+    if (config.sqrt === true) {
+        console.log('in sqrt')
+        const sqrtMin = Math.sqrt(config.minPointCapacity);
+        const sqrtMax = Math.sqrt(config.maxPointCapacity);
+        console.log(sqrtMin, sqrtMax)
+
+        map.addLayer({
+            'id': 'assets-symbol', 
+            'type': 'symbol',
+            'source': 'assets-source',
+            'filter': ["==",["geometry-type"],'Point'],
+            ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
+            'layout': {
+                'icon-image': ["get", "icon"],
+                'icon-allow-overlap': true,
+                'icon-size': [
+                    "interpolate", ["linear"], ["zoom"],
+                    1, ['interpolate', interpolateExpression,
+                        ['sqrt',["to-number", ['get', config.capacityField]]],
+                        // ["to-number", ["get", config.capacityField]],
+                        sqrtMin, config.minRadius * 2 / 64,
+                        sqrtMax, config.maxRadius * 2 / 64],
+                    10, ['interpolate', interpolateExpression,
+                        ['sqrt',["to-number", ['get', config.capacityField]]],
+                        // ["to-number", ["get", config.capacityField]],
+                        sqrtMin, config.highZoomMinRadius * 2 / 64,
+                        sqrtMax, config.highZoomMaxRadius * 2 / 64]
+                    ]
+            }
+        });        
+    }
+    else {
+        map.addLayer({
+            'id': 'assets-symbol', 
+            'type': 'symbol',
+            'source': 'assets-source',
+            'filter': ["==",["geometry-type"],'Point'],
+            ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
+            'layout': {
+                'icon-image': ["get", "icon"],
+                'icon-allow-overlap': true,
+                'icon-size': [
+                    "interpolate", ["linear"], ["zoom"],
+                    1, ['interpolate', interpolateExpression,
+                        ["to-number", ["get", config.capacityField]],
+                        config.minPointCapacity, config.minRadius * 2 / 64,
+                        config.maxPointCapacity, config.maxRadius * 2 / 64],
+                    10, ['interpolate', interpolateExpression,
+                        ["to-number", ["get", config.capacityField]],
+                        config.minPointCapacity, config.highZoomMinRadius * 2 / 64,
+                        config.maxPointCapacity, config.highZoomMaxRadius * 2 / 64]
+                ]
+            }
+        });
+    }
 
     // Add highlight layer
     paint = config.pointPaint;
@@ -970,9 +992,9 @@ function addEvents() {
 
         // // TODO deal with centering of the lat lng if clicking one point then use the lat lng not bounding box July 3
         map.easeTo({
-            zoom: 4,
+            zoom: 4, // should be 10 when we can control precision better
             speed: 0.7, // easeTo
-            curve: 1, // easeTo
+            // curve: 1, // easeTo
             duration: 1000, // easeTo
             easing(t) { // easeTo
                 return t;
