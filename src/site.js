@@ -678,7 +678,7 @@ function removeCapacityOutliers(){
     // so then when the setMaxMin() function goes to find the max and min it will see the capacity range
     // without outliers in it 
 
-    const _ = require('lodash');
+    // const _ = require('lodash');
 
 }
 
