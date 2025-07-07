@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "csv2geojson": "^5.1.2"
+    "csv2geojson": "^5.1.2",
+    "d3": "^7.9.0",
+    "lodash": "^4.17.21"
   }
 }

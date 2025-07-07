@@ -436,8 +436,6 @@ function geoJSONFromTiles() {
 
 // Builds lookup of linked assets by the link column
 //  and when linked assets share location, rebuilds processedGeoJSON with summed capacity and custom icon
-// what if we change this so instead of rebuilding on initial load we load the geojson directly?! to solve globe issue 
-// until David implements his fix
 
 
 function findLinkedAssets() {
@@ -638,7 +636,7 @@ function generateIcon(icon) {
     });
 }
 function setMinMax() {
-
+    removeCapacityOutliers() // TODO July 7th finish writing this function 
     config.maxPointCapacity = 0;
     config.minPointCapacity = 1000000;
     config.maxLineCapacity = 0;
@@ -666,6 +664,25 @@ function setMinMax() {
         }       
     });
 }
+
+function removeCapacityOutliers(){
+    // This would be called in setMinMax() so that the max and min are based off the dataset's
+    // capacity range after outliers are removed 
+    // so this should reassign feature.properties[config.capacityField] 
+    // with feature.properties[config.capacityNoOutlierField]
+
+    // go through entire data set and find mean and percentiles 
+    // identify what the outliers are in the over 95 percentile and under 5 perfentile are
+    // remove those from the special "capacityNoOutlierField"
+    // replace it with the highest value in the remaining group of capacities in the dataset 
+    // so then when the setMaxMin() function goes to find the max and min it will see the capacity range
+    // without outliers in it 
+
+    const _ = require('lodash');
+
+}
+
+
 
 /*
   render data
@@ -990,16 +1007,16 @@ function addEvents() {
         // // 0 and 22
         // let new_zoom = curr_zoom * 2
 
-        // // TODO deal with centering of the lat lng if clicking one point then use the lat lng not bounding box July 3
-        map.easeTo({
-            zoom: 4, // should be 10 when we can control precision better
-            speed: 0.7, // easeTo
-            // curve: 1, // easeTo
-            duration: 1000, // easeTo
-            easing(t) { // easeTo
-                return t;
-            }
-        });
+        // // TODO July7 deal with centering of the lat lng if clicking one point then use the lat lng not bounding box July 3
+        // map.easeTo({
+        //     zoom: 4, // should be 10 when we can control precision better
+        //     speed: 0.7, // easeTo
+        //     // curve: 1, // easeTo
+        //     duration: 1000, // easeTo
+        //     easing(t) { // easeTo
+        //         return t;
+        //     }
+        // });
 
         const links = selectedFeatures.map(
             (feature) => feature.properties[config.linkField]
