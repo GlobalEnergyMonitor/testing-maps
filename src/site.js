@@ -1765,12 +1765,9 @@ function displayDetails(features) {
                 if (features[0].properties[detail] === 0 && features[0].properties[detail] === 0.0){
                     console.log('0 so returning')
                     // skip to next iteration in a Object.keys(config.detailView).forEach((detail) => {
-                    // TODO make sure it is not block
                     return;
                 } else {
 
-                    // then create the status label for grouping of production method capacity per status type
-                    // TODO continue June 27ths
                     // Define the status types you want to check
                     const statusTypes = [
                         'Operating',
@@ -1782,12 +1779,7 @@ function displayDetails(features) {
                         'Mothballed'
                     ];
 
-                    // let all_gist_details = {};
-
                     statusTypes.forEach(status => {
-                        // account for operating pre ret
-                        // true operating TODO handle it so no false O when should be OPT
-
                         if (
                             status === 'Operating' &&
                             config.detailView[detail]['label'].includes('Operating pre-retirement')
