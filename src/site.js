@@ -321,6 +321,13 @@ function loadData() {
 }
 }
 function addGeoJSON(jsonData) {
+
+    // we want find maxMin max = largest project all units summed together, min = smallest unit
+    // find min max outside with preprocessing
+    // remove outliers with grouped
+    // sort without lodash to find percentile
+    // array of values, grouped capacities
+
     // converts all to geojson 
     if ('type' in jsonData && jsonData['type'] == 'FeatureCollection') {
         config.geojson = jsonData;
@@ -760,10 +767,11 @@ function addPointLayer() {
         ];
     }
 
-    let interpolateExpression = ('interpolate' in config ) ? config.interpolate : ["linear"];//["linear"];//["exponential", .5];
+    let interpolateExpression = ('interpolate' in config ) ? config.interpolate : ["linear"]; 
     console.log(interpolateExpression)
 
     if (config.sqrt === true) {
+        interpolateExpression = "linear"
         console.log('sqrt true')
         const sqrtMin = Math.sqrt(config.minPointCapacity);
         const sqrtMax = Math.sqrt(config.maxPointCapacity);
@@ -816,6 +824,7 @@ function addPointLayer() {
 
     // Add layer with proportional icons
     if (config.sqrt === true) {
+        interpolateExpression = "linear"
         console.log('in sqrt')
         const sqrtMin = Math.sqrt(config.minPointCapacity);
         const sqrtMax = Math.sqrt(config.maxPointCapacity);
@@ -860,7 +869,7 @@ function addPointLayer() {
                     "interpolate", ["linear"], ["zoom"],
                     1, ['interpolate', interpolateExpression,
                         ["to-number", ["get", config.capacityField]],
-                        config.minPointCapacity, config.minRadius * 2 / 64,
+                        config.minPointCapacity, config.minRadius * 2 / 64, // ASK MIKEL TODO
                         config.maxPointCapacity, config.maxRadius * 2 / 64],
                     10, ['interpolate', interpolateExpression,
                         ["to-number", ["get", config.capacityField]],
