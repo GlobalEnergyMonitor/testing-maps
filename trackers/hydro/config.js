@@ -2,16 +2,15 @@ var config = {
     /* name of the data file; use key `csv` if data file is CSV format */
     // csv: 'data.csv',
     geojson: 'ghpt_2025-04-23.geojson',
-
     colors: {
         'red greeninfo': '#c00',
         'light blue greeninfo': '#74add1',
         'blue greeninfo': '#4575b4',
         'green greeninfo': '#7dd47d',
-        'light grey greeninfo': '#ccc',
-        'grey greeninfo': '#666',
+        'light grey greeninfo': '#888',
+        'grey greeninfo': '#222', // darker grey
         'orange greeninfo': '#fd7e14',
-        'yellow greeninfo': '#f3ff00'
+        'yellow greeninfo': '#ffe066' // softer, less neon yellow
     },
     countryField: 'areas',
     multiCountry: true,

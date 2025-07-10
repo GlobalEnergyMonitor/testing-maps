@@ -7,7 +7,7 @@ var site_config = {
 
     center: [0, 0],
     projection: 'naturalEarth',
-    sqrt: false, // default so can apply sqrt refactor test to only select maps but adjust in site.js
+    sqrt: true, // default so can apply sqrt refactor test to only select maps but adjust in site.js
 
     /* Zoom level that asset detail cards open at; this is a good one to override in tracker config,
      depending on scale of facilities */
@@ -25,7 +25,7 @@ var site_config = {
 
     /* Mapbox styling applied to all trackers */
     pointPaint: {
-        'circle-opacity':.85
+        'circle-opacity':.75
     },
     linePaint: {
         'line-opacity':.85

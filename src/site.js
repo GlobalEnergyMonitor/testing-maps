@@ -643,32 +643,53 @@ function generateIcon(icon) {
     });
 }
 function setMinMax() {
-    removeCapacityOutliers() // TODO July 7th finish writing this function 
-    config.maxPointCapacity = 0;
-    config.minPointCapacity = 1000000;
-    config.maxLineCapacity = 0;
-    config.minLineCapacity = 1000000;
+    // config.maxPointCapacity = 0;
+    // config.minPointCapacity = 1000000;
+    // config.maxLineCapacity = 0;
+    // config.minLineCapacity = 1000000;
+
+    // get min max from grouped outlier function Stephen made
+    const [min, max] = removeCapacityOutliers();
+    const minNum = Number(min);
+    const maxNum = Number(max);
+    console.log('This is min ' + minNum);
+    console.log('This is max ' + maxNum);
+
+    // assign it to config's max and min point and line capacity values 
+    config.maxPointCapacity = maxNum;
+    config.minPointCapacity = minNum;
+    config.maxLineCapacity = maxNum;
+    config.minLineCapacity = minNum;
+    // this is existing code using it so we minimize changes
+    // establish name of the capacity keys based on geometries
+    // TODO JULY 9 check that maps that are mixed line and point work correctly
     let maxCapacityKey;
     let minCapacityKey;
+    // for each feature or row in the json data, assign max and min that we got from removeCapacityOutliers
     config.processedGeoJSON.features.forEach((feature) => {
         if (feature.geometry.type == "LineString") {
             minCapacityKey = 'minLineCapacity';
             maxCapacityKey = 'maxLineCapacity';
+            config[maxCapacityKey] =  parseFloat(maxNum);
+            config[minCapacityKey] =  parseFloat(minNum);
         } else {
             minCapacityKey = 'minPointCapacity';
             maxCapacityKey = 'maxPointCapacity';
+            config[maxCapacityKey] =  parseFloat(maxNum);
+            config[minCapacityKey] =  parseFloat(minNum);
         }
+    
         // this says, if the capacity is more than the max capacity so far then it should be used
         // vice versa for min capacity
         // later this is used to size the assets along smoothly by interpolation across the width between min and maxPoint and LineWidth
         // this min and max Line and Point Capacity is crucial to the scaling, along with the unit's capacity
 
-        if (parseFloat(feature.properties[config.capacityField]) > config[maxCapacityKey]) {
-            config[maxCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
-        }
-        if (parseFloat(feature.properties[config.capacityField]) < config[minCapacityKey]) {
-            config[minCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
-        }       
+        // if (parseFloat(feature.properties[config.capacityField]) > config[maxCapacityKey]) {
+        //     config[maxCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
+        // }
+        // if (parseFloat(feature.properties[config.capacityField]) < config[minCapacityKey]) {
+        //     config[minCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
+        // }       
     });
 }
 
@@ -684,8 +705,46 @@ function removeCapacityOutliers(){
     // replace it with the highest value in the remaining group of capacities in the dataset 
     // so then when the setMaxMin() function goes to find the max and min it will see the capacity range
     // without outliers in it 
+    
+    // From Stephen's observable https://observablehq.com/d/7a31f2909268ef8e
 
-    // const _ = require('lodash');
+    // create an empty object to populate with values 
+    let groupedObj = {}
+    let sizeField =  config.capacityField //'capacity-(mw)'
+    let projectIdField = config.linkField //'gem-location-id'
+    let outlierCutoffProportionMax = 0.98
+    let outlierCutoffProportionMin = 0 // if we want it in the future
+
+    // for each row in the json /geojsonGroupingTest (which would be our "config.geojson.features") add capacity to 
+    config.geojson.features.forEach((feature) => {
+        let cap = Number(feature.properties[sizeField]);
+        if (!isNaN(cap) && feature.properties[projectIdField] != null && feature.properties[projectIdField] !== "") {
+            groupedObj[feature.properties[projectIdField]] = !groupedObj[feature.properties[projectIdField]] ? cap :
+                groupedObj[feature.properties[projectIdField]] + cap;
+        }
+        else (
+            console.log('null values')
+        )
+    });
+
+    // extract the values from the object and sort ascending, filter out NaN and non-finite values
+    let sortedCumulativeValues = Object.values(groupedObj)
+        // .filter(v => typeof v === "number" && isFinite(v))
+        .sort((a, b) => a - b);
+
+    // If no valid values, return [0, 0] to avoid NaN
+    if (sortedCumulativeValues.length === 0) {
+        return [0, 0];
+    }
+
+    // return the first value (minimum unchanged), and the nth value after excluding outliers
+    const result = [
+        // Number(sortedCumulativeValues[0]),
+        Number(sortedCumulativeValues[Math.round(sortedCumulativeValues.length * outlierCutoffProportionMin) + 1]),
+        Number(sortedCumulativeValues[Math.round(sortedCumulativeValues.length * outlierCutoffProportionMax) - 1])
+    ];
+    console.log('removeCapacityOutliers result:', result);
+    return result;
 
 }
 
@@ -768,11 +827,11 @@ function addPointLayer() {
     }
 
     let interpolateExpression = ('interpolate' in config ) ? config.interpolate : ["linear"]; 
-    console.log(interpolateExpression)
 
     if (config.sqrt === true) {
-        interpolateExpression = "linear"
+        // interpolateExpression = ["exponential", 1.5]
         console.log('sqrt true')
+        console.log(interpolateExpression)
         const sqrtMin = Math.sqrt(config.minPointCapacity);
         const sqrtMax = Math.sqrt(config.maxPointCapacity);
         console.log(sqrtMin, sqrtMax)
@@ -793,6 +852,8 @@ function addPointLayer() {
         ];
     }
     else {
+        console.log(interpolateExpression)
+
         paint['circle-radius'] = [
             "interpolate", ["linear"], ["zoom"],
             1, ["interpolate", interpolateExpression,
@@ -824,7 +885,7 @@ function addPointLayer() {
 
     // Add layer with proportional icons
     if (config.sqrt === true) {
-        interpolateExpression = "linear"
+        // interpolateExpression = ["exponential", 1.5]
         console.log('in sqrt')
         const sqrtMin = Math.sqrt(config.minPointCapacity);
         const sqrtMax = Math.sqrt(config.maxPointCapacity);
@@ -902,7 +963,7 @@ function addPointLayer() {
             'source': 'assets-source',
             'filter': ["==",["geometry-type"],'Point'],
             ...('tileSourceLayer' in config && {'source-layer': config.tileSourceLayer}),
-            'minzoom': 8,
+            'minzoom': 3,
             'layout': {
                 'text-field': '{' + config.nameField + '}', 
                 'text-font': ["DIN Pro Italic"],
@@ -1035,7 +1096,7 @@ function addEvents() {
 
         if (selectedFeatures.length == 1) {
             config.selectModal = '';
-            console.log(bboxClick[0], bboxClick[1]) // use these for specific lat lng 
+            // console.log(bboxClick[0], bboxClick[1]) // use these for specific lat lng 
             // fly and zoom in whenever one is selected 
             // map.flyTo({
             //         center: [lat, lng],

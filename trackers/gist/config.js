@@ -175,13 +175,13 @@ var config = {
         'circle-opacity':.85
     },
     
-    /* radius associated with minimum/maximum value on map */
-    minRadius: 3,
-    maxRadius: 7,
+    // /* radius associated with minimum/maximum value on map */
+    // minRadius: 3,
+    // maxRadius: 7,
 
-    /* radius to increase min/max to under high zoom */
-    highZoomMinRadius: 5,
-    highZoomMaxRadius: 22,
+    // /* radius to increase min/max to under high zoom */
+    // highZoomMinRadius: 5,
+    // highZoomMaxRadius: 22,
 
     // showMaxCapacity: true,
 } 

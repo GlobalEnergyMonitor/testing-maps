@@ -1,4 +1,5 @@
 var config = {
+
     csv: 'compilation_output/gipt-data-2025-04-30.csv', 
     tiles: [
         // 'https://gem.dev.c10e.org/2024-03-12/{z}/{x}/{y}.pbf'
@@ -36,12 +37,12 @@ var config = {
     // highZoomMinLineWidth: 4,
     // highZoomMaxLineWidth: 32,
 
-    minRadius: 1,
-    maxRadius: 10,
-    highZoomMinRadius: 4,
-    highZoomMaxRadius: 32,
+    // minRadius: 1,
+    // maxRadius: 10,
+    // highZoomMinRadius: 4,
+    // highZoomMaxRadius: 32,
 
-    interpolate: ["cubic-bezier", 0, 0, 0, 1],
+    // interpolate: ["cubic-bezier", 0, 0, 0, 1],
     filters: [
         {
             field: 'type',

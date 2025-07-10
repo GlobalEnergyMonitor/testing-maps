@@ -191,16 +191,16 @@ var config = {
     // highZoomMaxLineWidth: 32,
 
     /* radius associated with minimum/maximum value on map */
-    minRadius: .8,
-    maxRadius: 10,
-    // /* radius to increase min/max to under high zoom */
-    highZoomMinRadius: 4,
-    highZoomMaxRadius: 32,
+    // minRadius: .8,
+    // maxRadius: 10,
+    // // /* radius to increase min/max to under high zoom */
+    // highZoomMinRadius: 4,
+    // highZoomMaxRadius: 32,
 
-    minLineWidth: .4,
-    maxLineWidth: 7,
-    highZoomMinLineWidth: .4,
-    highZoomMaxLineWidth: 7,
+    // minLineWidth: .4,
+    // maxLineWidth: 7,
+    // highZoomMinLineWidth: .4,
+    // highZoomMaxLineWidth: 7,
     // showAllPhases: true
     
     // interpolate: ["cubic-bezier", 0, 0, 0, 1],

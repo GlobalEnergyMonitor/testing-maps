@@ -90,7 +90,7 @@ showMaxCapacity: false,
 multiCountry: true,
 
 minLineWidth: 1,
-maxLineWidth: 4,
+maxLineWidth: 3,
 highZoomMinLineWidth: 2,
 highZoomMaxLineWidth: 5,
 
