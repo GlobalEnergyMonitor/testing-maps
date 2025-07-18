@@ -713,7 +713,7 @@ function removeCapacityOutliers(){
     let sizeField =  config.capacityField //'capacity-(mw)'
     let projectIdField = config.linkField //'gem-location-id'
     let outlierCutoffProportionMax = 0.98
-    let outlierCutoffProportionMin = 0 // if we want it in the future
+    // let outlierCutoffProportionMin = 0 // if we want it in the future
 
     // for each row in the json /geojsonGroupingTest (which would be our "config.geojson.features") add capacity to 
     config.geojson.features.forEach((feature) => {
@@ -739,8 +739,8 @@ function removeCapacityOutliers(){
 
     // return the first value (minimum unchanged), and the nth value after excluding outliers
     const result = [
-        // Number(sortedCumulativeValues[0]),
-        Number(sortedCumulativeValues[Math.round(sortedCumulativeValues.length * outlierCutoffProportionMin) + 1]),
+        Number(sortedCumulativeValues[0]),
+        // Number(sortedCumulativeValues[Math.round(sortedCumulativeValues.length * outlierCutoffProportionMin) + 1]),
         Number(sortedCumulativeValues[Math.round(sortedCumulativeValues.length * outlierCutoffProportionMax) - 1])
     ];
     console.log('removeCapacityOutliers result:', result);
@@ -1841,13 +1841,7 @@ function displayDetails(features) {
                 console.log([ features[0].properties[config.color.field] ])   
             }                 
             else if (config.detailView[detail]['display'] == 'gist-unit-level'){
-                let opPreRet = []
-                let op = []
-                let an = []
-                let con = []
-                let ret = []
-                let canc = []
-                let moth = []
+  
                 // cycle through all of them to only group them if there is value there 
                 if (features[0].properties[detail] === 0 && features[0].properties[detail] === 0.0){
                     console.log('0 so returning')

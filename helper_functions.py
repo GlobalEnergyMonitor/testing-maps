@@ -3090,10 +3090,12 @@ def fix_status_space(df):
     if 'plant-status' in df.columns:
         df['status_display'] = df['plant-status']
         df['status_display'] = df['status_display'].replace('', 'not found')
+        df['status_display'] = df['status_display'].replace('unknown', 'not found')
         df['plant-status'] = df['plant-status'].apply(lambda x: x.replace(' ', '-'))
     else:
         df['status_display'] = df['status']
         df['status_display'] = df['status_display'].replace('', 'not found')
+        df['status_display'] = df['status_display'].replace('unknown', 'not found')
         df['status'] = df['status'].apply(lambda x: x.replace(' ', '-'))
         print(set(df['status'].to_list()))
         # input('inspect status with _')
