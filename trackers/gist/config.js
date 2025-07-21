@@ -1,6 +1,6 @@
 var config = {
-    csv: 'compilation_output/Iron & Steel-map-file-2025-03-25.csv', // Saying can't be found? TODO march 24th
-
+    csv: 'compilation_output/Iron & Steel-map-file-2025-03-25.csv', 
+// https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gist/2025-07/gist_map_2025-07-17.geojson
     colors: {
         'light red': '#f28b82',
         'red': '#c74a48',
@@ -50,7 +50,7 @@ var config = {
             // values: ['Electric-arc-furnaces', 'Basic-oxygen-furnaces', 'Open-hearth-furnaces', 'Blast-furnaces', 'DRI-furnaces',],
             // values-labels: ['Electric arc furnaces', 'Basic oxygen furnaces', 'Open hearth furnaces', 'Blast furnaces', 'DRI furnaces'],
             primary: true,
-            field_hover_text: 'For full descriptions see the <a href="https://globalenergymonitor.org/projects/global-iron-and-steel-tracker/frequently-asked-questions/"> FAQs</a>.',        
+            field_hover_text: 'For full descriptions of steelmaking route categories, see the <a href="https://globalenergymonitor.org/projects/global-iron-and-steel-tracker/frequently-asked-questions/"> FAQs</a>.',        
         },
         {
             field: 'plant-status',
