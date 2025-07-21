@@ -1230,7 +1230,7 @@ function buildFilters() {
         if (config.showToolTip){
             // create more space for europe legend
             if (filter.primary && filter.field_hover_text){
-            $('#filter-form').append('<div style="margin-top: 12px;">' + // Add buffer above
+            $('#filter-form').append('<div style="margin-top: 20px;">' + // Add buffer above
             '<h7 class="card-title">' + (filter.label || filter.field.replaceAll("_"," ")) + 
             '<div class="infobox" id="infobox"><span>i</span><div class="tooltip" id="tooltip">' + filter.field_hover_text + 
             '</div></div></h7> <div class="col-12 text-left small" id="all-select-section-level"><a href="" onclick="selectAllFilterSection(\'' + filter.field + '\'); return false;">select all section</a> | <a href="" onclick="clearAllFilterSection(\'' + filter.field + '\'); return false;">clear all section</a></div>');
