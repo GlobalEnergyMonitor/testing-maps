@@ -1,3 +1,7 @@
+# note this was run separtely from the run_maps.py file, it was for catch up and initial load into s3
+# and used to save geojson files to s3
+# TODO re write this with the data mangement process at the foreground / main point 
+
 import pandas as pd
 import geopandas as gpd
 import numpy as np
@@ -10,6 +14,7 @@ import argparse
 from io import BytesIO
 import requests
 from datetime import datetime, timedelta
+from all_config import releaseiso
 
 today_date = datetime.today()
 iso_today_date = today_date.isoformat().split('T')[0]
@@ -53,14 +58,16 @@ def googlelinktoparquet(link=''):
     else:
         print(f'Manually downloading drive files, but now this will run latest download through parquet process!')
         file_id = 'md' # for manually downloaded
-        pass
 
     # Go to the downloads folder and find the most recent Excel file with "DATA TEAM COPY" in the title
     downloads_folder = os.path.expanduser("~/Downloads")
-    files = [os.path.join(downloads_folder, f) for f in os.listdir(downloads_folder) if f.endswith(".xlsx")] # and "DATA TEAM COPY" in f
+    xlfiles = [os.path.join(downloads_folder, f) for f in os.listdir(downloads_folder) if f.endswith(".xlsx")] # and "DATA TEAM COPY" in f
+    jsonfiles = [os.path.join(downloads_folder, f) for f in os.listdir(downloads_folder) if f.endswith(".json")] # and "DATA TEAM COPY" in f
+    
+    files = xlfiles + jsonfiles
     
     if not files:
-        print("No Excel file with 'DATA TEAM COPY' in the title found in the Downloads folder.")
+        print("No relevant files found in the Downloads folder.")
         return
     
     # Find the most recent file
@@ -69,17 +76,34 @@ def googlelinktoparquet(link=''):
     print(f"Most recent file's saved date/time: {most_recent_file_time}")
     print(f"Most recent file found: {most_recent_file}")
     
-    # Load the file into a pandas DataFrame
-    try:
-
-        df = pd.read_excel(most_recent_file, engine='openpyxl', sheet_name=None)
-        new_name = most_recent_file.split('/')[-1].split('.xlsx')[0].replace(' ', '').replace('-','').replace('DATATEAMCOPY', 'DTC')
-        print(f'new_name: {new_name}')
-
-    except Exception as e:
-        print(f"Failed to read the file as an Excel file: {e}") 
-        return
+    # save most recent file to uncategorized
+    saves3(most_recent_file)
     
+    
+    # Load the file into a pandas DataFrame
+    if most_recent_file.endswith('.xlsx'):
+        try:
+            df = pd.read_excel(most_recent_file, engine='openpyxl', sheet_name=None)
+            # TODO check if this new name actually helps
+            new_name = most_recent_file.split('/')[-1].split('.xlsx')[0].replace(' ', '').replace('-','').replace('DATATEAMCOPY', 'DTC')
+            print(f'new_name: {new_name}')
+
+        except Exception as e:
+            print(f"Failed to read the file as an Excel file: {e}") 
+            return
+    elif most_recent_file.endswith('.json'):
+        try:
+            df = gpd.read_file(most_recent_file)
+            # TODO check if this new name actually helps
+
+            new_name = most_recent_file.split('/')[-1].split('.xlsx')[0].replace(' ', '').replace('-','').replace('DATATEAMCOPY', 'DTC')
+            print(f'new_name: {new_name}')
+
+        except Exception as e:
+            print(f"Failed to read the file as an Excel file: {e}") 
+            return        
+        
+        
 
     # Save the DataFrame as a Parquet file
     newfilepath = f"{downloads_folder}/{new_name}_{file_id}_{iso_today_date}.parquet"
@@ -130,7 +154,7 @@ def saves3(filepath):
 
     do_command_s3 = (
                 f'export BUCKETEER_BUCKET_NAME=publicgemdata && '
-                f'aws s3 cp "{file}" s3://$BUCKETEER_BUCKET_NAME/latest/ '
+                f'aws s3 cp "{file}" s3://$BUCKETEER_BUCKET_NAME/uncategorized/ '
                 f'--endpoint-url https://nyc3.digitaloceanspaces.com --acl public-read')
 
             # Execute the terminal command to pull down file from digital ocean

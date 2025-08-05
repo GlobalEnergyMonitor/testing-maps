@@ -81,12 +81,15 @@ def make_map(list_of_map_objs):
                     tracker_obj.set_fuel_filter_eu() # this fuel filter should happen when we are at this point of non tuple ville and just needs to happen to these other eu specific tracker dfs
                     tracker_obj.set_maturity_eu()       
                 elif tracker_obj.name in ['Cement and Concrete']: 
-                    tracker_obj.gcct_changes()         
+                    tracker_obj.gcct_changes()      
+                elif tracker_obj.name in ['Iron & Steel']:
+                    input('IN IRON & STEEL')
+                    tracker_obj.process_steel_iron_parent() 
+                    tracker_obj.gist_changes()  
             
             
             [print(tracker_obj.data[col]) for col in tracker_obj.data.columns if col == 'Clinker Capacity (millions metric tonnes per annum)']
             [print(tracker_obj.data[col]) for col in tracker_obj.data.columns if col == 'Cement Capacity (millions metric tonnes per annum)']
-            input('Is cement and clinker capacities printed for gcct?')
             
             # this should happen to ALL
             # clean_capacity and coordinate qc

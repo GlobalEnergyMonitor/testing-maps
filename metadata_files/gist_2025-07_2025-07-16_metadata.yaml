@@ -1,0 +1,388 @@
+- release_iso: 2025-07
+  today_date: '2025-07-16'
+  tracker_name: gist
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: gist
+    needed_geo: []
+    pm:
+    - Astrid
+    source:
+    - Iron & Steel
+    trackers: List with 1 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: "Copyright \xA9 Global Energy Monitor. Global Iron and Steel Tracker, July\
+          \ 2025 release. Distributed under a Creative Commons Attribution 4.0 International\
+          \ License."
+        1: 'Recommended Citation: "Global Energy Monitor, Global Iron and Steel Tracker,
+          July 2025 release" (See the CC license for attribution requirements if sharing
+          or adapting the data set.)'
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+        27: ''
+        28: ''
+        29: ''
+        30: ''
+        31: ''
+        32: ''
+        33: ''
+        34: ''
+        35: ''
+        36: ''
+        37: ''
+        38: ''
+        39: ''
+        40: ''
+        41: ''
+        42: ''
+        43: ''
+        44: ''
+        45: ''
+        46: ''
+        47: ''
+        48: ''
+        49: ''
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: ''
+        59: ''
+        60: ''
+      1:
+        0: ''
+        1: ''
+        2: Global Iron and Steel Tracker - March 2025 (V1.1)
+        3: "Contacts: Astrid Grigsby-Schulte, Steel Project Manager, astrid.grigsby-schulte@globalenergymonitor.org,\
+          \ \nCaitlin Swalec, Heavy Industry Program Director, caitlin.swalec@globalenergymonitor.org"
+        4: ''
+        5: ''
+        6: Notes
+        7: 1. For background, additional infomation, and references, see wiki pages
+          for the plant
+        8: 2. For the Methodology, see https://globalenergymonitor.org/projects/global-iron-and-steel-tracker/methodology/
+        9: 3. For summary statistics by province, country, region, etc., see "Summary
+          Data" at https://globalenergymonitor.org/projects/global-iron-and-steel-tracker/summary-tables/
+        10: 4. For links to reports using GIST data, see "Reports & Briefings" at
+          https://globalenergymonitor.org/projects/global-iron-and-steel-tracker/reports-and-briefings/
+        11: 5. This database only includes plants with crude iron/steelmaking capacity
+          of five hundred thousand tonnes per annum (0.5 MTPA) and greater.
+        12: 6. The Global Energy Monitor website provides a mapping tool for this
+          data at https://globalenergymonitor.org/projects/global-iron-and-steel-tracker/
+        13: 7. This document only includes plant-level data. For information on individual
+          units at each plant, see the "Steel unit data" and "Iron unit data" downloads.
+        14: 8. The GIST is a rebranding of GEM's Global Steel Plant Tracker and Global
+          Blast Furnace Tracker, and includes all data previously tracked in those
+          datasets.
+        15: 9. In the GIST, operating statuses are tracked at the unit-level only.
+          This document includes the total amount of capacity under different operating
+          statuses at each plant (see the "Plant capacities and status" tab), while
+          the "Steel unit data" and "Iron unit data" downloads include the operating
+          status of individual furnace units. The "Plant data" tab of this document
+          includes start, development, and retirement dates for the entire plant.
+        16: ''
+        17: ''
+        18: Acronym definitions
+        19: BF
+        20: BOF
+        21: DRI
+        22: EAF
+        23: HBI
+        24: OHF
+        25: mtpa
+        26: ttpa
+        27: ''
+        28: ''
+        29: Capacity and production
+        30: Capacity
+        31: Production
+        32: Note
+        33: ''
+        34: ''
+        35: Capacity status definitions
+        36: Announced
+        37: Construction
+        38: Operating
+        39: Operating pre-retirement
+        40: Mothballed
+        41: Mothballed pre-retirement
+        42: Retired
+        43: Cancelled
+        44: ''
+        45: ''
+        46: March 2025 Release Notes
+        47: ''
+        48: '1. Change to "Status" categories: Added one new status category (mothballed
+          pre-retirement). Descriptions can be found in the definitions above and
+          on the methodology page.'
+        49: '2. Change to "ISO 14001" and "ISO 50001" field categories: added "expired"
+          option.'
+        50: 3. All iron and steel capacity is now tracked on the unit-level and aggregated
+          to the plant level in the "Plant capacities and status" tab of this document.
+        51: 4. The GIST release files include plant-level, iron unit, and steel unit
+          download documents. In the plant-level document, plant capacities and status
+          are now on a separate tab from other plant data.
+        52: '5. Plant production data now includes columns for each production year
+          and separate rows for each production type by technology at the plant. '
+        53: '6. Change to data fields: "country" field is now "country/area", removed
+          the "main production process" and "detailed production equipment" fields
+          as the "main production equipment" lists all iron and steel units.'
+        54: 7. New unit-level details for BF, DRI, BOF, EAF, and OHF units at each
+          plant in the tracker. See the unit-level documents for more information.
+        55: ''
+        56: ''
+        57: V1.1 (June 2025) Release Notes
+        58: ''
+        59: '1. This quarterly update of the GIST includes limited plant- and unit-level
+          research on changes since the March release of the tracker. This is not
+          a comprehensive update covering all new developments. Any adjustments to
+          the data have not yet gone through the annual review process. '
+        60: "2. Changes to GIST data in V1.1 include: \na. updates to operating status\
+          \ of capacity with planned changes before June 1, 2025 \nb. updated development\
+          \ and decommissioning dates for this capacity \nc. limited capacity additions\
+          \ announced since the March release\nd. adjusted parent field data, now\
+          \ configured to include percent stakes assigned to each parent entity when\
+          \ known\ne. removed capacity that was found to be included by error, such\
+          \ as duplicate plant entries"
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: Blast furnace
+        20: Basic oxygen furnace
+        21: Direct reduced iron
+        22: Electric arc furnace
+        23: Hot briquetted iron
+        24: Open Hearth Furnace
+        25: million tonnes per annum
+        26: thousand tonnes per annum
+        27: ''
+        28: ''
+        29: ''
+        30: Capacity is the tonnes of crude iron or steel per annum that a steel plant
+          is capable of producing.
+        31: Production is actual tonnes of crude iron or steel per annum produced
+          at a plant in a given year.
+        32: Additional information about the research method and estimations of capacity
+          and production are available on the GEM website at https://globalenergymonitor.org/projects/global-iron-and-steel-tracker/methodology/
+        33: ''
+        34: ''
+        35: ''
+        36: Capacity that has been announced in corporate or governmental planning
+          documents, but has not begun construction.
+        37: Physical furnace structure building has begun.
+        38: Furnace(s) currently operating and producing iron or steel.
+        39: Company has announced plans to retire this iron or steelmaking capacity
+          but it has not yet ceased operations.
+        40: Iron or steelmaking has been idled such that it cannot be brought into
+          operation immediately, but is not retired.
+        41: "Iron or steelmaking has been idled such that it cannot be brought into\
+          \ operation immediately. It has not yet been permanently retired/decommissioned,\
+          \ but the plant has announced plans to do so in the future.\r"
+        42: Furnace(s) ceased operations and is no longer has ability to produce iron
+          or steel. If the capacity has been mothballed for over 5 years it is considered
+          retired.
+        43: Capacity previously planned or under development that has been cancelled.
+          If no progress or announcements for announced capacity are made after 5
+          years it is considered to be cancelled.
+        44: ''
+        45: ''
+        46: ''
+        47: ''
+        48: ''
+        49: ''
+        50: ''
+        51: ''
+        52: ''
+        53: ''
+        54: ''
+        55: ''
+        56: ''
+        57: ''
+        58: ''
+        59: ''
+        60: ''
+    about_key: ''
+    acro: GIST
+    data:
+      columns:
+      - Plant ID: object
+      - Plant name (English): object
+      - Plant name (other language): object
+      - Other plant names (English): object
+      - Other plant names (other language): object
+      - Owner: object
+      - Owner (other language): object
+      - Owner GEM ID: object
+      - Owner PermID: object
+      - SOE Status: object
+      - Parent: object
+      - Parent GEM ID: object
+      - Parent PermID: object
+      - Location address: object
+      - Municipality: object
+      - Subnational unit (province/state): object
+      - Country/Area: object
+      - Region: object
+      - Other language location address: object
+      - Coordinates: object
+      - Coordinate accuracy: object
+      - GEM wiki page: object
+      - Plant age (years): object
+      - Announced date: object
+      - Construction date: object
+      - Start date: object
+      - Pre-retirement announcement date: object
+      - Idled date: object
+      - Retired date: object
+      - Ferronickel capacity (ttpa): object
+      - Sinter plant capacity (ttpa): object
+      - Coking plant capacity (ttpa): object
+      - Pelletizing plant capacity (ttpa): object
+      - Category steel product: object
+      - Steel products: object
+      - Steel sector end users: object
+      - Workforce size: object
+      - ISO 14001: object
+      - ISO 50001: object
+      - ResponsibleSteel Certification: object
+      - Main production equipment: object
+      - Power source: object
+      - Iron ore source: object
+      - Met coal source: object
+      - tab-type: object
+      - Status: object
+      - Nominal crude steel capacity (ttpa): object
+      - Nominal BOF steel capacity (ttpa): object
+      - Nominal EAF steel capacity (ttpa): object
+      - Nominal OHF steel capacity (ttpa): object
+      - Other/unspecified steel capacity (ttpa): object
+      - Nominal iron capacity (ttpa): object
+      - Nominal BF capacity (ttpa): object
+      - Nominal DRI capacity (ttpa): object
+      - Other/unspecified iron capacity (ttpa): object
+      columns2:
+      - null
+      info: DataFrame with 2940 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1N4jX7tGyGH_frxY-f5mRVb77GRPRg51i0akXWIIqq0s
+    name: Iron & Steel
+    off_name: Iron and Steel
+    release: March 2025
+    tabs:
+    - Plant data
+    - Plant capacities and status
+- df1_info_filtered:
+    columns:
+    - Plant ID: object
+    - Plant name (English): object
+    - Plant name (other language): object
+    - Other plant names (English): object
+    - Other plant names (other language): object
+    - Owner: object
+    - Owner (other language): object
+    - Owner GEM ID: object
+    - Owner PermID: object
+    - SOE Status: object
+    - Parent: object
+    - Parent GEM ID: object
+    - Parent PermID: object
+    - Location address: object
+    - Municipality: object
+    - Subnational unit (province/state): object
+    - Country/Area: object
+    - Region: object
+    - Other language location address: object
+    - Coordinates: object
+    - Coordinate accuracy: object
+    - GEM wiki page: object
+    - Plant age (years): object
+    - Announced date: object
+    - Construction date: object
+    - Start date: object
+    - Pre-retirement announcement date: object
+    - Idled date: object
+    - Retired date: object
+    - Ferronickel capacity (ttpa): object
+    - Sinter plant capacity (ttpa): object
+    - Coking plant capacity (ttpa): object
+    - Pelletizing plant capacity (ttpa): object
+    - Category steel product: object
+    - Steel products: object
+    - Steel sector end users: object
+    - Workforce size: object
+    - ISO 14001: object
+    - ISO 50001: object
+    - ResponsibleSteel Certification: object
+    - Main production equipment: object
+    - Power source: object
+    - Iron ore source: object
+    - Met coal source: object
+    - tab-type: object
+    - Status: object
+    - Nominal crude steel capacity (ttpa): object
+    - Nominal BOF steel capacity (ttpa): object
+    - Nominal EAF steel capacity (ttpa): object
+    - Nominal OHF steel capacity (ttpa): object
+    - Other/unspecified steel capacity (ttpa): object
+    - Nominal iron capacity (ttpa): object
+    - Nominal BF capacity (ttpa): object
+    - Nominal DRI capacity (ttpa): object
+    - Other/unspecified iron capacity (ttpa): object
+    - country_to_check: object
+    filtered: true
+    length: 2940

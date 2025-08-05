@@ -12,7 +12,7 @@ function processConfig() {
 let currZoom = 1
 /*
   Set up mapboxgljs instance, and trigger data load
-*/
+*/ 
 mapboxgl.accessToken = config.accessToken;
 const map = new mapboxgl.Map({
     container: 'map',
@@ -356,6 +356,7 @@ function addGeoJSON(jsonData) {
             }
             if (feature.properties[config['countryField']]){
                 config.geojson.features.push(feature);
+                console.log(feature);
             }
             // else {
             //     console.log(feature)
@@ -825,37 +826,13 @@ function addPointLayer() {
             "#000000"
         ];
     }
+// LET"S ADD exponential NOT linear TODO Maisie 
+// ["exponential", base] if base is 1 then it is linear the same, power of 1/2 to do squareroot area based
 
-    let interpolateExpression = ('interpolate' in config ) ? config.interpolate : ["linear"]; 
-
-    if (config.sqrt === true) {
-        // interpolateExpression = ["exponential", 1.5]
-        console.log('sqrt true')
-        console.log(interpolateExpression)
-        const sqrtMin = Math.sqrt(config.minPointCapacity);
-        const sqrtMax = Math.sqrt(config.maxPointCapacity);
-        console.log(sqrtMin, sqrtMax)
-
+    let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
+    try {
         paint['circle-radius'] = [
-            "interpolate", ["linear"], ["zoom"],
-            1, ["interpolate", interpolateExpression,
-                ['sqrt',["to-number", ['get', config.capacityField]]],
-                sqrtMin, config.minRadius,
-                sqrtMax, config.maxRadius
-            ],
-            10, ["interpolate", interpolateExpression,
-                ['sqrt',["to-number", ['get', config.capacityField]]],
-                sqrtMin, config.highZoomMinRadius,
-                sqrtMax, config.highZoomMaxRadius
-            ],
-
-        ];
-    }
-    else {
-        console.log(interpolateExpression)
-
-        paint['circle-radius'] = [
-            "interpolate", ["linear"], ["zoom"],
+            "interpolate", ["exponential", .5], ["zoom"],
             1, ["interpolate", interpolateExpression,
                 ["to-number",["get", config.capacityField]],
                 config.minPointCapacity, config.minRadius,
@@ -866,8 +843,10 @@ function addPointLayer() {
                 config.minPointCapacity, config.highZoomMinRadius,
                 config.maxPointCapacity, config.highZoomMaxRadius
             ],
-
         ];
+    } catch (e) {
+        console.error("Error setting circle-radius. config.capacityField:", config.capacityField);
+        throw e;
     }
 
     
@@ -1735,6 +1714,7 @@ function setHighlightFilter(links) {
     });
 }
 
+
 // Move the table creation logic into a helper function
 function buildGistTable(all_details_gist) {
     // Only build the table if there is data
@@ -1757,7 +1737,7 @@ function buildGistTable(all_details_gist) {
                 prodMethod = match[1].trim().replace('steel', '');
                 capacity = match[2].replace(/,/g, '');
             }
-            tableHtml += `<tr><td>${status}</td><td>${prodMethod}</td><td>${capacity}</td></tr>`;
+            tableHtml += `<tr><td>${status}</td><td>${prodMethod}</td><td>${Number(capacity).toLocaleString()}</td></tr>`;
         });
     });
     tableHtml += '</tbody></table>';
@@ -1842,7 +1822,7 @@ function displayDetails(features) {
                 console.log([ features[0].properties[config.color.field] ])   
             }                 
             else if (config.detailView[detail]['display'] == 'gist-unit-level'){
-  
+
                 // cycle through all of them to only group them if there is value there 
                 if (features[0].properties[detail] === 0 && features[0].properties[detail] === 0.0){
                     console.log('0 so returning')
@@ -2045,6 +2025,7 @@ function displayDetails(features) {
 
     setHighlightFilter(features[0].properties[config.linkField]);
 }
+
 function buildSatImage(features) {
     let location_arg = '';
     let bbox = geoJSONBBox({'type': 'FeatureCollection', features: features });

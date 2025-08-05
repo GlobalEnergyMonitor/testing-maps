@@ -1,7 +1,7 @@
 
 from make_data_dwnlds import *
 from make_map_file import *
-
+from make_metadata import *
 import subprocess
 from tqdm import tqdm # can adapt more, special tweaking for dataframe!
 # TODO make sure the dependency map makes sense, so it calls both single and multi script depending on new data, try with tests
@@ -9,8 +9,15 @@ from tqdm import tqdm # can adapt more, special tweaking for dataframe!
 # CALL ALL FUNCTIONS
 
 
+
 for tracker in tqdm(trackers_to_update, desc='Running'):
     # print(tracker)
+    trackermapname = official_tracker_name_to_mapname[tracker]
+    print(f'Creating new metadata file called: {trackermapname}_{releaseiso}_{iso_today_date}_metadata.yaml')
+    mfile = f"{trackermapname}_{releaseiso}_{iso_today_date}_metadata"
+    # MFILE_ACTUAL = f'{mfile}.yaml'
+    metadata = create_or_load_metadata(mfile)
+    save_metadata(mfile, metadata)
     if tracker == 'Oil & Gas Plants':
         map_obj_list, problem_map_objs = make_data_dwnlds(tracker)  
         print(f'{len(map_obj_list)} maps to be updated with new {tracker} data!')
@@ -308,36 +315,13 @@ for tracker in tqdm(trackers_to_update, desc='Running'):
         test_results_folder = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/gist/test_results/'
         output_folder = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/gist/compilation_output/'
         
-        key, tabs = get_key_tabs_prep_file(tracker)
-        df = create_df(key, tabs) # steel_df, iron_df, plant_df
+        map_obj_list, problem_map_objs = make_data_dwnlds(tracker)
+        print(f'{len(map_obj_list)} maps to be updated with new {tracker} data!')
+        list_of_map_objs_mapversion = make_map(map_obj_list) # this returns map obj list map version that can be run thru tests
+        
+        print('Great, now lets run those map objs map version thru tests on source!')
+        input('Confirm above')          
 
-
-        # drop cols don't need # filter_cols
-        df = process_steel_iron_parent(df, test_results_folder)
-        print(len(df))
-        df = split_coords(df)
-        # rename_cols
-        # print(len(df))
-
-        df = df.rename(columns={'Unit Status':'status', 'GEM Wiki Page': 'url', 'tab-type_x': 'tab-type'})
-        # print(len(df))
-
-        df = rename_cols(df)
-        # print(len(df))
-
-        # df = make_numerical(df, ['current-capacity-(ttpa)', 'plant-age-(years)'])
-
-        # fix_status_space because filters
-        df = fix_status_space(df)
-        # print(len(df))
-
-        df = fix_prod_type_space(df) 
-        # print(len(df))
-
-        df = input_to_output(df, f'{output_folder}{tracker}-map-file-{iso_today_date}.csv')
-        print('DONE MAKING GIST SINGLE MAP') 
-        input('Check length 1204')
-       
     
     elif tracker == 'Oil & Gas Extraction':
         
@@ -529,32 +513,15 @@ for tracker in tqdm(trackers_to_update, desc='Running'):
         # subprocess.run(["python", "/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/multi_tracker_maps_script.py"])                 
     
     elif tracker == 'Coal Plants':
-        # continue for all of them that are in or not in multi tracker maps
-        test_results_folder = f'{tracker_folder_path}coal-plant/test_results/'
 
-        output_folder = f'{tracker_folder_path}coal-plant/compilation_output/'
-        
-        os.makedirs(test_results_folder, exist_ok=True)
-        os.makedirs(output_folder, exist_ok=True)       
-             
+        map_obj_list, problem_map_objs = make_data_dwnlds(tracker)
 
         # creates single map file
-        key, tabs = get_key_tabs_prep_file(tracker)
-        df = create_df(key, tabs)
-        df = rename_cols(df)
-        df = fix_status_inferred(df)
-        df = filter_cols(df,final_cols=['gem-location-id', 'gem-unit/phase-id', 'country', 'unit-name', 'plant-name', 'plant-name-(other)',
-                                        'plant-name-(local)', 'capacity-(mw)', 'status', 'start-year', 'retired-year', 'location-accuracy',
-                                         'owner', 'parent','lat', 'lng', 'combustion-technology',
-                                        'region', 'url', 'subnational-unit-(province,-state)'        
-                                        ])
-                
-        
-        df = input_to_output(df, f'{output_folder}{tracker}-map-file-{iso_today_date}.csv')
-        # test_stats(df)
+        print(f'{len(map_obj_list)} maps to be updated with new {tracker} data!')
+        input('Check if the above statement makes sense ^')
+        list_of_map_objs_mapversion = make_map(map_obj_list) # this returns map obj list map version that can be run thru tests
 
-        print('DONE MAKING Coal SINGLE MAP onto MULTI MAPS')
-        input('continue?')
-    
+        print('Great, now lets run those map objs map version thru tests on source!')
+        input('Confirm above')            
     # subprocess.run(["python", "/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/multi_tracker_maps_script.py"])                 
     

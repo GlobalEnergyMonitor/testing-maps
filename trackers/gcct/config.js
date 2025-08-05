@@ -1,5 +1,5 @@
 var config = {
-    geojson:  'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/mapfiles/gcct_map_2025-06-20.geojson',// 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/mapfiles/gcct_map_2025-06-18.geojson', // Saying can't be found? TODO march 24th
+    geojson:  'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gcct/2025-07/gcct_map_2025-07-15.geojson',// 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/mapfiles/gcct_map_2025-06-18.geojson', // Saying can't be found? TODO march 24th
 //  gem_tracker_maps/trackers/gcct/compilation_output/gcct_map_2025-05-30.geojson
     colors: {
         'light red': '#f28b82',

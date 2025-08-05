@@ -35,6 +35,7 @@ var config = {
     filters: [
         {
             field: 'prod-method-tier',
+            label: 'Production method',
             /* values need to be specified for ordering */
             // values: ['BOF','EAF','BOF; EAF','BF','DRI','integrated (bf)', 'integrated (dri)', 'integrated (bf and dri)',
             //     'Steel other/unspecified','Iron other/unspecified',]
@@ -53,7 +54,7 @@ var config = {
         // do not use status-legend since it is for multi tracker maps
         {
             field: 'status',
-            label: 'Plant Status',
+            label: 'Plant status',
             values: ['announced', 'cancelled', 'construction', 'mothballed', 'operating', 'operating-pre-retirement', 'retired'], //'mothballed-pre-retirement',
             values_labels: ['Announced', 'Cancelled', 'Construction', 'Mothballed', 'Operating', 'Operating Pre-Retirement', 'Retired'], // 'Mothballed Pre-Retirement', 
             field_hover_text: "Status reflects the plant-level status. Some capacities (e.g., announced expansions at a plant that already operates capacity) may not appear under their specific category if the overall plant status is different."
@@ -123,7 +124,7 @@ var config = {
         'owner': {'label': 'Owner'},
         'start-year': {'label': 'Start date'},
         'location-accuracy': {'label': 'Coordinate Accuracy'},
-         'announced-nominal-bf-capacity-(ttpa)': {'display': 'gist-unit-level','label': 'Announced BF capacity (ttpa)'},
+        'announced-nominal-bf-capacity-(ttpa)': {'display': 'gist-unit-level','label': 'Announced BF capacity (ttpa)'},
         'announced-nominal-bof-steel-capacity-(ttpa)': {'display': 'gist-unit-level','label': 'Announced BOF steel capacity (ttpa)'},
         'announced-nominal-dri-capacity-(ttpa)': {'display': 'gist-unit-level','label': 'Announced DRI capacity (ttpa)'},
         'announced-nominal-eaf-steel-capacity-(ttpa)': {'display': 'gist-unit-level','label': 'Announced EAF steel capacity (ttpa)'},

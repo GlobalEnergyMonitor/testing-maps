@@ -1,6 +1,6 @@
 from requests import HTTPError
 from all_config import logger, new_release_date, iso_today_date,trackers_to_update, geo_mapping, releaseiso, gspread_creds, region_key, region_tab, centroid_key, centroid_tab
-from helper_functions import rename_gdfs, clean_about_df, replace_old_date_about_page_reg, convert_google_to_gdf, convert_coords_to_point, check_and_convert_float, check_in_range, check_and_convert_int, get_most_recent_value_and_year_goget, calculate_total_production_goget, get_country_list, get_country_list, create_goget_wiki_name,create_goget_wiki_name, gspread_access_file_read_only
+from helper_functions import fix_prod_type_space, fix_status_space, split_coords, make_plant_level_status, make_prod_method_tier, rename_gdfs, clean_about_df, replace_old_date_about_page_reg, convert_google_to_gdf, convert_coords_to_point, check_and_convert_float, check_in_range, check_and_convert_int, get_most_recent_value_and_year_goget, calculate_total_production_goget, get_country_list, get_country_list, create_goget_wiki_name,create_goget_wiki_name, gspread_access_file_read_only
 import pandas as pd
 from numpy import absolute
 import geopandas as gpd
@@ -210,6 +210,8 @@ class TrackerObject:
             #     logger.info('Cols for coal mine:')
             #     logger.info(df.info(buf=None))  # Log the DataFrame info
             #     input('Look at cols for coal mine')
+            # elif self.name == 'Iron & Steel':
+                # GIST gets handled in create_df since its not going to be a tuple
             else:
                 #assign df to data 
 
@@ -448,7 +450,7 @@ class TrackerObject:
         # print(tabs)
         dfs = []
         
-        if self.name == 'Iron & Steel':
+        if self.off_name == 'Iron and Steel':
 
             for tab in self.tabs:
                 gsheets = gspread_creds.open_by_key(self.key)
@@ -458,7 +460,6 @@ class TrackerObject:
                 dfs += [df]
 
             df = pd.concat(dfs).reset_index(drop=True)
-            print(df.info())
 
         else:
             for tab in self.tabs:
@@ -662,6 +663,245 @@ class TrackerObject:
         input('CHECK cols for tracker_obj.name == GOGPT EU')
         self.data = gogpt_eu_df
         
+
+    def process_steel_iron_parent(self):
+        
+        df = self.data
+        # split out the two tab data
+        plant_cap_df = df[df['tab-type']=='Plant capacities and status']
+        plant_cap_df = plant_cap_df[['Plant ID', 'Status', 'Nominal crude steel capacity (ttpa)', 'Nominal BOF steel capacity (ttpa)', 'Nominal EAF steel capacity (ttpa)', 
+                                 'Nominal OHF steel capacity (ttpa)', 'Other/unspecified steel capacity (ttpa)', 'Nominal iron capacity (ttpa)', 'Nominal BF capacity (ttpa)',
+                                 'Nominal DRI capacity (ttpa)', 'Other/unspecified iron capacity (ttpa)']]         
+        
+        plant_df = df[df['tab-type']=='Plant data']  
+        plant_df = plant_df[['tab-type', 'Plant ID', 'Plant name (English)', 'Plant name (other language)', 'Other plant names (English)',
+                            'Other plant names (other language)', 'Owner', 'Owner (other language)', 'Owner GEM ID', 'Parent', 'Parent GEM ID',
+                            'Subnational unit (province/state)', 'Country/Area', 'Coordinates', 'Coordinate accuracy', 'GEM wiki page',
+                            'Steel products', 'Main production equipment', 'Start date']]        
+        
+        print(len(plant_df)) # 1204
+        plant_df = plant_df.merge(right=plant_cap_df, on='Plant ID', how='outer')       
+        print(len(plant_df)) # 1732 looks correct because multiple rows for each unit 
+        input('check on len change')
+        
+        # now that plant level only let's create capacity for scaling using nominal steel when there iron as backfill
+        plant_df['capacity'] = plant_df.apply(lambda row: row['Nominal crude steel capacity (ttpa)'] if pd.notna(row['Nominal crude steel capacity (ttpa)']) else row['Nominal iron capacity (ttpa)'], axis=1)
+        
+        # status is plant level and indivual in plant status capacity tab
+        # first group together all rows with same plant id, and get a new column of all status options in a list
+        # then apply make plant level status 
+        plant_df_grouped = plant_df.groupby('Plant ID').agg({'Status': list}).reset_index() 
+        plant_df_grouped = plant_df_grouped.rename(columns={'Status': 'status-list'})               
+        plant_df = plant_df.merge(plant_df_grouped, on='Plant ID', how='left')
+        plant_df['plant-status'] = plant_df.apply(lambda row: make_plant_level_status(row['status-list'], row['Plant ID']),axis=1)
+
+        # set up prod method tiers with equipment and logic from summary tables
+
+        plant_df['prod-method-tier'] = plant_df.apply(lambda row: make_prod_method_tier(row['Main production equipment'], row['Plant ID']), axis=1)
+
+        list_unit_cap = [
+            'Nominal crude steel capacity (ttpa)',
+            'Nominal BOF steel capacity (ttpa)', 
+            'Nominal EAF steel capacity (ttpa)', 
+            'Nominal OHF steel capacity (ttpa)', 
+            'Other/unspecified steel capacity (ttpa)', 
+            'Nominal iron capacity (ttpa)', 
+            'Nominal BF capacity (ttpa)', 
+            'Nominal DRI capacity (ttpa)', 
+            'Other/unspecified iron capacity (ttpa)',
+            'capacity'
+        ]
+        pd.options.display.float_format = '{:.0f}'.format
+        # replace '' with nan for all instances in the list_unit_cap cols
+        plant_df[list_unit_cap] = plant_df[list_unit_cap].replace('>0', np.nan)
+        plant_df[list_unit_cap] = plant_df[list_unit_cap].replace('N/A', np.nan)
+        # make all in list_unit_cap rounded to be without decimal places
+        plant_df[list_unit_cap] = plant_df[list_unit_cap].applymap(lambda x: round(x) if pd.notna(x) and isinstance(x, (int, float)) else x)
+                
+        # make new columns with status and prod method capacity
+        # rename the columns based on status value and put on same row 
+        all_suffixes_check = []
+        for row in plant_df.index:
+            status_suffix = plant_df.loc[row, 'Status']
+            plant_id = plant_df.loc[row, 'Plant ID']
+            for col in list_unit_cap:
+                if plant_df.loc[row, col] != np.nan:
+                    all_suffixes_check.append(status_suffix)
+                    new_col_name = f'{status_suffix.capitalize()} {col}'
+                    print(new_col_name)
+                    plant_df.loc[row, new_col_name] = plant_df.loc[row,col]
+                else:
+                    # print(plant_df.loc[row,col])
+                    print('skip creating new column for this one')
+        # print(set(all_suffixes_check)) # passed!         
+        print(plant_df[plant_df['Plant ID']=='P100000120823'][['Nominal iron capacity (ttpa)', 'Status']])
+
+        # print(plant_df[plant_df['Plant ID']=='P100000120679'][['Nominal crude steel capacity (ttpa)', 'Status']])
+        # print(plant_df[plant_df['Plant ID']=='P100000120620'][['Nominal iron capacity (ttpa)', 'Status']])
+        # print(plant_df[plant_df['Plant ID']=='P100000120679'][['Operating Nominal crude steel capacity (ttpa)', 'Nominal crude steel capacity (ttpa)', 'Announced Nominal crude steel capacity (ttpa)']])
+        # print(plant_df[plant_df['Plant ID']=='P100000120620'][['Operating Nominal iron capacity (ttpa)', 'Nominal iron capacity (ttpa)', 'Announced Nominal iron capacity (ttpa)', 'Mothballed Nominal iron capacity (ttpa)']])
+        input('Check above') # works!  [4000, 2500, 5500] for all three
+        print(plant_df.columns)
+        input('add cols') #'Main Production Equipment', 'Steel Products',
+        # filter out some cols 
+        filter_cols = ['tab-type', 'Plant ID', 'Plant name (English)',
+        'Plant name (other language)', 'Other plant names (English)',
+        'Other plant names (other language)', 'Owner', 'Owner (other language)',
+        'Owner GEM ID', 'Parent', 'Parent GEM ID',
+        'Steel products', 'Main production equipment',
+        'Subnational unit (province/state)', 'Country/Area', 'Coordinates',
+        'Coordinate accuracy', 'GEM wiki page', 'Start date','status-list', 'plant-status', 'prod-method-tier', 'capacity', 
+        # begins new capacity col by prod type and unit status
+        'Operating Nominal crude steel capacity (ttpa)',
+        'Operating Nominal EAF steel capacity (ttpa)', 'Operating capacity',
+        'Construction Nominal crude steel capacity (ttpa)',
+        'Construction Nominal EAF steel capacity (ttpa)',
+        'Construction capacity',
+        'Operating Nominal BOF steel capacity (ttpa)',
+        'Operating Nominal iron capacity (ttpa)',
+        'Operating Nominal BF capacity (ttpa)',
+        'Announced Nominal crude steel capacity (ttpa)',
+        'Announced Nominal EAF steel capacity (ttpa)',
+        'Announced Nominal iron capacity (ttpa)',
+        'Announced Nominal DRI capacity (ttpa)', 'Announced capacity',
+        'Mothballed Nominal iron capacity (ttpa)',
+        'Mothballed Nominal BF capacity (ttpa)',
+        'Operating Other/unspecified steel capacity (ttpa)',
+        'Mothballed Nominal crude steel capacity (ttpa)',
+        'Mothballed Nominal EAF steel capacity (ttpa)',
+        'Mothballed Nominal DRI capacity (ttpa)', 'Mothballed capacity',
+        'Operating Nominal DRI capacity (ttpa)',
+        'Announced Other/unspecified steel capacity (ttpa)',
+        'Construction Other/unspecified steel capacity (ttpa)',
+        'Construction Nominal iron capacity (ttpa)',
+        'Construction Nominal DRI capacity (ttpa)',
+        'Operating pre-retirement Nominal crude steel capacity (ttpa)',
+        'Operating pre-retirement Nominal BOF steel capacity (ttpa)',
+        'Operating pre-retirement Nominal iron capacity (ttpa)',
+        'Operating pre-retirement Nominal BF capacity (ttpa)',
+        'Operating pre-retirement capacity',
+        'Announced Nominal BF capacity (ttpa)',
+        'Construction Nominal BOF steel capacity (ttpa)',
+        'Construction Nominal BF capacity (ttpa)',
+        'Announced Nominal BOF steel capacity (ttpa)',
+        'Cancelled Nominal crude steel capacity (ttpa)',
+        'Cancelled Nominal EAF steel capacity (ttpa)', 'Cancelled capacity',
+        'Retired Nominal iron capacity (ttpa)',
+        'Retired Nominal BF capacity (ttpa)',
+        'Announced Other/unspecified iron capacity (ttpa)',
+        'Mothballed Nominal BOF steel capacity (ttpa)',
+        'Cancelled Nominal iron capacity (ttpa)',
+        'Cancelled Nominal DRI capacity (ttpa)',
+        'Retired Nominal crude steel capacity (ttpa)',
+        'Retired Nominal BOF steel capacity (ttpa)', 'Retired capacity',
+        'Operating pre-retirement Nominal EAF steel capacity (ttpa)',
+        'Retired Nominal EAF steel capacity (ttpa)',
+        'Cancelled Other/unspecified steel capacity (ttpa)',
+        'Cancelled Other/unspecified iron capacity (ttpa)',
+        'Retired Nominal OHF steel capacity (ttpa)',
+        'Operating Other/unspecified iron capacity (ttpa)',
+        'Mothballed Other/unspecified iron capacity (ttpa)',
+        'Cancelled Nominal BOF steel capacity (ttpa)',
+        'Cancelled Nominal BF capacity (ttpa)',
+        'Operating pre-retirement Nominal DRI capacity (ttpa)',
+        'Construction Other/unspecified iron capacity (ttpa)',
+        'Mothballed Other/unspecified steel capacity (ttpa)',
+        'Operating pre-retirement Other/unspecified steel capacity (ttpa)',
+        'Mothballed pre-retirement Nominal iron capacity (ttpa)',
+        'Mothballed pre-retirement Nominal BF capacity (ttpa)',
+        'Operating pre-retirement Other/unspecified iron capacity (ttpa)',
+        'Operating Nominal OHF steel capacity (ttpa)',
+        'Mothballed Nominal OHF steel capacity (ttpa)']
+        plant_df = plant_df[filter_cols]
+        plant_df_grouped = plant_df.groupby('Plant ID').agg({
+            'tab-type': 'first',
+            'Plant name (English)': 'first',
+            'Plant name (other language)': 'first',
+            'Other plant names (English)': 'first',
+            'Other plant names (other language)': 'first',
+            'Owner': 'first',
+            'Owner (other language)': 'first',
+            'Owner GEM ID': 'first',
+            'Parent': 'first',
+            'Parent GEM ID': 'first',
+            'Subnational unit (province/state)': 'first',
+            'Country/Area': 'first',
+            'Coordinates': 'first',
+            'Coordinate accuracy': 'first',
+            'GEM wiki page': 'first',
+            'Main production equipment': 'first', 
+            'Steel products': 'first',
+            'Start date': 'first',
+            'status-list': 'first',
+            'plant-status': 'first',
+            'prod-method-tier': 'first',
+            'capacity': 'sum',
+            'Operating Nominal EAF steel capacity (ttpa)': 'sum',
+            'Construction Nominal EAF steel capacity (ttpa)': 'sum',
+            'Operating Nominal BOF steel capacity (ttpa)': 'sum',
+            'Operating Nominal BF capacity (ttpa)': 'sum',
+            'Announced Nominal EAF steel capacity (ttpa)': 'sum',
+            'Announced Nominal DRI capacity (ttpa)': 'sum',
+            'Mothballed Nominal BF capacity (ttpa)': 'sum',
+            'Operating Other/unspecified steel capacity (ttpa)': 'sum',
+            'Mothballed Nominal EAF steel capacity (ttpa)': 'sum',
+            'Mothballed Nominal DRI capacity (ttpa)': 'sum',
+            'Operating Nominal DRI capacity (ttpa)': 'sum',
+            'Announced Other/unspecified steel capacity (ttpa)': 'sum',
+            'Construction Other/unspecified steel capacity (ttpa)': 'sum',
+            'Construction Nominal DRI capacity (ttpa)': 'sum',
+            'Operating pre-retirement Nominal BOF steel capacity (ttpa)': 'sum',
+            'Operating pre-retirement Nominal BF capacity (ttpa)': 'sum',
+            'Announced Nominal BF capacity (ttpa)': 'sum',
+            'Construction Nominal BOF steel capacity (ttpa)': 'sum',
+            'Construction Nominal BF capacity (ttpa)': 'sum',
+            'Announced Nominal BOF steel capacity (ttpa)': 'sum',
+            'Cancelled Nominal EAF steel capacity (ttpa)': 'sum',
+            'Retired Nominal BF capacity (ttpa)': 'sum',
+            'Mothballed Nominal BOF steel capacity (ttpa)': 'sum',
+            'Cancelled Nominal DRI capacity (ttpa)': 'sum',
+            'Retired Nominal BOF steel capacity (ttpa)': 'sum',
+            'Operating pre-retirement Nominal EAF steel capacity (ttpa)': 'sum',
+            'Retired Nominal EAF steel capacity (ttpa)': 'sum',
+            'Cancelled Other/unspecified steel capacity (ttpa)': 'sum',
+            'Retired Nominal OHF steel capacity (ttpa)': 'sum',
+            'Cancelled Nominal BOF steel capacity (ttpa)': 'sum',
+            'Cancelled Nominal BF capacity (ttpa)': 'sum',
+            'Operating pre-retirement Nominal DRI capacity (ttpa)': 'sum',
+            'Mothballed Other/unspecified steel capacity (ttpa)': 'sum',
+            'Operating pre-retirement Other/unspecified steel capacity (ttpa)': 'sum',
+            'Mothballed pre-retirement Nominal BF capacity (ttpa)': 'sum',
+            'Operating Nominal OHF steel capacity (ttpa)': 'sum',
+            'Mothballed Nominal OHF steel capacity (ttpa)': 'sum'
+        }).reset_index()
+        
+
+        # print(plant_df_grouped[plant_df_grouped['Plant ID']=='P100000120823']) # worked after removing rouding logic
+        # remove decimal point in all capacity values
+        for col in plant_df_grouped.columns:
+            if 'capacity (ttpa)' in col:
+                plant_df_grouped[col] = plant_df_grouped[col].apply(lambda x: str(x).split('.')[0])
+
+        
+        print(len(plant_df_grouped))
+        plant_df_grouped = plant_df_grouped.drop_duplicates(subset='Plant ID')
+        print(len(plant_df_grouped))
+        input('pause and check drop worked 1204') # woo worked!        
+        
+        print(plant_df_grouped.info())
+        input('Check on column names in plant_df_grouped for gist lat lng??')
+
+        self.data = plant_df_grouped   
+        
+    def gist_changes(self):
+        df = self.data
+        df = split_coords(df)
+        # rename in old version ... when does that happen here? happens after all this ... 
+        # df = make_numerical(df, ['current-capacity-(ttpa)', 'plant-age-(years)']) # not needed will use clean_num_data later
+        df = fix_status_space(df)
+        df = fix_prod_type_space(df)
+        self.data = df                
+
     def gcct_changes(self):
             # before renaming 
             # before clean_num_data()
@@ -866,7 +1106,7 @@ class TrackerObject:
             
             for col in self.data.columns: # handling for all capacity, production, 
                 # if pd.api.types.is_numeric_dtype(self.data[col]): # the problem is we know its not always all numeric unfortunatley
-                if any(keyword in col for keyword in ['Capacity (MW)', 'Capacity (Mt)','Capacity (Mtpa)', 'CapacityBcm/y', 'CapacityBOEd', 'Capacity (MT)', 'Production - Gas', 'Production - Oil', 'Production (Mt)', 'Production (Mtpa)']):                    
+                if any(keyword in col for keyword in ['Capacity (MW)', 'Capacity (Mt)','Capacity (Mtpa)', 'CapacityBcm/y', 'CapacityBOEd', 'Capacity (MT)', 'Production - Gas', 'Production - Oil', 'Production (Mt)', 'Production (Mtpa)', 'Capacity (ttpa)']):                    
                     # print(col)
                     try:
                         self.data.fillna('', inplace=True) # cannot apply to geometry column
@@ -895,7 +1135,7 @@ class TrackerObject:
                         # input('Check for QC PM report') # so far problem with StartYearEarliest LNG Terminals geo in there
                         # CapacityBcm/y in Gas Pipelines CapacityBOEd in Gas Pipelines
                         # CapacityBOEd in Oil Pipelines
-                elif 'Latitude' in col:  
+                elif 'Latitude' in col:  ## or lat lng
                     print(f'At {col}') 
                     self.data['float_col_clean_lat'] = self.data[col].apply(lambda x: check_and_convert_float(x))
                     # and add to missing_coordinate_row

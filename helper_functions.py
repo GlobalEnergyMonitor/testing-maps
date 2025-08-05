@@ -27,6 +27,7 @@ from openpyxl.styles import Alignment
 import pickle
 from collections import Counter
 import subprocess
+import yaml
 
 
 DATABASE_URL = 'postgresql://readonly:pc1d65885e80e7709675a2e635adcd9cb71bf91a375e5276f8ee143c623e2fb34@ec2-44-222-6-135.compute-1.amazonaws.com:5432/d8ik14rsae6026'
@@ -81,29 +82,28 @@ def save_to_s3(obj, df, filetype='', path_dwn=''):
     df.to_parquet(parquetpath, index=False)
     print('Parquet file is saved!')
     
-    # Determine S3 folder based on filetype
-    if filetype == 'map':
-        s3folder = 'mapfiles'
-    elif filetype == 'datadownload':
-        s3folder = 'latest'
-    else:
-        s3folder = 'uncategorized'
+    # # Determine S3 folder based on filetype
+    # if filetype == 'map':
+    #     s3folder = 'mapfiles'
+    # elif filetype == 'datadownload':
+    #     s3folder = 'latest'
+    # else:
+    #     s3folder = 'uncategorized'
     
     # Prepare and execute S3 upload command
     if geojsonpath != '' and filetype == 'map':
         
         do_command_s3 = (
             f'export BUCKETEER_BUCKET_NAME=publicgemdata && '
-            f'aws s3 cp {parquetpath} s3://$BUCKETEER_BUCKET_NAME/{s3folder}/ '
+            f'aws s3 cp {parquetpath} s3://$BUCKETEER_BUCKET_NAME/{obj.name}/{releaseiso}/{parquetpath} '
             f'--endpoint-url https://nyc3.digitaloceanspaces.com --acl public-read && '
-            f'aws s3 cp {geojsonpath} s3://$BUCKETEER_BUCKET_NAME/{s3folder}/ '
+            f'aws s3 cp {geojsonpath} s3://$BUCKETEER_BUCKET_NAME/{obj.name}/{releaseiso}/{parquetpath} '
             f'--endpoint-url https://nyc3.digitaloceanspaces.com --acl public-read'
         )
-  
     else:
         do_command_s3 = (
             f'export BUCKETEER_BUCKET_NAME=publicgemdata && '
-            f'aws s3 cp {parquetpath} s3://$BUCKETEER_BUCKET_NAME/{s3folder}/ '
+            f'aws s3 cp {parquetpath} s3://$BUCKETEER_BUCKET_NAME/{obj.name}/{releaseiso}/{parquetpath} '
             f'--endpoint-url https://nyc3.digitaloceanspaces.com --acl public-read'
         )    
         
@@ -111,6 +111,251 @@ def save_to_s3(obj, df, filetype='', path_dwn=''):
     process = subprocess.run(do_command_s3, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return process
 
+
+def save_raw_s3(map_obj, tracker_source_obj, TrackerObject):
+    
+     
+    # save to metadata
+    mfile_actual = f"/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/metadata_files/{map_obj.name}_{releaseiso}_{iso_today_date}_metadata.yaml"
+    # print(f'this is mfile_actual: {mfile_actual}')
+    # input('check if it matches')
+    # Prepare dictionary representations, but do not convert tracker_source_obj.data or map_obj.trackers
+    tracker_dict = tracker_source_obj.__dict__.copy()
+    map_dict = map_obj.__dict__.copy()
+
+    # Replace DataFrames/lists with their lengths for reporting
+    if isinstance(tracker_dict.get('data', None), pd.DataFrame):
+        df = tracker_dict['data']
+        tracker_dict['data'] = {
+        "info": f"DataFrame with {len(df)} rows",
+        "columns": [{col: str(df[col].dtype)} for col in df.columns],
+        "columns2": [df.info()]
+        }
+    if isinstance(map_dict.get('trackers', None), list):
+        map_dict['trackers'] = f"List with {len(map_dict['trackers'])} TrackerObjects"
+
+    # Remove DataFrames (not serializable) or convert to string
+    for d in [tracker_dict, map_dict]:
+        for k, v in list(d.items()):
+            if isinstance(v, pd.DataFrame):
+                d[k] = v.to_dict()  # or v.to_json() if preferred
+            elif isinstance(v, list) and v and isinstance(v[0], TrackerObject):
+                # For map_obj.trackers, store acros or dicts
+                d[k] = [t.__dict__.copy() for t in v]
+
+    # Append to YAML file instead of overwriting
+
+    # Check if file exists and load existing data
+    if os.path.exists(mfile_actual):
+        with open(mfile_actual, "r") as f:
+            try:
+                existing_data = yaml.safe_load(f) or []
+            except Exception:
+                existing_data = []
+    else:
+        existing_data = []
+
+    # Ensure existing_data is a list
+    if not isinstance(existing_data, list):
+        existing_data = [existing_data] if existing_data else []
+
+    # Append new entry
+    existing_data.append({'tracker': tracker_dict, 'map': map_dict})
+
+    # Write back the updated list
+    with open(mfile_actual, "w") as f:
+        yaml.dump(existing_data, f, default_flow_style=False)
+
+    # mapobj.name
+    for trackerobj in map_obj.trackers: # list of tracker objeccts
+        print(f'This is trackerobj.name: {trackerobj.name}') 
+        try:
+            originaldf = trackerobj.data
+            # save locally then run process
+            trackernamenospaceoraperand = trackerobj.name.replace(' ', '_').replace('&', 'and')
+            iso_today_datenospace = iso_today_date.replace(' ', '_')
+
+            originaldf.to_json(
+                f"{map_obj.name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}.json",
+                force_ascii=False,
+                date_format='iso',
+                orient='records',
+                indent=2
+                )
+            originalfile = f'"{map_obj.name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}.json"'
+            originalfile_with_no_quote = f'{map_obj.name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}.json' 
+            do_command_s3 = (
+                f'export BUCKETEER_BUCKET_NAME=publicgemdata && '
+                f'aws s3 cp {originalfile_with_no_quote} s3://$BUCKETEER_BUCKET_NAME/{map_obj.name}/{releaseiso}/{originalfile_with_no_quote} --endpoint-url https://nyc3.digitaloceanspaces.com --acl public-read'
+                )    
+            
+            subprocess.run(do_command_s3, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # delete the locally saved file
+            if os.path.exists(originalfile_with_no_quote):
+                os.remove(originalfile_with_no_quote)            
+                
+        except AttributeError: 
+            main_or_h2_df = trackerobj.data[0]
+            prod_or_og_df = trackerobj.data[1]
+
+            originaldfs = [main_or_h2_df, prod_or_og_df]
+            for idx, df in enumerate(originaldfs):
+                trackernamenospaceoraperand = trackerobj.name.replace(' ', '_').replace('&', '')
+                
+                iso_today_datenospace = iso_today_date.replace(' ', '_')
+                df.to_json(
+                    f"{map_obj.name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}_{idx}.json",
+                    force_ascii=False,
+                    date_format='iso',
+                    orient='records',
+                    indent=2
+                    )
+
+                originalfile = f'"{map_obj.name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}_{idx}.json"'
+                originalfile_with_no_quote = f'{map_obj.name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}_{idx}.json'
+                
+                do_command_s3 = (
+                    f'export BUCKETEER_BUCKET_NAME=publicgemdata && '
+                    f'aws s3 cp {originalfile} s3://$BUCKETEER_BUCKET_NAME/{map_obj.name}/{releaseiso}/{originalfile} '
+                    f'--endpoint-url https://nyc3.digitaloceanspaces.com --acl public-read'
+                    )    
+                    
+
+                subprocess.run(do_command_s3, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                # delete the locally saved file
+                if os.path.exists(originalfile):
+                    os.remove(originalfile)
+
+    print('done with save_raw_s3')
+
+def save_mapfile_s3(map_obj_name, tracker_name, filter, df1, df2=None):
+    """
+    Save map file to S3. df2 is optional.
+    """
+    # write to config file total length of dfs
+    mfile_actual = f"/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/metadata_files/{map_obj_name}_{releaseiso}_{iso_today_date}_metadata.yaml"
+
+    # Prepare metadata dictionary for logging
+    meta_entry = {
+        "df1_info_filtered": {
+            "length": len(df1),
+            "columns": [{col: str(df1[col].dtype)} for col in df1.columns],
+            "filtered": filter
+        }
+    }
+    if df2 is not None:
+        meta_entry["df2_info_filtered"] = {
+            "length": len(df2),
+            "columns": [{col: str(df2[col].dtype)} for col in df2.columns],
+            "filtered": filter
+
+        }
+
+    # Load existing YAML data if present
+    if os.path.exists(mfile_actual):
+        with open(mfile_actual, "r") as f:
+            try:
+                existing_data = yaml.safe_load(f) or []
+            except Exception:
+                existing_data = []
+    else:
+        existing_data = []
+
+    # Ensure existing_data is a list
+    if not isinstance(existing_data, list):
+        existing_data = [existing_data] if existing_data else []
+
+    # Append new entry and write back
+    existing_data.append(meta_entry)
+    with open(mfile_actual, "w") as f:
+        yaml.dump(existing_data, f, default_flow_style=False)
+    
+    print(f'This is df2 {df2}')
+    
+    if df2 is not None:
+        # do both
+        dfs = [df1, df2]
+        for idx, df in enumerate(dfs):
+            trackernamenospaceoraperand = tracker_name.replace(' ', '_').replace('&','')
+            iso_today_datenospace = iso_today_date.replace(' ', '_')
+            try:
+                folder_name = mapname_gitpages[official_tracker_name_to_mapname[tracker_name]]
+            except KeyError as e:
+                print(f'error was {e}')
+                # sometimes there is no diffference between the inner dict and outer so would be keyerror because not in outer dict
+                folder_name = official_tracker_name_to_mapname[tracker_name]
+            df.to_json(
+                f"{tracker_folder_path}{folder_name}/compilation_output/{map_obj_name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}_{idx}.json",
+                force_ascii=False,  # Ensures UTF-8 encoding for non-ASCII characters
+                date_format='iso',  # Optional: formats dates in ISO format
+                orient='records',   # Optional: controls the JSON structure
+                indent=2            # Optional: pretty print with indentation
+            )
+            filt_file = f'"{tracker_folder_path}{folder_name}/compilation_output/{map_obj_name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}_{idx}.json"'
+
+            do_command_s3 = (
+                f'export BUCKETEER_BUCKET_NAME=publicgemdata && '
+                f'aws s3 cp {filt_file} s3://$BUCKETEER_BUCKET_NAME/{map_obj_name}/{releaseiso}/{filt_file} '
+                f'--endpoint-url https://nyc3.digitaloceanspaces.com --acl public-read'
+                )    
+
+            subprocess.run(do_command_s3, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # delete the locally saved file
+            if os.path.exists(filt_file):
+                os.remove(filt_file)    
+
+            
+    else:
+        # only df1
+        print(f'In else statement for {tracker_name}')
+        df = df1
+        print(f'This is df: {df}')
+        trackernamenospaceoraperand = tracker_name.replace(' ', '_').replace('&','')
+        iso_today_datenospace = iso_today_date.replace(' ', '_')
+        try:
+            folder_name = mapname_gitpages[official_tracker_name_to_mapname[tracker_name]]
+        except KeyError as e:
+            print(f'erro was {e}')
+            # sometimes there is no diffference between the inner dict and outer so would be keyerror because not in outer dict
+            folder_name = official_tracker_name_to_mapname[tracker_name]
+        print(f'this is the folder name: {folder_name}')
+        # try:
+        if not isinstance(df, gpd.GeoDataFrame):
+            df.to_json(
+                f"{tracker_folder_path}{folder_name}/compilation_output/{map_obj_name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}.json",
+                force_ascii=False,  # Ensures UTF-8 encoding for non-ASCII characters
+                date_format='iso',  # Optional: formats dates in ISO format
+                orient='records',   # Optional: controls the JSON structure
+                indent=2            # Optional: pretty print with indentation
+            )
+            filt_file = f'"{tracker_folder_path}{folder_name}/compilation_output/{map_obj_name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}.json"'
+        else:
+        # except ValueError as e:
+        #     print(f'error is {e}')
+            # Save as GeoJSON using GeoDataFrame's to_file method
+            # gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326") if not isinstance(df, gpd.GeoDataFrame) else df
+            print('df is actually a gdf')
+            df.to_file(
+            f"{tracker_folder_path}{folder_name}/compilation_output/{map_obj_name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}.geojson",
+            driver='GeoJSON',
+            encoding='utf-8'
+            )
+        
+            filt_file = f'"{tracker_folder_path}{folder_name}/compilation_output/{map_obj_name}_{releaseiso}_{trackernamenospaceoraperand}_{iso_today_datenospace}.geojson"'
+
+        do_command_s3 = (
+            f'export BUCKETEER_BUCKET_NAME=publicgemdata && '
+            f'aws s3 cp {filt_file} s3://$BUCKETEER_BUCKET_NAME/{map_obj_name}/{releaseiso}/{filt_file} '
+            f'--endpoint-url https://nyc3.digitaloceanspaces.com --acl public-read'
+            )    
+            
+
+        subprocess.run(do_command_s3, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # delete the locally saved file
+        if os.path.exists(filt_file):
+            os.remove(filt_file)     
+ 
+    print('done with saving mapfile to s3')
 
 def remove_illegal_characters(value):
     if isinstance(value, str):
@@ -1122,7 +1367,7 @@ def map_ready_statuses(cleaned_dict_map_by_one_gdf_with_conversions):
         gdf_map_ready_no_status = gdf_map_ready.loc[mask_status_empty]
         # # # ##(input(f'check no status df: {gdf_map_ready_no_status}')
 
-        gdf_map_ready_no_status.to_csv(f'../issues/no-status-{mapname}_{iso_today_date}.csv')
+        gdf_map_ready_no_status.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/issues/no-status-{mapname}_{iso_today_date}.csv')
         # make sure all statuses align with no space rule
         # gdf_map_ready['status'] = gdf_map_ready['status'].apply(lambda x: x.strip().replace(' ','-'))
         gdf_map_ready['status_legend'] = gdf_map_ready['status_legend'].apply(lambda x: x.strip().replace('_','-'))
@@ -1158,7 +1403,7 @@ def map_ready_countries(cleaned_dict_by_map_one_gdf_with_better_statuses):
             print(f'Check out which rows are empty for countries for map: {mapname}')
             print(empty_areas)
             # #(input('Remove above')
-            empty_areas.to_csv(f'../issues/empty-areas-{tracker_sel}{iso_today_date}.csv')
+            empty_areas.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/issues/empty-areas-{tracker_sel}{iso_today_date}.csv')
 
         # this formats subnational area for detail maps
         # we would also want to overwrite the subnat and say nothing ""
@@ -2535,7 +2780,7 @@ def remove_missing_coord_rows(df):
     print(len(df))
     print('This is issues missing coord so removed:')
     print(issue_df)
-    issue_df.to_csv(f'missing_coords_{iso_today_date}.csv')
+    issue_df.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/issues/missing_coords_{iso_today_date}.csv')
 
     return df
 
@@ -3079,6 +3324,9 @@ def check_rename_keys(renaming_dict_sel, gdf):
         if k not in gdf_cols:
             print(f'Missing {k}')
     
+    print(f'This is all cols in df: \n {gdf_cols} \n')
+    input('CHECK')
+    
     
     
     
@@ -3125,8 +3373,12 @@ def fix_prod_type_space(df):
     
 def split_coords(df):
     
-    df['lat'] = df['Coordinates'].apply(lambda x: x.split(',')[0])
-    df['lng'] = df['Coordinates'].apply(lambda x: x.split(',')[1])
+    if 'Coordinates' in df.columns:
+        df['Latitude'] = df['Coordinates'].apply(lambda x: x.split(',')[0])
+        df['Longitude'] = df['Coordinates'].apply(lambda x: x.split(',')[1])
+    else:
+        print(df.columns)
+        print('Do you see Coordinates in there?')
 
     return df
 

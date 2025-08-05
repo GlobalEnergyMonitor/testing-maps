@@ -1,0 +1,202 @@
+- release_iso: 2025-07
+  today_date: '2025-07-15'
+  tracker_name: gcct
+- map:
+    about:
+      Note:
+        0: Note to PM, please review this data file, report any issues, and then delete
+          this tab
+    aboutkey: ''
+    fuel:
+    - none
+    geo: global
+    name: gcct
+    needed_geo: []
+    pm:
+    - Josh
+    source:
+    - Cement and Concrete
+    trackers: List with 1 TrackerObjects
+  tracker:
+    about:
+      0:
+        0: "Copyright \xA9 Global Energy Monitor. Global Cement and Concrete Tracker,\
+          \ July 2025 release. Distributed under a Creative Commons Attribution 4.0\
+          \ International License."
+        1: 'Recommended Citation: "Global Energy Monitor, Global Cement and Concrete
+          Tracker, July 2025 release" (See the CC license for attribution requirements
+          if sharing or adapting the data set.)'
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: ''
+        16: ''
+        17: ''
+        18: ''
+        19: ''
+        20: ''
+        21: ''
+        22: ''
+        23: ''
+        24: ''
+        25: ''
+        26: ''
+      1:
+        0: ''
+        1: ''
+        2: Global Cement and Concrete Tracker - July 2025
+        3: 'Contacts:  Joshua Clement, Project Manager, joshua.clement@globalenergymonitor.org
+
+          Caitlin Swalec, Heavy Industry Program Director, caitlin.swalec@globalenergymonitor.org'
+        4: ''
+        5: ''
+        6: Notes
+        7: 1. For background, additional infomation, and references, see wiki pages
+          for corresponding cement plant.
+        8: 2. For the Methodology, see (link)
+        9: 3. For summary statistics by province, country/area, region, etc., see
+          "Summary Tables" at (link)
+        10: 4. This database includes integrated and grinding plants including all
+          plants that have been proposed or under construction since 2018 and retired
+          or mothballed since 2021.
+        11: 5. The Global Energy Monitor website provides a mapping tool for this
+          data and our Global Cement and Concrete Tracker (GCCT) at (link)
+        12: ''
+        13: ''
+        14: Status definitions
+        15: Announced
+        16: Construction
+        17: Operating
+        18: Mothballed
+        19: Operating pre-retirement
+        20: Retired
+        21: Cancelled
+        22: ''
+        23: ''
+        24: Units
+        25: Mtpa
+        26: Mt
+      2:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+        4: ''
+        5: ''
+        6: ''
+        7: ''
+        8: ''
+        9: ''
+        10: ''
+        11: ''
+        12: ''
+        13: ''
+        14: ''
+        15: Plants that have been announced in corporate or governmental planning
+          documents, but have not begun construction.
+        16: Construction of a physical plant facility has begun.
+        17: Plant is operating one or more clinker or cement manufacturing unit(s).
+        18: Plant has been idled such that it cannot be brought into operation immediately,
+          but is not closed. Note that plants undergoing routine maintenance are still
+          considered "operating."
+        19: Plant has announced plans to retire its cement capacity but has not yet
+          ceased operations.
+        20: Plant has ceased operations and no longer has the ability to produce clinker
+          and/or cement.
+        21: Plant previously planned or under development that has been cancelled.
+          If no progress or announcements for an announced plant are made after 5
+          years, the plant is considered to be cancelled.
+        22: ''
+        23: ''
+        24: ''
+        25: million tonnes per annum
+        26: million tonnes
+    about_key: ''
+    acro: GCCT
+    data:
+      columns:
+      - GEM Plant ID: object
+      - GEM Asset name (English): object
+      - Asset name (other language): object
+      - Alternative asset name(s): object
+      - SFI ID: object
+      - LeadIT Project ID: object
+      - Coordinates: object
+      - Coordinate accuracy: object
+      - Municipality: object
+      - Subnational unit: object
+      - Country/Area: object
+      - Cement Capacity (millions metric tonnes per annum): object
+      - Clinker Capacity (millions metric tonnes per annum): object
+      - Majority Cement Type: object
+      - Cement Color: object
+      - Operating status: object
+      - Start date: object
+      - Owner name (English): object
+      - Owner name (other language): object
+      - Owner Entity ID: object
+      - Parent: object
+      - Parent Entity ID: object
+      - Plant type: object
+      - Production type: object
+      - CCS/CCUS: object
+      - Alternative Fuel: object
+      - Clay Calcination: object
+      - ? ''
+        : object
+      columns2:
+      - null
+      info: DataFrame with 3515 rows
+    data_official: {}
+    fuelcol: ''
+    geocol: Country/Area
+    key: 1xhIkwtdChvg6z_ZUSkJj9yHpWlt0w6DpiRENOJOR9K0
+    name: Cement and Concrete
+    off_name: Cement and Concrete
+    release: ''
+    tabs:
+    - Plant Data
+- df1_info_filtered:
+    columns:
+    - GEM Plant ID: object
+    - GEM Asset name (English): object
+    - Asset name (other language): object
+    - Alternative asset name(s): object
+    - SFI ID: object
+    - LeadIT Project ID: object
+    - Coordinates: object
+    - Coordinate accuracy: object
+    - Municipality: object
+    - Subnational unit: object
+    - Country/Area: object
+    - Cement Capacity (millions metric tonnes per annum): object
+    - Clinker Capacity (millions metric tonnes per annum): object
+    - Majority Cement Type: object
+    - Cement Color: object
+    - Operating status: object
+    - Start date: object
+    - Owner name (English): object
+    - Owner name (other language): object
+    - Owner Entity ID: object
+    - Parent: object
+    - Parent Entity ID: object
+    - Plant type: object
+    - Production type: object
+    - CCS/CCUS: object
+    - Alternative Fuel: object
+    - Clay Calcination: object
+    - ? ''
+      : object
+    - country_to_check: object
+    filtered: true
+    length: 3515

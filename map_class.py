@@ -3,7 +3,7 @@
 # from pull_down_s3 import get_file_name 
 import pandas as pd
 from helper_functions import save_to_s3, replace_old_date_about_page_reg, check_for_lists, rebuild_countriesjs, pci_eu_map_read, check_and_convert_float, remove_diacritics, check_rename_keys, fix_status_inferred, conversion_multiply, workaround_table_float_cap, workaround_table_units
-from all_config import gitpages_mapname, non_regional_maps, logger, client_secret_full_path, gem_path, tracker_to_fullname, tracker_to_legendname, iso_today_date, gas_only_maps, final_cols, renaming_cols_dict
+from all_config import mapname_gitpages, non_regional_maps, logger, client_secret_full_path, gem_path, tracker_to_fullname, tracker_to_legendname, iso_today_date, gas_only_maps, final_cols, renaming_cols_dict
 import geopandas as gpd
 import numpy as np
 import gspread
@@ -120,10 +120,14 @@ class MapObject:
         # handles for empty url rows and also non wiki cases SHOULD QC FOR THIS BEFOREHAND!! TO QC
         gdf['wiki-from-name'] = gdf.apply(lambda row: f"https://www.gem.wiki/{row['name'].strip().replace(' ', '_')}", axis=1)
 
-        # need to switch to '' not nan so can use not in
-        gdf['url'].fillna('',inplace=True)
+        if 'url' not in gdf.columns:
+            gdf['url'] = ''
+
+        print(gdf.columns)
+        input('check what is here wiki from name?')
         gdf['url'] = gdf.apply(lambda row: row['wiki-from-name'] if 'gem.wiki' not in row['url'] else row['url'], axis=1)
-        
+        gdf['url'].fillna('',inplace=True)
+                
         # one last check since this'll ruin the filter logic
         gdf.columns = [col.replace('_', '-') for col in gdf.columns] 
         gdf.columns = [col.replace('  ', ' ') for col in gdf.columns] 
@@ -181,8 +185,8 @@ class MapObject:
     def save_file(self):
         print(f'Saving file for map {self.name}')
         print(f'This is len of gdf {len(self.trackers)}')
-        if self.name in gitpages_mapname.keys():
-            path_for_download_and_map_files = gem_path + gitpages_mapname[self.name] + '/compilation_output/'
+        if self.name in mapname_gitpages.keys():
+            path_for_download_and_map_files = gem_path + mapname_gitpages[self.name] + '/compilation_output/'
         else:
             path_for_download_and_map_files = gem_path + self.name + '/compilation_output/'
             
@@ -216,10 +220,9 @@ class MapObject:
         if self.name == 'africa':
             
             gdf.to_file(f'{path_for_download_and_map_files_af}{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')            
-            gdf.to_file(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/final/{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')
-            
+            gdf.to_file(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')
             gdf.to_csv(f'{path_for_download_and_map_files_af}{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
-            gdf.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/final/{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
+            gdf.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
             
             process = save_to_s3(self, gdf, 'map', path_for_download_and_map_files_af)
 
@@ -409,7 +412,7 @@ class MapObject:
 
         if len(gdf_map_ready_no_status) > 0:
             input(f'check no status df, will be printed to issues as well: {gdf_map_ready_no_status}')
-            gdf_map_ready_no_status.to_csv(f'trackers/issues/no-status-{self.name}_{iso_today_date}.csv')
+            gdf_map_ready_no_status.to_csv(f'issues/{self.name}-no-status-{iso_today_date}.csv')
         
         # make sure all statuses align with no space rule
         gdf_map_ready['status'] = gdf_map_ready['status'].apply(lambda x: x.strip().replace(' ','-')) # TODO why was this commented out?
@@ -447,7 +450,7 @@ class MapObject:
             print(f'Check out which rows are empty for countries for map will also be printed in issues: {self.name}')
             print(empty_areas)
             # #(input('Remove above')
-            empty_areas.to_csv(f'trackers/issues/empty-areas-{tracker_sel}{iso_today_date}.csv')
+            empty_areas.to_csv(f'issues/{tracker_sel}-empty-areas-{iso_today_date}.csv')
 
         # this formats subnational area for detail maps
         # we would also want to overwrite the subnat and say nothing ""
@@ -560,6 +563,13 @@ class MapObject:
                     gdf['mine-type'] = gdf['mine-type'].fillna('').str.lower().replace(' ', '-').replace('&', 'and').replace('','-')
                     gdf['coal-grade'] = gdf['coal-grade'].fillna('').str.lower().replace(' ', '-').replace('&', 'and').replace('','-')
  
+                elif tracker_sel == 'GIST':
+                # make all unit status cap prod hyphenated and lowercase 
+                # silly workaround for getting the gist table set up for now
+                    gdf.columns = gdf.columns.str.replace(' ', '-').str.lower().str.replace('latitude', 'Latitude').str.replace('longitude', 'Longitude')
+                    
+                
+                
             if 'subnat' in gdf.columns:
                 print(f'subnat here for {tracker_obj.name}')
                 
@@ -575,10 +585,11 @@ class MapObject:
         one_gdf = pd.concat(renamed_gdfs, sort=False, verify_integrity=True, ignore_index=True) 
         # one_gdf = one_gdf.drop_duplicates('id').reset_index(drop=True)
         print(one_gdf.index)
-
+        
         cols_to_be_dropped = set(one_gdf.columns) - set(final_cols)
         print(f'These cols will be dropped: {cols_to_be_dropped}')
-       
+        input('Check that')
+        
         final_gdf = one_gdf.drop(columns=cols_to_be_dropped)
         self.trackers = final_gdf
             
