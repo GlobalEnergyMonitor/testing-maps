@@ -1,3 +1,4 @@
+*.json
 .DS*
 .~lock*
 node_modules/
