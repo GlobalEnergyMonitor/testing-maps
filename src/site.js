@@ -1621,6 +1621,7 @@ function createTable() {
             $("#site-style").get(0).sheet.insertRule('td:nth-child(' + (config.tableHeaders.values.indexOf(col)+1) + ') { white-space: nowrap }', 0);
         });        
     }
+    // TODO look into why not converting the integers to string for capacity giomt
     config.table = $('#table').DataTable({
         data: geoJSON2Table().map(row => {
             if ('toLocaleString' in config.tableHeaders) {

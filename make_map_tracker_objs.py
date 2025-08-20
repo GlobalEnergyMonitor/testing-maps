@@ -48,29 +48,38 @@ def make_map_tracker_objs(map_tab_df,row, prep_dict):
         )
         
         # SET UP DF AND ABOUT HERE
+        # add something for new_h2_data
         tracker_source_obj.set_df()
         tracker_source_obj.get_about()
             
         # set data and about attributes for each tracker
-        if tracker_source_obj.acro == 'GOGPT-eu':
+        # if tracker_source_obj.acro == 'GOGPT-eu':
             
-            print("TrackerObject Attributes:")
-            print(f"Key: {tracker_source_obj.key}")
-            print(f"Name: {tracker_source_obj.name}")
-            print(f"Off Name: {tracker_source_obj.off_name}")
-            print(f"Tabs: {tracker_source_obj.tabs}")
-            print(f"Release: {tracker_source_obj.release}")
-            print(f"Acro: {tracker_source_obj.acro}")
-            print(f"Geocol: {tracker_source_obj.geocol}")
-            print(f"Fuelcol: {tracker_source_obj.fuelcol}")
-            print(f"About DataFrame: {tracker_source_obj.about}")
-            print(f"Data DataFrame: {tracker_source_obj.data}")
-            input('Check if tracker object attributes look right for GOGPT-eu') #working
-            # append tracker obj to map obj attribute trackers 
+        #     print("TrackerObject Attributes:")
+        #     print(f"Key: {tracker_source_obj.key}")
+        #     print(f"Name: {tracker_source_obj.name}")
+        #     print(f"Off Name: {tracker_source_obj.off_name}")
+        #     print(f"Tabs: {tracker_source_obj.tabs}")
+        #     print(f"Release: {tracker_source_obj.release}")
+        #     print(f"Acro: {tracker_source_obj.acro}")
+        #     print(f"Geocol: {tracker_source_obj.geocol}")
+        #     print(f"Fuelcol: {tracker_source_obj.fuelcol}")
+        #     print(f"About DataFrame: {tracker_source_obj.about}")
+        #     print(f"Data DataFrame: {tracker_source_obj.data}")
+        #     input('Check if tracker object attributes look right for GOGPT-eu') #working
+        #     # append tracker obj to map obj attribute trackers 
         map_obj.trackers.append(tracker_source_obj)
-        save_raw_s3(map_obj, tracker_source_obj, TrackerObject)
-        print('Done with save_raw_s3, check s3')
         
+        # TODO not sure why I can't save these as json and push to s3 like the others but not saved in the same place
+        if tracker_source_obj.name in ['LNG Terminals', 'Gas Pipelines', 'Oil Pipelines', 'Gas Pipelines EU', 'LNG Terminals EU']:
+            # getting an issue saving as json ... is it because ... idk should be df like everyone else
+            print(tracker_source_obj.data)
+            # input(f'check tracker name and data df: {tracker_source_obj.name}')
+        else:
+            # TODO look over s3 functions with Hannah's code
+            # save_raw_s3(map_obj, tracker_source_obj, TrackerObject)
+            print('WIP Done with save_raw_s3, check s3')
+            
         # # save to metadata
         # mfile_actual = f"/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/metadata_files/{map_obj.name}_{releaseiso}_{iso_today_date}_metadata.yaml"
         # print(f'this is mfile_actual: {mfile_actual}')
@@ -134,8 +143,10 @@ def make_map_tracker_objs(map_tab_df,row, prep_dict):
             # Filter by geo and fuel and check result
             tracker.create_filtered_geo_fuel_df(map_obj.geo, map_obj.fuel)
             
+            print(f'This is tracker.name {tracker.name}')
             # save filtered df to s3 and log to config yaml how long it is after filter
-            save_mapfile_s3(map_obj.name, tracker.name, True, tracker.data)
+            # TODO commenting this out for now since data mgmt process still in progress 
+            # save_mapfile_s3(map_obj.name, tracker.name, True, tracker.data)
 
             # Log the results after filtering
             with open("tracker_data_log.txt", "a") as log_file:
@@ -158,7 +169,8 @@ def make_map_tracker_objs(map_tab_df,row, prep_dict):
 
             # save filtered df to s3 and log to config yaml how long it is after filter
             # input('Check after geo filter')
-            save_mapfile_s3(map_obj.name, tracker.name, True, main_or_h2, prod_or_og)
+            # TODO same as above 
+            # save_mapfile_s3(map_obj.name, tracker.name, True, main_or_h2, prod_or_og)
 
         except TypeError as e:
             print(f'Fix error for {map_obj.name}: \n{e}')

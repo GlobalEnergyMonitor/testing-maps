@@ -7,6 +7,12 @@ import sys
 from creds import *
 import logging
 import subprocess
+from pathlib import Path
+
+today_date = datetime.today()
+
+iso_today_date = today_date.isoformat().split('T')[0]
+iso_today_date_folder = f'{iso_today_date}/'
 
 list_of_all_official = [
     "Oil & Gas Plants",
@@ -37,49 +43,93 @@ list_of_all_official = [
 ]
 
 pm_preview_mode = False # For Baird's testing work
-trackers_to_update = ["Oil & Gas Plants"] # official tracker tab name in map tracker log sheet
+trackers_to_update = ["Iron ore Mines"] # official tracker tab name in map tracker log sheet
 new_release_date = 'August_2025' # for within about page NEEDS TO BE FULL MONTH
 releaseiso = '2025-08'
 simplified = False # True False
 new_h2_data = False
-priority = [''] # europe # NOTE NEEDS TO BE [''] to be skipped NEEDS TO BE mapname in map_tab internal
-                    # africa
-                    # integrated
-                    # europe
-                    # asia
-                    # latam
-                    # ggit
-                    # goit
-                    # goget
-                    # gctt
-                    # gcpt
-                    # gcmt
-                    # gogpt
-                    # gspt
-                    # gwpt
-                    # gnpt
-                    # gbpt
-                    # ggpt
-                    # ghpt
-                    # gist
-                    # gmet
-                    # giomt
+priority = [''] 
+tracker_mapnames = ["europe", "africa", "integrated", "asia", "latam", "ggit", "goit", "goget", "gctt", "gcpt", "gcmt", "gogpt", "gspt", "gwpt", "gnpt", "gbpt", "ggpt", "ghpt", "gist", "gmet", "giomt"]
 
-logpath = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/logfiles/'
+# At the beginning of all_config.py
+def ensure_compilation_folders():
+    """Ensure compilation_output folders exist in all tracker directories"""
+    trackers_dir = Path(__file__).parent / 'trackers'
+    
+    for tracker_dir in trackers_dir.iterdir():
+        if tracker_dir.is_dir() and not tracker_dir.name.startswith('.'):
+            compilation_dir = tracker_dir / 'compilation_output'
+            compilation_dir.mkdir(exist_ok=True)
+
+# Run at import time
+ensure_compilation_folders()
+
+
+# def main():
+# make necessary directories if they don't exist
+folders_needed = ["logfiles/", 'local_pkl/', "metadata_files/"]
+for folder in folders_needed:
+    if not os.path.exists(folder): # TODO in future move to be ../logfiles
+        os.mkdir(f"{folder}")
+    # folder_dir = os.path.join(os.path.dirname(__file__), folder)
+    # os.makedirs(folder_dir, exist_ok=True)
+metadata_dir = os.path.join(os.path.dirname(__file__), 'metadata_files')
+os.makedirs(metadata_dir, exist_ok=True)
+local_pkl_dir = os.path.join(os.path.dirname(__file__), 'local_pkl')
+os.makedirs(local_pkl_dir, exist_ok=True)
+
+logpath = 'logfiles/'
 logger = logging.getLogger(__name__)
-log_file_path = f'{logpath}log_file.log'  
+log_file_path = f'{logpath}log_file_{iso_today_date}.log' 
+logger.setLevel(logging.DEBUG)  # Set the lowest logging level for the logger
+ 
 logging.basicConfig(filename=log_file_path, level=logging.INFO, format='%(asctime)s - %(message)s')
 
-tracker_folder_path = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/'
+# def getLogger(tracker_name): # TODO use Hannah's code to make logger better
+
+    # iso_date = datetime.now().strftime("%Y-%m-%d")
+
+    # # Create a logger
+    # logger = logging.getLogger("my_logger")
+    # logger.setLevel(logging.DEBUG)  # Set the lowest logging level for the logger
+
+    # # Create a handler for INFO and greater messages
+    # log_file_name_info = f"../logfiles/{tracker_name}_{iso_date}_generation.log"
+    # info_handler = logging.FileHandler(log_file_name_info, encoding="utf-8")
+    # info_handler.setLevel(logging.INFO)  # Set the level to INFO
+
+    # # Create a handler for ERROR and greater messages
+    # log_file_name_error = f"../logfiles/{tracker_name}_{iso_date}_serious_errors.log"
+    # error_handler = logging.FileHandler(log_file_name_error, encoding="utf-8")
+    # error_handler.setLevel(logging.ERROR)  # Set the level to ERROR
+
+    # # Create a formatter to define the log message format
+    # formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+
+    # # Set the formatter for both handlers
+    # info_handler.setFormatter(formatter)
+    # error_handler.setFormatter(formatter)
+
+    # # Add the handlers to the logger
+    # logger.addHandler(info_handler)
+    # logger.addHandler(error_handler)
+
+
+
+
+tracker_folder_path = 'trackers/'
 
 # run this first so all aws commands work later
 s3_setup = (
     f'aws configure set s3.max_concurrent_requests 100'
-)
-input('Go into 1password and set up the aws access key locally')
+) 
+# if awskeyres == 'done':
+#     pass
+# else:
+#     awskeyres = input('Go into 1password and set up the aws access key locally, if already done, type done.')
 
-subprocess.run(s3_setup, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
+# subprocess.run(s3_setup, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+# TODO explore why aws configure set s3.max_concurrent_requests 100 doesn't recognize aws David add to requirements
 
 # github pages folder name to map log internal name when they do not match
 mapname_gitpages = {
@@ -153,14 +203,11 @@ rep_point_key = '1Bu2RhxgvRW7yEJu6zbng_nudXBYRASNvRtgIOvrDN0c', # GEM Standard C
 rep_point_tab = ['gem standard representative points']
 # Format the date in ISO format
 # Get today's date
-today_date = datetime.today()
 
-iso_today_date = today_date.isoformat().split('T')[0]
-iso_today_date_folder = f'{iso_today_date}/'
 client_secret_full_path = os.path.expanduser("~/") + client_secret
-gem_path = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/trackers/'
-gem_path_tst = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testing/'
-path_for_pkl = gem_path + '/local_pkl/'
+gem_path = os.path.join(os.path.dirname(__file__), 'trackers/')
+# gem_path_tst = '~/testing/'
+path_for_pkl = gem_path + 'local_pkl/'
 gspread_creds = gspread.oauth(
         scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"],
         credentials_filename=client_secret_full_path,
@@ -222,7 +269,7 @@ steel_gist_table_cols = [
 
 
 # TODO keep in retired year or closed year for longitudinal, and make sure start year is there too
-final_cols = ['retired-year','plant-status','noneng_owner', 'parent_gem_id', 'status_display','owner_gem_id','facilitytype','unit_id', 'loc-oper', 'loc-owner', 'tech-type','ea_scaling_capacity', 'operator', 'Operator', 'Binational', 'binational', 'loc-accu','units-of-m','mapname','tracker-acro','official_name','url', 'areas','name', 'unit_name', 'capacity',
+final_cols = ['lat', 'lng','coordinate-accuracy','total-resource-(inferred', 'parent-gem-id', 'total-reserves-(proven-and-probable','start_date', 'owner-gem-id','owner-noneng','retired-year','plant-status','noneng_owner', 'parent_gem_id', 'status_display','owner_gem_id','facilitytype','unit_id', 'loc-oper', 'loc-owner', 'tech-type','ea_scaling_capacity', 'operator', 'Operator', 'Binational', 'binational', 'loc-accu','units-of-m','mapname','tracker-acro','official_name','url', 'areas','name', 'unit_name', 'capacity',
               'status', 'start_year', 'subnat', 'region', 'owner', 'parent', 'tracker', 'tracker_custom', 'operator-name-(local-lang/script)', 'owner-name-(local-lang/script)',
         'original_units', 'location-accuracy','conversion_factor', 'geometry', 'river', 'area2', 'region2', 'subnat2', 'capacity1', 'capacity2',
         'prod-coal', 'Latitude', 'Longitude', 'pid','id', 'prod_oil', 'prod_gas', 'prod_year_oil', 'prod_year_gas', 'fuel', 'PCI5', 'PCI6', 'pci5','pci6','WKTFormat', 'Fuel', 'maturity', 'fuel-filter', 
@@ -232,9 +279,14 @@ final_cols = ['retired-year','plant-status','noneng_owner', 'parent_gem_id', 'st
 # add two together because gist list is so long and should be refactored soon
 final_cols.extend(steel_gist_table_cols)
 
+
 renaming_cols_dict = {
-                    'GIOMT': {'GEM wiki page URL': 'url', 'Operating status': 'status', 'Asset name (English)': 'name', 'Asset name (other language)': 'noneng_name'},
-    
+                        'GIOMT': {'GEM Asset ID': 'pid','Coordinate accuracy': 'coordinate-accuracy','GEM wiki page URL': 'url', 'Operating status': 'status', 'Asset name (English)': 'name', 'Asset name (other language)': 'noneng_name',
+                                  'Design capacity (ttpa)': 'capacity', 'Owner': 'owner', 'Parent': 'parent', 'Start date': 'start_date', 'Country/Area':'areas',
+                                  'Total resource (inferred, indicated and measured, thousand metric tonnes)': 'total-resource-(inferred', 
+                                  'Total reserves (proven and probable, thousand metric tonnes)': 'total-reserves-(proven-and-probable', 'Parent GEM Entity ID': 'parent-gem-id',
+                                  'Owner name in local language/script': 'owner-noneng', 'Owner GEM Entity ID': 'owner-gem-id', 'Subnational unit': 'subnat'},
+                            
                     'GCCT': {'GEM Plant ID': 'pid', 'GEM Asset name (English)': 'name', 'Asset name (other language)': 'noneng_name', 'Coordinate accuracy': 'location-accuracy', 
                              'Subnational unit': 'subnat', 'Country/Area': 'areas',
                              'Cement Color': 'color', 'Operating status': 'status', 'Start date':'start_year', 'Owner name (English)': 'owner',
@@ -375,7 +427,7 @@ regional_multi_map_tab = ['regional_multi_map'] # regional
 
 multi_tracker_countries_sheet = '1UUTNERZYT1kHNMo_bKpwSGrUax9WZ8eyGPOyaokgggk'
 
-testing_path = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/'
+# testing_path = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/'
 
 full_country_list = [
     "Algeria", "Angola", "Benin", "Botswana", "British Indian Ocean Territory", "Burkina Faso", 

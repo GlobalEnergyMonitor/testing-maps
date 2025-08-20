@@ -1,8 +1,7 @@
 var config = {
     /* name of the data file; use key `csv` if data file is CSV format */
-    // csv: 'data.csv',
     geometries: ['Point'],
-    csv: 'output/data-2024-11-25.csv',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/giomt/2025-08/giomt_map_2025-08-15.geojson',
     /* zoom level to set map when viewing all phases */
     phasesZoom: 10,
     /* initial load zoom multiplier */
@@ -58,36 +57,44 @@ var config = {
 
     },
     ],
-
+    linkField: 'pid',
     /* define the field for calculating and showing capacity along with label.
        this is defined per tracker since it varies widely */
-    capacityField: 'scaling_cap',
-    capacityDisplayField: 'design-capacity-(ttpa)',
+    capacityField: 'capacity',
+    capacityDisplayField: 'capacity-table',
     capacityLabel: '',
+
+    // lat: 'Latitude',
+    // lng: 'Longitude',
 
     /* Labels for describing the assets */
     assetFullLabel: "Iron Ore assets",
     assetLabel: 'assets',
 
     /* the column that contains the asset name. this varies between trackers */
-    nameField: 'name-(english)',
+    nameField: 'name',
 
-    countryField: 'country/area',
+    countryField: 'areas',
     /* configure the table view, selecting which columns to show, how to label them, 
         and designated which column has the link */
+
+    // TODO make it so all string showing capacity type value is to locale string with commas currently Total reserves for giomt is string but no commas
+    // maybe change it in site.js file
+
     tableHeaders: {
-        values: ['name-(english)', 'name-(other-language)','design-capacity-(ttpa)', 'total-reserves-(proven-and-probable', 'total-resource-(inferred','status', 'owner', 'parent',  'country/area'],
+        values: ['name', 'noneng-name','capacity', 'total-reserves-(proven-and-probable', 'total-resource-(inferred','status', 'owner', 'parent', 'areas'],
         labels: ['Asset name', 'Asset Name (other language)','Design Capacity (ttpa)','Reserve (thousand tonnes)', 'Resource (thousand tonnes)','Status','Owner', 'Parent', 'Country/Area(s)'],
-        clickColumns: ['name-(english)'],
-        rightAlign: ['design-capacity-(ttpa)', 'total-reserves-(proven-and-probable', 'total-resource-(inferred'],
-        toLocaleString: ['design-capacity-(ttpa)', 'total-reserves-(proven-and-probable', 'total-resource-(inferred'],
+        clickColumns: ['name'],
+        rightAlign: ['capacity', 'total-reserves-(proven-and-probable', 'total-resource-(inferred'],
+        toLocaleString: [''],
+        removeLastComma: ["areas"]
         
     },
 
     /* configure the search box; 
         each label has a value with the list of fields to search. Multiple fields might be searched */
-    searchFields: { 'Asset name': ['name-(english)', 'name-(other-language)'], 
-        'Companies': ['owner', 'parent'],
+    searchFields: { 'Asset name': ['name', 'noneng-name', 'name-search'], 
+        'Companies': ['owner', 'parent', 'parent-gem-id', 'owner-noneng', 'owner-gem-id', 'owner-search', 'parent-search'],
 
     },
     /* define fields and how they are displayed. 
@@ -98,11 +105,9 @@ var config = {
       `'label': '...'` prepends a label. If a range, two values for singular and plural.
     */
     detailView: {
-        'name-(english)': {'display': 'heading'},
-        'status': {'label': 'Status'},
-        'design-capacity-(ttpa)': {'label': 'Design Capacity (ttpa)'},
-        'subnational-unit': {'display': 'location'},
-        'country/area': {'display': 'location'},
+        'name': {'display': 'heading'},
+        'capacity-details': {'label': 'Design Capacity (ttpa)'},
+        'areas-subnat-sat-display': {'display': 'location'},
         'total-reserves-(proven-and-probable': {'label': 'Reserves (thousand tonnes)'},
         'total-resource-(inferred': {'label': 'Resources (thousand tonnes)'},
         'owner': {'label': 'Owner'},
@@ -113,7 +118,7 @@ var config = {
         // 'areas-subnat-sat-display': {'display': 'location'}
 
     },
-    showCapacityTable: false, 
+    showCapacityTable: false,
     showMaxCapacity: true,
     maxCapacityLabel: 'Design Capacity (TTPA)',
 

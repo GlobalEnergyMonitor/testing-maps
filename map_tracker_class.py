@@ -1,17 +1,18 @@
 from requests import HTTPError
-from all_config import logger, new_release_date, iso_today_date,trackers_to_update, geo_mapping, releaseiso, gspread_creds, region_key, region_tab, centroid_key, centroid_tab
+from all_config import logpath, local_pkl_dir, new_h2_data, logger, new_release_date, iso_today_date,trackers_to_update, geo_mapping, releaseiso, gspread_creds, region_key, region_tab, centroid_key, centroid_tab
 from helper_functions import fix_prod_type_space, fix_status_space, split_coords, make_plant_level_status, make_prod_method_tier, rename_gdfs, clean_about_df, replace_old_date_about_page_reg, convert_google_to_gdf, convert_coords_to_point, check_and_convert_float, check_in_range, check_and_convert_int, get_most_recent_value_and_year_goget, calculate_total_production_goget, get_country_list, get_country_list, create_goget_wiki_name,create_goget_wiki_name, gspread_access_file_read_only
 import pandas as pd
 from numpy import absolute
 import geopandas as gpd
 import boto3
 from creds import *
-from all_config import logpath
 import time
 import numpy as np
 from shapely import wkt
 import pickle
-
+from datetime import datetime
+import urllib.parse # quote() and quote_plus() for query params
+import os
 
 class TrackerObject:
     def __init__(self,
@@ -79,10 +80,13 @@ class TrackerObject:
     
 
     def set_df(self):
+        # TODO move all these to all_config to make relative path set up cleaner
+        # local_pkl_dir = os.path.join(os.path.dirname(__file__), 'local_pkl')
 
+        pkl_path = os.path.join(local_pkl_dir, f'trackerdf_for_{self.acro}_on_{iso_today_date}.pkl')
         print(f'See if data already exists locally for {self.name}...')
         try: 
-            with open(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/local_pkl/trackerdf_for_{self.acro}_on_{iso_today_date}.pkl', 'rb') as f:
+            with open({pkl_path}, 'rb') as f:
                 
                 print(f'opened from {f}')
                 self.data = pickle.load(f)
@@ -101,6 +105,7 @@ class TrackerObject:
                 # to get the file names in latest
                 parquet_s3 = self.get_file_name(releaseiso)
                 print(f'This is file: {parquet_s3}')
+                
                 if 'parquet' in parquet_s3:
 
                     df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}') # , engine='pyarrow' NOTE gpd calls a different method "read_table" that requires a file path NOT a URI
@@ -125,12 +130,19 @@ class TrackerObject:
                 parquet_s3 = self.get_file_name(releaseiso)
                 print(f'This is file: {parquet_s3}')
 
-                # self.data = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}', engine='pyarrow')   # GEM-GGIT-Gas-Pipelines-2024-12_DATA_TEAM_COPY_md_2025-04-16.parquet
-                df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}')
-                df['geometry'] = df['geometry'].apply(lambda geom: wkt.loads(geom) if geom else None)
+                if 'parquet' in parquet_s3:
 
-                gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
+                    df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}') # , engine='pyarrow' NOTE gpd calls a different method "read_table" that requires a file path NOT a URI
+                
+                    df['geometry'] = df['geometry'].apply(lambda geom: wkt.loads(geom) if geom else None)
+
+                    gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
+                
+                else:
+                    gdf = gpd.read_file(f'{parquet_file_source_path}{parquet_s3}')
+                
                 self.data = gdf
+
                 
             elif self.name == 'LNG Terminals':
 
@@ -139,17 +151,17 @@ class TrackerObject:
                 # to get the file names in latest
                 parquet_s3 = self.get_file_name(releaseiso)
                 print(f'This is file: {parquet_s3}')
+                if 'parquet' in parquet_s3:
 
-                df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}') 
-                # print(df['geometry'])
-                # from shapely import wkt
-                # Convert geometry to WKT format for saving as Parquet
-                # Assuming `df` is the DataFrame loaded from the Parquet file
-                df['geometry'] = df['geometry'].apply(lambda geom: wkt.loads(geom) if geom else None)
-                # TODO NEED TO TRANSFER geometry back to 
-                # TypeError("Input must be valid geometry objects: {0}".format(geom)) 
-                # TypeError: Input must be valid geometry objects: POINT (-90.194444 29.105833)
-                gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
+                    df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}') # , engine='pyarrow' NOTE gpd calls a different method "read_table" that requires a file path NOT a URI
+                
+                    df['geometry'] = df['geometry'].apply(lambda geom: wkt.loads(geom) if geom else None)
+
+                    gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
+                
+                else:
+                    gdf = gpd.read_file(f'{parquet_file_source_path}{parquet_s3}')
+                    
                 self.data = gdf
             
     
@@ -157,42 +169,56 @@ class TrackerObject:
                 print('handle non_gsheet_data for pulling data from s3 already has coords')
                 
                 # to get the file names in latest
-                parquet_s3 = self.get_file_name(releaseiso)
+                # parquet_s3 = self.get_file_name(releaseiso)
+                geojson_s3 = self.get_file_name(releaseiso)
+
                 
                 #assign gdf to data 
 
-                df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}') 
-                df['geometry'] = df['geometry'].apply(lambda geom: wkt.loads(geom) if geom else None)
+                # df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}') 
+                gdf = gpd.read_file(f'{parquet_file_source_path}{geojson_s3}')
+                # df['geometry'] = df['geometry'].apply(lambda geom: wkt.loads(geom) if geom else None)
     
-                gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
-                print(len(gdf))
-                print(gdf.columns)
-                test = gdf[gdf['PipelineName']=='Azerbaijan-Georgia-Romania Interconnector Gas']
-                print(test)
-                input('its there on s3 download')
+                # gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
+                gdf.set_crs("epsg:4326", inplace=True)
+
                 self.data = gdf
                 
             elif self.name == 'LNG Terminals EU':
                 print('handle non_gsheet_data for pulling data from s3 already has coords')
                 
                 # to get the file names in latest
-                parquet_s3 = self.get_file_name(releaseiso)
+                # parquet_s3 = self.get_file_name(releaseiso)
+                geojson_s3 = self.get_file_name(releaseiso)
                 
                 #assign gdf to data 
 
-                df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}')  
-                df['geometry'] = df['geometry'].apply(lambda geom: wkt.loads(geom) if geom else None)
+                # df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}')  
+                # df['geometry'] = df['geometry'].apply(lambda geom: wkt.loads(geom) if geom else None)
+                gdf = gpd.read_file(f'{parquet_file_source_path}{geojson_s3}')
     
-                gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
+                # gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
+                gdf.set_crs("epsg:4326", inplace=True)
+
                 self.data = gdf                    
                 
             elif self.name == 'GOGPT EU':  # TODO issue here april 28th went to else statement when it was gogpt eu
-
-                df_tuple = self.create_df_gogpt_eu() 
-                print(type(df_tuple)) 
-                self.data = df_tuple
-                print('It is a tuple GOGPT EU')
-                input('Check')
+                # if new_h2_data 
+                if new_h2_data == True:
+                    # do what worked in Jan
+                    df_tuple = self.create_df_gogpt_eu() 
+                    print(type(df_tuple)) 
+                    self.data = df_tuple
+                    print('It is a tuple GOGPT EU')
+                    input('Check')
+                else:
+                    df_tuple = self.create_df_gogpt_eu() 
+                    print(type(df_tuple))
+                    if  df_tuple[0] == '':
+                        print('no new plant data in gogpt eu file so remove first tuple')
+                        self.data = df_tuple[1]
+                        print('It is not a tuple GOGPT EU b/c using old H2 data for gogpt eu')
+                        input('Check')                    
             
             elif self.name == 'Oil & Gas Extraction':
                 df_tuple = self.create_df_goget()
@@ -227,9 +253,11 @@ class TrackerObject:
 
                 # df = pd.read_parquet(f'{parquet_file_source_path}{parquet_s3}') 
                 self.data = df
+            # local_pkl_dir = os.path.join(os.path.dirname(__file__), 'local_pkl')
 
+            # pkl_path = os.path.join(local_pkl_dir, f'trackerdf_for_{self.acro}_on_{iso_today_date}.pkl')
 
-            with open(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/local_pkl/trackerdf_for_{self.acro}_on_{iso_today_date}.pkl', 'wb') as f:
+            with open(pkl_path, 'wb') as f:
                 print(f'saved to {f}')
                 pickle.dump(self.data, f)
                 try:
@@ -330,65 +358,95 @@ class TrackerObject:
 
 
     def list_all_contents(self, release):
-        acro = self.acro.lower() # eu, ggit
-        print(acro)
-        name = self.name.lower() # pipelines, terminals, gas
-        print(name)
-        
+        # TODO egt change what gets added so it is JUST the file 
+        # not both: ['egt-term/2025-02/', 'egt-term/2025-02/GEM-EGT-Terminals-2025-02 DATA TEAM COPY.geojson']
+        acro = self.acro # eu, ggit
+        name = self.name.lower() # pipelines, terminals, gas        
         list_all_contents = [] # should be one file, if not then we need to remove / update
         # Initialize a session using DigitalOcean Spaces
         session = boto3.session.Session()
         client = session.client('s3',
-                                region_name='nyc3',
-                                endpoint_url='https://nyc3.digitaloceanspaces.com',
-                                aws_access_key_id=ACCESS_KEY,
-                                aws_secret_access_key=SECRET_KEY)
+                    region_name='nyc3',
+                    endpoint_url='https://nyc3.digitaloceanspaces.com',
+                    aws_access_key_id=ACCESS_KEY,
+                    aws_secret_access_key=SECRET_KEY)
 
-        # Define the bucket name and folder prefix
         bucket_name = 'publicgemdata'
-        folder_prefix = 'latest/'
 
-        # List objects in the specified folder
+        # List all folders (prefixes) for this acro
+        paginator = client.get_paginator('list_objects_v2')
+        prefix = f'{acro}/'
+        folders = set()
+        for page in paginator.paginate(Bucket=bucket_name, Prefix=prefix, Delimiter='/'):
+            for common_prefix in page.get('CommonPrefixes', []):
+                folder = common_prefix['Prefix'].rstrip('/').split('/')[-1]
+                folders.add(folder)
+
+        # Try to parse folder names as dates and find the latest
+        date_folders = []
+        for folder in folders:
+            try:
+            # Accept formats like YYYY-MM or YYYY-MM-DD
+                date_obj = datetime.strptime(folder, '%Y-%m')
+            except ValueError:
+                try:
+                    date_obj = datetime.strptime(folder, '%Y-%m-%d')
+                except ValueError:
+                    continue
+            date_folders.append((date_obj, folder))
+
+        if date_folders:
+            # Get the folder with the latest date
+            latest_folder = max(date_folders, key=lambda x: x[0])[1]
+            folder_prefix = f'{acro}/{latest_folder}/'
+        else:
+            print(f'Could not find any dates in folder for {acro}')
+            folder_prefix = f'{acro}/'
+
+        # List objects in the latest folder
         response = client.list_objects_v2(Bucket=bucket_name, Prefix=folder_prefix)
 
         # Check if the 'Contents' key is in the response
         if 'Contents' in response:
             for obj in response['Contents']:
-                print(obj['Key']) # this is name of the file in s3
-                print(f"Using this {acro} and this {name} to look")
-                # it's the current tracker update data so GOIT when it got updated in March
-                # if tracker and release in obj['Key']:
+
+                if 'DATA TEAM COPY' in obj['Key']:
+                    print(obj['Key']) # this is name of the file in s3
+                    print(f"Using this {acro} and this {name} to look")                   
+                    list_all_contents.append(obj['Key'])
+                else:
+                    print(f'DATA TEAM COPY not in file name for {acro}')
+                
+                # if acro in obj['Key'].lower() and '-' not in acro:
                 #     list_all_contents.append(obj['Key'])
                 
-                if acro in obj['Key'].lower() and '-' not in acro:
-                    list_all_contents.append(obj['Key'])
-                
-                elif acro in obj['Key'].lower():
-                    # list_all_contents.append(obj['Key'])
-                    # weeds out ggit without eu for egt version
-                    if name.split(' ')[1].lower() in obj['Key'].lower() and acro.split('-')[-1] == 'eu':
-                        list_all_contents.append(obj['Key'])     
-                    # weed out ggit without lng for lng 
-                    elif name.split(' ')[1].lower() in obj['Key'].lower() and acro.split('-')[-1] == 'lng':
-                        list_all_contents.append(obj['Key'])
-                    # for the actual ggit when it is ggit, for all EGT ones too
-                    elif name.split(' ')[1].lower() in obj['Key'].lower(): # and '-lng' not in acro
-                        list_all_contents.append(obj['Key'])    
+                # elif acro in obj['Key'].lower():
+                #     # list_all_contents.append(obj['Key'])
+                #     # weeds out ggit without eu for egt version
+                #     if name.split(' ')[1].lower() in obj['Key'].lower() and acro.split('-')[-1] == 'eu':
+                #         list_all_contents.append(obj['Key'])     
+                #     # weed out ggit without lng for lng 
+                #     elif name.split(' ')[1].lower() in obj['Key'].lower() and acro.split('-')[-1] == 'lng':
+                #         list_all_contents.append(obj['Key'])
+                #     # for the actual ggit when it is ggit, for all EGT ones too
+                #     elif name.split(' ')[1].lower() in obj['Key'].lower(): # and '-lng' not in acro
+                #         list_all_contents.append(obj['Key'])    
                     
-                    else:
-                        print(f'May need to adjust logic in list_all_contents for: {acro}')                    
+                #     else:
+                #         print(f'May need to adjust logic in list_all_contents for: {acro}')   # TODO make this better                  
                     
-                else:
-                    if name in obj['Key'].lower():
-                        list_all_contents.append(obj['Key']) 
-                    elif name[:-1] in obj['Key'].lower():
-                        list_all_contents.append(obj['Key'])
-                    else:
-                        print(f'May need to adjust logic in list_all_contents for: {acro}')    
+                # else:
+                #     if name in obj['Key'].lower():
+                #         list_all_contents.append(obj['Key']) 
+                #     elif name[:-1] in obj['Key'].lower():
+                #         list_all_contents.append(obj['Key'])
+                #     else:
+                #         print(f'May need to adjust logic in list_all_contents for: {acro}')   # TODO make this better 
                          
                 
         else:
             print("No files found in the specified folder.")
+            input(f'LOOK INTO THIS list_all_contents for acro: {acro} and folder_prefix: {folder_prefix}')
     
         return list_all_contents
 
@@ -397,7 +455,8 @@ class TrackerObject:
     def get_file_name(self, release):
         
         # path_name = self.list_all_contents(release)[0]
-        path_name_all = self.list_all_contents(release)
+        path_name_all = self.list_all_contents(release) 
+        print(f'this is path_name_all: {path_name_all}')
         
         if len(set(path_name_all)) > 1:
             print(path_name_all)
@@ -441,7 +500,12 @@ class TrackerObject:
         # path_name = path_name.split('latest/')[1] # TODO maybe reinstate this to have latest
         # file = f'{testing_source_path}{path_name}'
 
-        return path_name
+        # we need to escape file name if has invalid url characters like spaces 
+        
+        encoded_path_name = urllib.parse.quote(path_name)
+        print(f'Compare path name: {path_name} to encoded path_name: {encoded_path_name}')
+        
+        return encoded_path_name
     
 
     
@@ -500,25 +564,46 @@ class TrackerObject:
     def create_df_gogpt_eu(self):
         print(f'This is tabs for GOGPT EU: {self.tabs}')
         # TODO test this, if concatted does not work then keep separate
-        if 'H2 Proposals at Oil & Gas Plant' in self.tabs: 
-            for tab in self.tabs:
-                print(f'This is tab: {tab}')
-                if tab == 'Oil & Gas Plants':
-                    
-                    gsheets = gspread_creds.open_by_key(self.key)
-                    spreadsheet = gsheets.worksheet(tab)
-                    plants_df = pd.DataFrame(spreadsheet.get_all_records(expected_headers=[]))
-                    plants_df.columns = plants_df.columns.str.strip()
-                    plants_df['tracker-acro'] = 'plants'
-                else:
-                    gsheets = gspread_creds.open_by_key(self.key)
-                    spreadsheet = gsheets.worksheet(tab)
-                    plants_hy_df = pd.DataFrame(spreadsheet.get_all_records(expected_headers=[]))
-                    plants_hy_df.columns = plants_hy_df.columns.str.strip()
-                    plants_hy_df['tracker-acro'] = 'plants_hy'
-                #     df['tab-type'] = tab
-                #     dfs += [df]
-                # df = pd.concat(dfs).reset_index(drop=True)
+        if new_h2_data == True:
+            if 'H2 Proposals at Oil & Gas Plant' in self.tabs: 
+                for tab in self.tabs:
+                    print(f'This is tab: {tab}')
+                    if tab == 'Oil & Gas Plants':
+                        
+                        gsheets = gspread_creds.open_by_key(self.key)
+                        spreadsheet = gsheets.worksheet(tab)
+                        plants_df = pd.DataFrame(spreadsheet.get_all_records(expected_headers=[]))
+                        plants_df.columns = plants_df.columns.str.strip()
+                        plants_df['tracker-acro'] = 'plants'
+                    else:
+                        gsheets = gspread_creds.open_by_key(self.key)
+                        spreadsheet = gsheets.worksheet(tab)
+                        plants_hy_df = pd.DataFrame(spreadsheet.get_all_records(expected_headers=[]))
+                        plants_hy_df.columns = plants_hy_df.columns.str.strip()
+                        plants_hy_df['tracker-acro'] = 'plants_hy'
+                    #     df['tab-type'] = tab
+                    #     dfs += [df]
+                    # df = pd.concat(dfs).reset_index(drop=True)
+        else:
+            # only take the hy from gogpt eu so its not a tuple
+            if 'H2 Proposals at Oil & Gas Plant' in self.tabs: 
+                for tab in self.tabs:
+                    print(f'This is tab: {tab}')
+                    if tab == 'Oil & Gas Plants':
+                        
+                        # gsheets = gspread_creds.open_by_key(self.key)
+                        # spreadsheet = gsheets.worksheet(tab)
+                        # plants_df = pd.DataFrame(spreadsheet.get_all_records(expected_headers=[]))
+                        # plants_df.columns = plants_df.columns.str.strip()
+                        # plants_df['tracker-acro'] = 'plants'
+                        plants_df = '' # pass later 
+                    else:
+                        gsheets = gspread_creds.open_by_key(self.key)
+                        spreadsheet = gsheets.worksheet(tab)
+                        plants_hy_df = pd.DataFrame(spreadsheet.get_all_records(expected_headers=[]))
+                        plants_hy_df.columns = plants_hy_df.columns.str.strip()
+                        plants_hy_df['tracker-acro'] = 'plants_hy'
+                
         return plants_df, plants_hy_df
     
     
@@ -632,37 +717,47 @@ class TrackerObject:
         # not clear if we stillneed this or why there would be duplicates but I had it in there 
         # if self.name == 'GOGPT EU':
         #     self.data.drop_duplicates(subset='id', inplace=True, keep='last') # add logic so it defaults to keeping the gogpt-hy ones over the gogpt ones, so if yes in gogpt data remove
-        plants_df, plants_hy_df = self.data
         
-        plants_df['tracker-acro'] = 'plants'
-        plants_hy_df['tracker-acro'] = 'plants_hy'
+        if new_h2_data == True:
+            input("CHECK H2 IS TRUE")
+            plants_df, plants_hy_df = self.data
+            
+            plants_df['tracker-acro'] = 'plants'
+            plants_hy_df['tracker-acro'] = 'plants_hy'
+            
+            list_dfs = []
+            for df in [plants_df, plants_hy_df]:
+                df['custom-tracker'] = 'GOGPT'
+                
+                df = df.reset_index()
+                if 'geometry' not in df.columns:
+                    df = convert_coords_to_point(df)
+                df = rename_gdfs(df) # TODO check that the right acro in all config is here for the tabs
+                [print(col) for col in df.columns]
+                input('CHECK After renaming in deduplciate_gogpt_eu')
+                list_dfs.append(df)
+            # concat the two first
+            gogpt_eu_df = pd.concat(list_dfs, sort=False, ignore_index=True)
+            gogpt_eu_df.reset_index(drop=True, inplace=True)
+            gogpt_eu_df.drop_duplicates(subset='id', inplace=True, keep='last') # add logic so it defaults to keeping the hy one, last because second df in list
+
+            self.data = gogpt_eu_df
         
-        list_dfs = []
-        for df in [plants_df, plants_hy_df]:
-            df['custom-tracker'] = 'GOGPT'
-             
-            df = df.reset_index()
-            if 'geometry' not in df.columns:
-                df = convert_coords_to_point(df)
-            df = rename_gdfs(df) # TODO check that the right acro in all config is here for the tabs
-            [print(col) for col in df.columns]
-            input('CHECK After renaming in deduplciate_gogpt_eu')
-            list_dfs.append(df)
-        gogpt_eu_df = pd.concat(list_dfs, sort=False, ignore_index=True)
-        gogpt_eu_df.reset_index(drop=True, inplace=True)
-        print(len(gogpt_eu_df))
-        gogpt_eu_df.drop_duplicates(subset='id', inplace=True, keep='last') # add logic so it defaults to keeping the hy one, last because second df in list
-    #     # TODO april 21 this is where you dropped off before picking up Fig
-        print(len(gogpt_eu_df))
-        [print(col) for col in df.columns]
-        input('After concat in deduplciate_gogpt_eu')
-        print(f'TYPE of GOGPT EU SHOULD BE DF NOW: {type(gogpt_eu_df)}')
-        input('IS IT?!REALLY LOOK')
-        [print(col) for col in gogpt_eu_df.columns]
-        print('Look at cols in it now to see how to rename in rename_and_concat_gdfs for map GOGPT-eu')
-        input('CHECK cols for tracker_obj.name == GOGPT EU')
-        self.data = gogpt_eu_df
-        
+        else:
+            input("CHECK H2 NOT TRUE")
+            plants_hy_df = self.data
+            
+            plants_hy_df['tracker-acro'] = 'plants_hy'
+            # need this to be GOGPT for conversion factors 
+            plants_hy_df['custom-tracker'] = 'GOGPT'
+            plants_hy_df = plants_hy_df.reset_index()
+            if 'geometry' not in plants_hy_df.columns:
+                plants_hy_df = convert_coords_to_point(plants_hy_df)
+                
+            gogpt_eu_df = rename_gdfs(plants_hy_df) 
+
+            self.data = gogpt_eu_df
+            
 
     def process_steel_iron_parent(self):
         
@@ -901,6 +996,16 @@ class TrackerObject:
         df = fix_status_space(df)
         df = fix_prod_type_space(df)
         self.data = df                
+
+    def giomt_changes(self):
+        df = self.data
+        
+        df[['Latitude', 'Longitude']] = df['Coordinates'].str.split(', ', expand=True)
+        df[['Latitude', 'Longitude']] = df['Coordinates'].str.split(',', expand=True) # qc test
+
+        self.data = df 
+
+
 
     def gcct_changes(self):
             # before renaming 
@@ -1436,8 +1541,7 @@ class TrackerObject:
                 input(self.name)
 
             else:
-                print(F'likely already a gdf: {self.name}')
-                input(self.name)
+                logger.info(f'{self.name} already a gdf MOST LIKELY but if not pipelines or ggit terminals then be worried.')
                 gdf = self.data
 
         self.data = gdf

@@ -1,4 +1,5 @@
 *.json
+!src/countries.json 
 .DS*
 .~lock*
 node_modules/

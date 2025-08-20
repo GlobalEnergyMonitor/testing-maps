@@ -1,6 +1,6 @@
 var config = {
 
-    json: 'compilation_output/asia_2025-05-01.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/asia/2025-08/asia_map_2025-08-14.geojson',
     geometries: ['Point','LineString'],
     center: [60, 20],
     zoomFactor: 1.9,

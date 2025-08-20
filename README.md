@@ -1,3 +1,17 @@
+
+## Initial Set up
+* create a virtual environment and activate it 
+* pip install -r requirements.txt 
+* create the following Python file by running the following command:
+    1. If on Mac/Linux: `cp creds_TEMPLATE.py creds.py`
+    2. If on Windows: `copy creds_TEMPLATE.py creds.py`
+    3. **This new file should not be committed to git**
+    4. Open `creds.py` with a text editor or IDE, and populate this file with the following: 
+       *  client_secret = "path to client secret json for google console api" with your local path to client secret 
+       *  ACCESS_KEY = '' digital ocean access key stored here in [onepassword ]([[url](https://share.1password.com/s#VKz54HWgtkNU5GVblRPnQSq6Bm_uhJV6aRknYUDGNh4)](https://share.1password.com/s#VKz54HWgtkNU5GVblRPnQSq6Bm_uhJV6aRknYUDGNh4)) (if link expired you can find it in the data team vault)
+       *  SECRET_KEY = '' digital ocean secret key stored here in [onepassword ]([[url](https://share.1password.com/s#VKz54HWgtkNU5GVblRPnQSq6Bm_uhJV6aRknYUDGNh4)](https://share.1password.com/s#VKz54HWgtkNU5GVblRPnQSq6Bm_uhJV6aRknYUDGNh4)) (if link expired you can find it in the data team vault)
+
+
 ## 
 [Steps to create and test multi-tracker maps WIP]([https://docs.google.com/document/d/1LacVuubl4T4CtGzy1KT_GsWrjV-DOI8XQFuLsUliT88]
 ) https://docs.google.com/document/d/1LacVuubl4T4CtGzy1KT_GsWrjV-DOI8XQFuLsUliT88
@@ -125,13 +139,3 @@ Live branch is gitpages-production
 * Search overhaul 
 
 
-## Next trackers to move into EG
-
-* GMET (add in pipelines soon)
-
-* GOIT (able to change soon)
-
-* Steel & Iron (able to change soon, planned for early 2025) 
-* Coal Project Finance Tracker (no plans)
-* Global Energy Ownership (no plans, no map) 
-* Private Equity tracker (no plans, no map)

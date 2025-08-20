@@ -50,7 +50,7 @@ var config = {
         'turbine/engine-technology': {'label': 'Turbine/Engine Technology'},
         'fuel': {'label': 'Fuel'},
         'start-year': {'label': 'Start year'},
-        'areas-subnat-sat-display': {'display': 'location'},
+        'subnat': {'display': 'location'},
         'areas': {'display': 'location'}
     }
 };

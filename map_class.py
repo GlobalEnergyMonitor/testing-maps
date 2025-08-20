@@ -3,7 +3,7 @@
 # from pull_down_s3 import get_file_name 
 import pandas as pd
 from helper_functions import save_to_s3, replace_old_date_about_page_reg, check_for_lists, rebuild_countriesjs, pci_eu_map_read, check_and_convert_float, remove_diacritics, check_rename_keys, fix_status_inferred, conversion_multiply, workaround_table_float_cap, workaround_table_units
-from all_config import mapname_gitpages, non_regional_maps, logger, client_secret_full_path, gem_path, tracker_to_fullname, tracker_to_legendname, iso_today_date, gas_only_maps, final_cols, renaming_cols_dict
+from all_config import new_h2_data, mapname_gitpages, non_regional_maps, logger, client_secret_full_path, gem_path, tracker_to_fullname, tracker_to_legendname, iso_today_date, gas_only_maps, final_cols, renaming_cols_dict
 import geopandas as gpd
 import numpy as np
 import gspread
@@ -104,28 +104,20 @@ class MapObject:
         # do filter out oil
         gdf = self.trackers
         
-        # print(f'Check all columns:')
-        # for col in gdf.columns:
-        #     print(col)
-        # input('Is prod gas year there?') # fixed
-  
         # handle situation where Guinea-Bissau IS official and ok not to be split into separate countries 
         gdf['areas'] = gdf['areas'].apply(lambda x: x.replace('Guinea,Bissau','Guinea-Bissau')) 
         gdf['areas'] = gdf['areas'].apply(lambda x: x.replace('Timor,Leste','Timor-Leste')) 
 
         gdf['name'].fillna('',inplace=True)
         gdf['name'] = gdf['name'].astype(str)
-
-        # row['url'] if row['url'] != '' else 
         # handles for empty url rows and also non wiki cases SHOULD QC FOR THIS BEFOREHAND!! TO QC
         gdf['wiki-from-name'] = gdf.apply(lambda row: f"https://www.gem.wiki/{row['name'].strip().replace(' ', '_')}", axis=1)
 
         if 'url' not in gdf.columns:
             gdf['url'] = ''
-
-        print(gdf.columns)
-        input('check what is here wiki from name?')
+        
         gdf['url'] = gdf.apply(lambda row: row['wiki-from-name'] if 'gem.wiki' not in row['url'] else row['url'], axis=1)
+        
         gdf['url'].fillna('',inplace=True)
                 
         # one last check since this'll ruin the filter logic
@@ -169,18 +161,10 @@ class MapObject:
         if self.name == 'europe':
             print(self.name)
             gdf = pci_eu_map_read(gdf)
-            # TODO april 7th 11:23 pm do we want to uncomment the below? or is it in eu script?
-            # gdf = assign_eu_hydrogen_legend(gdf)
-            # gdf = gdf[gdf['tracker-acro']!='GGIT']
-            # gdf = manual_lng_pci_eu_temp_fix(gdf)
-            # gdf = swap_gas_methane(gdf)
-        
+
         gdf.fillna('', inplace = True)
         
         self.trackers = gdf
-
-
-
     
     def save_file(self):
         print(f'Saving file for map {self.name}')
@@ -218,17 +202,18 @@ class MapObject:
         
         
         if self.name == 'africa':
-            
+            # TODO later make this not absolute
             gdf.to_file(f'{path_for_download_and_map_files_af}{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')            
-            gdf.to_file(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')
+            # gdf.to_file(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')
             gdf.to_csv(f'{path_for_download_and_map_files_af}{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
-            gdf.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
+            # gdf.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
             
-            process = save_to_s3(self, gdf, 'map', path_for_download_and_map_files_af)
+            # bypass parquet for now todo Hannah
+            # process = save_to_s3(self, gdf, 'map', path_for_download_and_map_files_af)
 
-            print(process.stdout.decode('utf-8'))
-            if process.stderr:
-                print(process.stderr.decode('utf-8'))
+            # print(process.stdout.decode('utf-8'))
+            # if process.stderr:
+            #     print(process.stderr.decode('utf-8'))
                         
 
             newcountriesjs = list(set(gdf['areas'].to_list()))
@@ -250,18 +235,19 @@ class MapObject:
     
                    
             gdf.to_file(f'{path_for_download_and_map_files}{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')
-            gdf.to_file(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')
+            # gdf.to_file(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.geojson', driver='GeoJSON', encoding='utf-8')
 
 
             gdf.to_csv(f'{path_for_download_and_map_files}{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
-            gdf.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
+            # gdf.to_csv(f'/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/gem_tracker_maps/testingcode/files/{self.name}_map_{iso_today_date}.csv', encoding='utf-8')
 
 
-            process = save_to_s3(self, gdf, 'map', path_for_download_and_map_files)
+            # TODO comment out save to s3 to bypass parquet issue Hannah
+            # process = save_to_s3(self, gdf, 'map', path_for_download_and_map_files)
 
-            print(process.stdout.decode('utf-8'))
-            if process.stderr:
-                print(process.stderr.decode('utf-8'))
+            # print(process.stdout.decode('utf-8'))
+            # if process.stderr:
+            #     print(process.stderr.decode('utf-8'))
                 
             newcountriesjs = list(set(gdf['areas'].to_list()))
             rebuild_countriesjs(self.name, newcountriesjs)
@@ -289,10 +275,7 @@ class MapObject:
             print(len(gdf))
             if 'capacity2' in gdf.columns:
                 ghpt_only = gdf[gdf['capacity2'].notna()]
-                print(len(ghpt_only))
-                # input('check filterd for hydro') # worked! 
-                # ghpt_only = gdf[gdf['tracker-acro']=='GHPT'] # for GGPT we need to re run it to get it 
-                # ##(input('check')
+
                 gdf_minus_ghpt = gdf[gdf['capacity2'].isna()]
                 for col in ghpt_only.columns:
                     print(col)
@@ -337,9 +320,6 @@ class MapObject:
         pd.options.display.float_format = '{:.0f}'.format
         # gdf_converted['ea_scaling_capacity'] = gdf_converted.apply(lambda row: conversion_equal_area(row), axis=1) # square root(4 * capacity / pi)
         # must be float for table to sort
-        print(self.name)
-        print(len(self.name))
-        input('check self name')
         if self.name in non_regional_maps: # map name
             print('skip converting to joules')
 
@@ -352,14 +332,7 @@ class MapObject:
         gdf['capacity'] = gdf['capacity'].fillna('') # issue if it's natype so filling in
         gdf['capacity-table'] = gdf.apply(lambda row: pd.Series(workaround_table_float_cap(row, 'capacity')), axis=1)
         gdf['units-of-m'] = gdf.apply(lambda row: pd.Series(workaround_table_units(row)), axis=1)
-        # TODO april 7th 3:57 come back to the below
-        # gdf_converted['units-of-m'] = gdf_converted.apply(lambda row: '' if 'GOGET' in row['tracker-acro'] else row['units-of-m'], axis=1)
-
-        # below doesn't work cap details was empty all the time
-        # gdf_converted = workaround_no_sum_cap_project(gdf_converted) # adds capacity-details for singular maps we can just disregard
-        # TODO nov 13 test this I think it now adds all cap for a project and applies the original units to it 
-        # gdf_converted['capacity-details-unit'] = gdf_converted.apply(lambda row: workaround_display_cap(row, 'capacity-details'), axis=1)
-    
+ 
         self.trackers = gdf        
         
     def map_ready_statuses_and_countries(self):
@@ -490,10 +463,7 @@ class MapObject:
             # input('check above has semicolon')
 
         else: 
-            
-            # print(gdf_map_ready[['areas', 'tracker-acro', 'name']])
-            # print(set(gdf_map_ready['areas'].to_list()))
-            # print(set(gdf_map_ready['area2'].to_list()))
+
             if 'area2' in gdf_map_ready.columns:
                 gdf_map_ready['area2'] = gdf_map_ready['area2'].fillna('')
                 gdf_map_ready['areas'] = gdf_map_ready['areas'].fillna('')
@@ -518,18 +488,26 @@ class MapObject:
             # print('This is tracker-acro:')
             # print(gdf['tracker-acro'])
             if tracker_sel == 'GOGPT-eu':
-                print('passing because GOGPT-eu already renamed when concatted hy and plants tabs')
-                # gdf['tracker-acro'] = tracker_sel
-                # print(f'What is data in this right now: {type(tracker_obj.data)}')
-                # use plants and plants_hy to rename or pass it since its already been renamed
-                print(set(gdf['tracker-acro'].to_list()))
-                input('This should be two, plants and plants_hy!')
-            
+                # if new_h2_data == True: 
+                # print('passing because GOGPT-eu already renamed when concatted hy and plants tabs')
+
+                print(f'this is df cols: {gdf.columns}')
+                
+                tracker_rename = gdf['tracker-acro'].iloc[0]
+                renaming_dict_sel = renaming_cols_dict[tracker_rename]
+                print(f'This is renaming dict for {tracker_rename}: {renaming_dict_sel}')
+                print(f'Check rename keys against cols for {tracker_rename}')
+                check_rename_keys(renaming_dict_sel, gdf)
+                gdf.columns = gdf.columns.str.strip()
+                gdf = gdf.rename(columns=renaming_dict_sel) 
+                
+                logger.info(f'This is len: {len(gdf)}: {set(gdf["tracker-acro"].to_list())}')
+                logger.info(f'This should be two, plants and plants_hy!')
+              
+                
             else:
                 gdf['tracker-acro'] = tracker_sel
-                # if tracker_sel == 'GCTT':
-                #     print(gdf)
-                #     input('GCTT gdf here')
+
                 print(f"renaming on tracker acro: {gdf['tracker-acro'].iloc[0]}")
                 # all_trackers.append(tracker_sel)
                 # select the correct renaming dict from config.py based on tracker name
@@ -546,12 +524,9 @@ class MapObject:
                 gdf.reset_index(inplace=True)
                 # Reset index in place
                 if tracker_sel == 'GCMT':
-                    print(f'cols after rename in GCMT:\n{gdf.info()}')
-                    print(gdf['start_year'])
-                    input('check if start-year there')
-                    # Handle for non-English Chinese wiki pages
-                    print('In if statement of rename and concat in map class for GCMT')
-                    
+                    logger.info(f'cols after rename in GCMT:\n{gdf.info()}')
+                    logger.info(gdf['start_year'])
+                    # Handle for non-English Chinese wiki pages                    
                     # Use np.where for a more Pythonic approach
                     gdf['wiki-from-name'] = np.where(
                         gdf['areas'] == 'China',
@@ -574,7 +549,7 @@ class MapObject:
                 print(f'subnat here for {tracker_obj.name}')
                 
             else:
-                print(f'subnat not here for {tracker_obj.name}')
+                print(f'subnat not here for {tracker_obj.name}') # TODO investigate for egt
                 input('check which tracker is missing subnat')
             # print(f'Adding {tracker_sel} gdf to renamed_gdfs')
             renamed_gdfs.append(gdf)
