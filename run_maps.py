@@ -18,20 +18,30 @@ def run_maps():
     for tracker in tqdm(trackers_to_update, desc='Running'):
         # print(tracker)
         trackermapname = official_tracker_name_to_mapname[tracker]
-        print(f'Creating new metadata file called: {trackermapname}_{releaseiso}_{iso_today_date}_metadata.yaml')
-        mfile = f"{trackermapname}_{releaseiso}_{iso_today_date}_metadata"
+        print(f'Creating new metadata file for the tracker in trackers to update called: trackermeta_{trackermapname}_{releaseiso}_{iso_today_date}.yaml')
+        trackerfile = f"trackermeta_{trackermapname}_{releaseiso}_{iso_today_date}"
         # MFILE_ACTUAL = f'{mfile}.yaml'
-        metadata = create_or_load_metadata(mfile)
-        save_metadata(mfile, metadata)
+        metadata = create_or_load_metadata(trackerfile)
+        save_metadata(trackerfile, metadata)
         
-        if tracker == 'Iron ore Mines':
+        
+        if tracker == 'Nuclear':
+            map_obj_list, problem_map_objs = make_data_dwnlds(tracker)  
+            list_of_map_objs_mapversion = make_map(map_obj_list) # this returns map obj list map version that can be run thru tests
+
+            # df = set_up_df(input_file_csv)
+            # df = filter_cols(df)
+            # df = fix_status_inferred(df)
+            # df = rename_cols(df)
+            # df = harmonize_countries(df, countries)
+        
+        elif tracker == 'Iron ore Mines':
             map_obj_list, problem_map_objs = make_data_dwnlds(tracker)  
             print(f'{len(map_obj_list)} maps to be updated with new {tracker} data!')
             # input('Check if the above statement makes sense ^')
             list_of_map_objs_mapversion = make_map(map_obj_list) # this returns map obj list map version that can be run thru tests
                     
             print('Great, now lets run those map objs map version thru tests on source!')
-            input('Confirm above')            
         
         elif tracker == 'Oil & Gas Plants':
             map_obj_list, problem_map_objs = make_data_dwnlds(tracker)  

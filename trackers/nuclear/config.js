@@ -1,7 +1,5 @@
 var config = {
-    /* name of the data file; use key `csv` if data file is CSV format */
-    // csv: 'data.csv',
-    csv: 'data/data-2024-07-17.csv',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gnpt/2025-08/gnpt_map_2025-08-28.geojson',
     /* zoom level to set map when viewing all phases */
     phasesZoom: 10,
     /* initial load zoom multiplier */
@@ -47,8 +45,8 @@ var config = {
 
     /* define the field for calculating and showing capacity along with label.
        this is defined per tracker since it varies widely */
-    capacityField: 'capacity-(mw)',
-    capacityDisplayField: 'capacity-(mw)',
+    capacityField: 'capacity',
+    capacityDisplayField: 'capacity',
     capacityLabel: 'Capacity (MW)',
 
     /* Labels for describing the assets */
@@ -56,24 +54,27 @@ var config = {
     assetLabel: 'units',
 
     /* the column that contains the asset name. this varies between trackers */
-    nameField: 'project-name',
+    nameField: 'name',
 
+    linkField: 'pid',
 
+    urlField: 'url',
     /* configure the table view, selecting which columns to show, how to label them, 
         and designated which column has the link */
     tableHeaders: {
-        values: ['project-name', 'capacity-(mw)', 'reactor-type', 'status', 'owner', 'operator',  'country'],
-        labels: ['Project name','Capacity (MW)','Reactor','Status','Owner', 'Operator', 'Country/Area(s)'],
-        clickColumns: ['project-name'],
-        rightAlign: ['capacity-(mw)'],
-        toLocaleString: ['capacity-(mw)'],
+        values: ['name', 'unit-name', 'capacity', 'reactor-type', 'model','status', 'owner', 'operator',  'subnat','areas'],
+        labels: ['Project name', 'Unit name','Capacity (MW)','Reactor','Model','Status','Owner', 'Operator', 'Subnational area','Country/Area(s)'],
+        clickColumns: ['name'],
+        rightAlign: ['capacity'],
+        toLocaleString: ['capacity'],
+        removeLastComma: ['areas'],
 
     },
 
     /* configure the search box; 
         each label has a value with the list of fields to search. Multiple fields might be searched */
-    searchFields: { 'Project': ['project-name'], 
-        'Companies': ['owner', 'operator'],
+    searchFields: { 'Project': ['name', 'name-search', 'noneng-name'], 
+        'Companies': ['owner', 'operator', 'owner-search', 'owners-noneng'],
 
     },
 
@@ -85,12 +86,14 @@ var config = {
       `'label': '...'` prepends a label. If a range, two values for singular and plural.
     */
     detailView: {
-        'project-name': {'display': 'heading'},
+        'name': {'display': 'heading'},
         // 'status': {'label': 'Status'},
         // 'capacity-(mw)': {'label': 'Capacity (MW)'},
+        'reactor-type': {'Label': 'Reactor'},
+        'model': {'Label': 'Model'},
         'owner': {'label': 'Owner'},
         'operator': {'label': 'Operator'},
-        'country' : {'label': 'Country/Area(s)'},
+        // 'areas' : {'label': 'Country/Area(s)'},
         'location-accuracy': {'label': 'Location Accuracy'},
         // 'state/province': {'display': 'location'},
         // 'country': {'display': 'location'},
