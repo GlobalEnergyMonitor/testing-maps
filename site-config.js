@@ -1,6 +1,6 @@
 var site_config = {
     /* Mapbox Access Token */
-    accessToken: 'pk.eyJ1IjoiZ2VtdGVhbTEiLCJhIjoiY21la2l0bmQ0MDY1eDJqcHB0cGkyZHh6NyJ9.Mas7dPxjgHVMfdnMvYrJig',
+    accessToken: 'pk.eyJ1IjoiZ2VtdGVhbTEiLCJhIjoiY21la2ozNjdoMDZkbDJzb2xiMms1c3VqeiJ9._Yv1a0HZIELTZjYjFStV0A',
     /* Mapbox Base Map Style */
     mapStyle: 'mapbox://styles/gemteam1/cls98k6sf02li01p2fqtu67lc',
 
