@@ -1520,10 +1520,11 @@ function filterGeoJSON() {
             if (!config.selectedCountries.some(country => projectCountries.includes(country))) {
             include = false;
             }
-            else {
-                console.log(projectCountries)
-                console.log(country)
-            }
+            // else {
+            //     // console.log(projectCountries)
+            //     // console.log(country)
+            //     pass
+            // }
         }
         if (include) {
             filteredGeoJSON.features.push(feature);
