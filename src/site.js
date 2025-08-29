@@ -356,7 +356,7 @@ function addGeoJSON(jsonData) {
             }
             if (feature.properties[config['countryField']]){
                 config.geojson.features.push(feature);
-                console.log(feature);
+                // console.log(feature);
             }
             // else {
             //     console.log(feature)
@@ -1821,7 +1821,7 @@ function displayDetails(features) {
                 detail_text += '<span class="fw-bold">' + config.color.fieldLabel + '</span>: ' +
                 '<span class="legend-dot" style="background-color:' + config.color.values[ features[0].properties[config.color.field] ]
                 + '"></span><span class="text-capitalize">' + features[0].properties[config.color.field] + '</span><br/>';
-                console.log([ features[0].properties[config.color.field] ])   
+                // console.log([ features[0].properties[config.color.field] ])   
             }                 
             else if (config.detailView[detail]['display'] == 'gist-unit-level'){
 
@@ -1883,10 +1883,10 @@ function displayDetails(features) {
                             // detail_text += features[0].properties[detail] + '<br/>';
                         }
                     }
-            else {
-                console.log(features[0].properties[detail])
+            // else {
+            //     console.log(features[0].properties[detail])
 
-            }
+            // }
         }
 
     });
