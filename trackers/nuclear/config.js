@@ -48,7 +48,7 @@ var config = {
     capacityField: 'capacity',
     capacityDisplayField: 'capacity',
     capacityLabel: 'Capacity (MW)',
-
+    countryField: 'areas',
     /* Labels for describing the assets */
     assetFullLabel: "Nuclear Power Plant Units",
     assetLabel: 'units',
@@ -87,16 +87,11 @@ var config = {
     */
     detailView: {
         'name': {'display': 'heading'},
-        // 'status': {'label': 'Status'},
-        // 'capacity-(mw)': {'label': 'Capacity (MW)'},
         'reactor-type': {'Label': 'Reactor'},
         'model': {'Label': 'Model'},
         'owner': {'label': 'Owner'},
         'operator': {'label': 'Operator'},
-        // 'areas' : {'label': 'Country/Area(s)'},
         'location-accuracy': {'label': 'Location Accuracy'},
-        // 'state/province': {'display': 'location'},
-        // 'country': {'display': 'location'},
         'areas-subnat-sat-display': {'display': 'location'}
 
     },

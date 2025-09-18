@@ -1,5 +1,6 @@
 *.json
 !src/countries.json 
+*.code-workspace
 .DS*
 .~lock*
 node_modules/
