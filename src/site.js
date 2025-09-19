@@ -388,8 +388,13 @@ function addTiles() {
     map.addSource('assets-source', {
         'type': 'vector',
         'tiles': config.tiles,
+<<<<<<< HEAD
+        'minzoom': 0,
+        'maxzoom': 10 // ?
+=======
         'minzoom': 1,
         'maxzoom': 10 
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
     });
 
 }
@@ -417,7 +422,12 @@ function geoJSONFromTiles() {
 }
 
 // Builds lookup of linked assets by the link column
+<<<<<<< HEAD
+//  and when linked assets share location, rebuilds processedGeoJSON with summed capacity and custom icon
+
+=======
 // and when linked assets share location, rebuilds processedGeoJSON with summed capacity and custom icon
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
 
 function findLinkedAssets() {
     
@@ -615,6 +625,7 @@ function generateIcon(icon) {
     });
 }
 function setMinMax() {
+<<<<<<< HEAD
     // config.maxPointCapacity = 0;
     // config.minPointCapacity = 1000000;
     // config.maxLineCapacity = 0;
@@ -635,6 +646,12 @@ function setMinMax() {
     // this is existing code using it so we minimize changes
     // establish name of the capacity keys based on geometries
     // TODO JULY 9 check that maps that are mixed line and point work correctly
+=======
+    config.maxPointCapacity = 0;
+    config.minPointCapacity = 1000000;
+    config.maxLineCapacity = 0;
+    config.minLineCapacity = 1000000;
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
     let maxCapacityKey;
     let minCapacityKey;
     // for each feature or row in the json data, assign max and min that we got from removeCapacityOutliers
@@ -656,12 +673,21 @@ function setMinMax() {
         // later this is used to size the assets along smoothly by interpolation across the width between min and maxPoint and LineWidth
         // this min and max Line and Point Capacity is crucial to the scaling, along with the unit's capacity
 
+<<<<<<< HEAD
         // if (parseFloat(feature.properties[config.capacityField]) > config[maxCapacityKey]) {
         //     config[maxCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
         // }
         // if (parseFloat(feature.properties[config.capacityField]) < config[minCapacityKey]) {
         //     config[minCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
         // }       
+=======
+        if (parseFloat(feature.properties[config.capacityField]) > config[maxCapacityKey]) {
+            config[maxCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
+        }
+        if (parseFloat(feature.properties[config.capacityField]) < config[minCapacityKey]) {
+            config[minCapacityKey] =  parseFloat(feature.properties[config.capacityField]);
+        }       
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
     });
 }
 
@@ -1048,12 +1074,16 @@ function addEvents() {
             //         center: [lat, lng],
             //         minZoom: 4,
 
+<<<<<<< HEAD
             //         });
             
             displayDetails(config.linked[selectedFeatures[0].properties[config.linkField]]); // where displayDetails is called
             // commenting this out because it creates a bug in summary capacity section 
             // if (config.tiles) {
             //     displayDetails([selectedFeatures[0]]); //use clicked point
+=======
+            displayDetails(config.linked[selectedFeatures[0].properties[config.linkField]]);
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
 
         } else {
             var modalText = "<h6 class='p-3'>There are multiple " + config.assetFullLabel + " near this location. Select one for more details</h6>";
@@ -1111,9 +1141,12 @@ function addEvents() {
         }
     });
 
+<<<<<<< HEAD
+=======
     $('#reset-all-button').on("click", function() {
         enableResetAll(); 
     });
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
 
     // on reset with All and clear search make it not zoom in on China 
     // spinglobe again
@@ -1344,6 +1377,7 @@ function countFilteredFeatures() {
     });
 }
 function filterData() {
+<<<<<<< HEAD
         // reassign initialLoad so that fly to / fitBounds / findDensity does not use default bbox
     if (initialLoad === true){
         initialLoad = false;
@@ -1351,6 +1385,8 @@ function filterData() {
     }
 
     // // show
+=======
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
     $('#spinner-container').removeClass('d-none')
     $('#spinner-container').addClass('d-flex')
 
@@ -1464,8 +1500,13 @@ function filterGeoJSON() {
         }
         
         if (config.selectedCountries.length > 0) {
+<<<<<<< HEAD
             userInteracting = true;
             // Check if any of the selected countries are associated with the project
+=======
+            // This checks if any of the selected countries are associated with the project
+            try {
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
             const projectCountries = feature.properties[config.countryField].split(';').map(country => country.trim());
             if (!config.selectedCountries.some(country => projectCountries.includes(country))) {
                 include = false;
@@ -1485,9 +1526,13 @@ function filterGeoJSON() {
             filteredGeoJSON.features.push(feature);
         }
     });
+<<<<<<< HEAD
     // config.processedGeoJSON = JSON.parse(JSON.stringify(filteredGeoJSON));
     config.processedGeoJSON = filteredGeoJSON;
     spinGlobe();
+=======
+    config.processedGeoJSON = filteredGeoJSON; // Mikel had used JSON stringify to make a deep copy but David found that's only slowing it down so removed 
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
     findLinkedAssets();
     config.tableDirty = true;
     updateTable();
@@ -2164,7 +2209,21 @@ function enableSearchSelect() {
 }
 function enableClearSearch() {
 
+<<<<<<< HEAD
+    // need to also handle for table view - it works the same no special handling needed.
+
+    // // clear country filter by returning selectedCountryLabel to 'All' DONE!
+    // $('#selectedCountryLabel').text("all");
+    // config.selectedCountryText = '';
+    // config.selectedCountries = [];
+=======
 function enableResetAll() {
+
+    $('#selectedCountryLabel').text("all");
+    config.selectedCountryText = '';
+    config.selectedCountries = [];
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
+    
     // // clear search text by making search text ''
     config.searchText = ''; 
     $('#search-text').val('');
@@ -2177,6 +2236,24 @@ function enableResetAll() {
     config.selectedSearchFields = allSearchFields.join(',');
     $('#selectedSearchLabel').text("all");
 
+<<<<<<< HEAD
+    // this removes the functionality that was clearing all filters when you only wnat to clear the search box
+    // clear legend by checking checked boxes DONE! 
+    // $('.filter-row').each(function() {
+    //     if (! $('#' + this.dataset.checkid)[0].checked) {
+    //         $('#' + this.dataset.checkid)[0].checked = true;
+    //         toggleFilter(this.dataset.checkid);
+    //     }
+    // }); 
+
+    // // start the spinner
+    // $('#spinner-container-filter').removeClass('d-none')
+    // $('#spinner-container-filter').addClass('d-flex')
+
+    // then filter data
+=======
+
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
     filterData();
     // and start spinning again like from initial load
     // userInteracting = false;
@@ -2304,6 +2381,9 @@ function removeLastComma(str) {
     return str;
 }
 
+<<<<<<< HEAD
+// // The following values can be changed to control rotation speed:
+=======
 
 function makeCase(str) {
     str = str.replace(/\w\S*/g, function(txt) {
@@ -2313,6 +2393,7 @@ function makeCase(str) {
 }
 
 // The following values can be changed to control rotation speed:
+>>>>>>> 766193cd4957e78432e45f06cee09946d2f80378
 
 // At low zooms, complete a revolution every two minutes.
 const secondsPerRevolution = 150;
