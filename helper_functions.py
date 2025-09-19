@@ -478,13 +478,7 @@ def gspread_access_file_read_only(key, tab_list):
                 # input('review tab to diagnose error')
                 spreadsheet = gsheets.worksheet(tab)
 
-                try:
-                    df = pd.DataFrame(spreadsheet.get_all_records(expected_headers=[]))
-                except APIError:
-                    print(f'getting an APIError')
-                    print(f'this is spreadsheet after loading tab into gsheets.worksheet:\n{spreadsheet}')
-                    df = pd.DataFrame(spreadsheet.get_all_records())
-
+                df = pd.DataFrame(spreadsheet.get_all_records(expected_headers=[]))
 
                 list_of_dfs.append(df)
         if len(list_of_dfs) > 1: 
@@ -1088,8 +1082,8 @@ def assign_conversion_factors(df, conversion_df):
 def rename_gdfs(df):
 
     tracker_sel = df['tracker-acro'].iloc[0] # plants, term, pipes, extraction
-    logger.info(tracker_sel)
-    logger.info(f"check above ...if not 'plants_hy', 'plants', 'GOGPT-eu' we found problem")
+    print(tracker_sel)
+    input(f"check above ...if not 'plants_hy', 'plants', 'GOGPT-eu' we found problem")
     # TO DO remove this later 
     if tracker_sel in ['plants_hy', 'plants', 'GOGPT-eu']:
         df.columns = df.columns.str.lower()
@@ -1646,7 +1640,7 @@ def create_search_column(dict_of_gdfs):
     return dict_of_gdfs_with_search
 
 
-def last_min_fixes_old(one_gdf_by_maptype):
+def last_min_fixes(one_gdf_by_maptype):
     one_gdf_by_maptype_fixed = {}
     # TODO handle for Bonaire, Sint Eustatius, and Saba
     # # printone_gdf_by_maptype.keys())
@@ -1906,60 +1900,50 @@ def convert_WKT_to_geo(df):
     
     return gdf
 
-# def find_about_page(tracker,key):
-#         # print(f'this is key and tab list in def find_about_page(tracker,key):function:\n{tracker}{key}')
+def find_about_page(tracker,key):
+        # print(f'this is key and tab list in def find_about_page(tracker,key):function:\n{tracker}{key}')
 
-#         gspread_creds = gspread.oauth(
-#             scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"],
-#             credentials_filename=client_secret_full_path,
-#             # authorized_user_filename=json_token_name,
-#         )
-#         wait_time = 5
-#         time.sleep(wait_time)
-#         gsheets = gspread_creds.open_by_key(key)
+        gspread_creds = gspread.oauth(
+            scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"],
+            credentials_filename=client_secret_full_path,
+            # authorized_user_filename=json_token_name,
+        )
+        wait_time = 5
+        time.sleep(wait_time)
+        gsheets = gspread_creds.open_by_key(key)
             
-#         # List all sheet names
-#         sheet_names = [sheet.title for sheet in gsheets.worksheets()]
-#         # print(f"{tracker} Sheet names:", sheet_names)
-#         # Access a specific sheet by name
-#         first_tab = sheet_names[0]
-#         first_sheet = gsheets.worksheet(first_tab)  # Access the first sheet
+        # List all sheet names
+        sheet_names = [sheet.title for sheet in gsheets.worksheets()]
+        # print(f"{tracker} Sheet names:", sheet_names)
+        # Access a specific sheet by name
+        first_tab = sheet_names[0]
+        first_sheet = gsheets.worksheet(first_tab)  # Access the first sheet
         
-#         last_tab = sheet_names[-1]
-#         last_sheet = gsheets.worksheet(last_tab)  # Access the last sheet
+        last_tab = sheet_names[-1]
+        last_sheet = gsheets.worksheet(last_tab)  # Access the last sheet
 
-#         # print("First sheet name:", sheet.title)
-#         if 'About' not in first_sheet.title:
-#             # print('Looking for about page in last tab now, first one no.')
-#             # handle for goget and ggit, goit who put it in the last tab
-#             if 'About' not in last_sheet.title:
-#                 if 'Copyright' not in last_sheet.title:
-#                     print('Checked first and last tab, no about page found not even for copyright. Pausing.')
-#                     input("Press Enter to continue...")
-#                 else:
-#                     # print(f'Found about page in last tab: {last_tab}')
-#                     sheet = last_sheet
-#             else:
-#                 # print(f'Found about page in last tab: {last_tab}')
-#                 sheet = last_sheet
-#         else:
-#             # print(f'Found about page in first tab: {first_tab}')
-#             sheet = first_sheet
+        # print("First sheet name:", sheet.title)
+        if 'About' not in first_sheet.title:
+            # print('Looking for about page in last tab now, first one no.')
+            # handle for goget and ggit, goit who put it in the last tab
+            if 'About' not in last_sheet.title:
+                if 'Copyright' not in last_sheet.title:
+                    print('Checked first and last tab, no about page found not even for copyright. Pausing.')
+                    input("Press Enter to continue...")
+                else:
+                    # print(f'Found about page in last tab: {last_tab}')
+                    sheet = last_sheet
+            else:
+                # print(f'Found about page in last tab: {last_tab}')
+                sheet = last_sheet
+        else:
+            # print(f'Found about page in first tab: {first_tab}')
+            sheet = first_sheet
         
-#         data = pd.DataFrame(sheet.get_all_records(expected_headers=[]))
-#         about_df = data.copy()
+        data = pd.DataFrame(sheet.get_all_records(expected_headers=[]))
+        about_df = data.copy()
     
-#         return about_df
-
-def wait_n_sec(n):
-    print(f"Starting {n} second wait...")
-    logger.info(f'started {n} second wait...')
-
-    time.sleep(n)
-    print(f"{n}-second wait completed.")
-    logger.info(f'{n}-second wait completed.')
-    
-
+        return about_df
 
 def find_region_country_colname(df):
     continent_list = ['Africa', 'Americas', 'Oceania', 'Asia', 'Europe']
@@ -2567,25 +2551,26 @@ def rebuild_countriesjs(mapname, newcountriesjs):
         prev_countriesjs = f'{tracker_folder_path}{mapname}/countries.json'
         default = "src/countries.json"
      
-        logger.info(prev_countriesjs)
-        logger.info('The above is from the existing countries.json file if it exists in the map folder')
-
+        print(prev_countriesjs)
+        print('The above is from the existing countries.json file if it exists in the map folder')
+        # prev_countriesjs = pd.read_csv(prev_countriesjs)
+        # print(prev_countriesjs)
         
         # or try except FileNotFoundError 
         if os.path.exists(prev_countriesjs):
             if prev_countriesjs.endswith('.json'):
                 with open(prev_countriesjs, 'r') as js_file:
                     prev_countriesjs = js_file.read()
-                    logger.info("JSON content:")
-                    logger.info(prev_countriesjs)
+                    print("JSON content:")
+                    print(prev_countriesjs)
             else:
-                logger.info("The file is not a JSON file.")
+                print("The file is not a JSON file.")
         else:
-            logger.info(f"File not found. Using default countries.json from {default}")
+            print(f"File not found. Using default countries.json from {default}")
             with open(default, 'r') as js_file:
                 prev_countriesjs = js_file.read()
-                logger.info("Default JSON content:")
-                logger.info(prev_countriesjs)
+                print("Default JSON content:")
+                print(prev_countriesjs)
         
         # cycle through folder to find new countries.js file and do a comparison
         
@@ -2593,14 +2578,21 @@ def rebuild_countriesjs(mapname, newcountriesjs):
         missing_countries_areas = set(newcountriesjs) - set(prev_countriesjs)
         
         if len(missing_countries_areas) > 0 and missing_countries_areas != None:
-            logger.info(f'paste in this sorted list of new countries into {mapname} countries.js file')
-            logger.info(f'These are the net new countries:')
-            logger.info(missing_countries_areas)
+            # print(f'paste in this sorted list of new countries into {mapname} countries.js file')
+            # print(f'These are the net new countries:')
+            # # print(missing_countries_areas)
             # save the sorted file
             cleaned_countriesjs = [country.strip(';') for country in newcountriesjs]
             newcountriesjs = sorted(cleaned_countriesjs)
-            logger.info(f'This is the sorted countries file with net new: \n {newcountriesjs}')
-            logger.info(newcountriesjs)
+            print(f'This is the sorted countries file with net new: \n {newcountriesjs}')
+            # input('Paste this in')
+            print(newcountriesjs)
+            # cjs = {'countries': newcountriesjs}
+            # cjs_df = pd.DataFrame(data=cjs)
+            # cjs_df.to_csv(f'{tracker_folder_path}{mapname}/countriesjsnew{iso_today_date}.js')
+            # input('check file in tracker folder countriesjsnew DATE.js')
+    
+        # add a check to see if the country in missing is not currently in the map's geo list .. but that's accomplished by previous js
 
 
 def pci_eu_map_read(gdf):
@@ -2655,7 +2647,7 @@ def format_values(df):
 
 # from GOGPT make, check that its not gogpt specific
 
-def replace_old_date_about_page_reg(df): # TODO augu 28 make this better or delete it
+def replace_old_date_about_page_reg(df):
     """ Finds a month and replaces it along with the next five characters (a space and year) with the current release date"""
 
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -2690,7 +2682,7 @@ def replace_old_date_about_page_reg(df): # TODO augu 28 make this better or dele
                     # input(f'Found a month! at index: {index}')
                     startbit = df.iloc[row,0][:(index)]
                     endbit = df.iloc[row,0][end:]
-                    df.iloc[row,0] = startbit + new_release_dateinput.replace('_', ' ') + endbit
+                    df.iloc[row,0] = startbit + new_release_date.replace('_', ' ') + endbit
                     # df.iloc[row,0] = df.iloc[row,0].replace(sub, new_release_date)
                     print(df.iloc[row,0])
                     # input('Check find replace did the right thing') # works on main and dependents
@@ -3128,13 +3120,7 @@ def create_filtered_df_list_by_map(trackerdf, col_country_name, col_reg_name, ma
 
 def conversion_multiply(row):
     cap = float(row['cleaned_cap'])
-    factor = row['conversion_factor']
-    # transforming this to 1, it had been purposefully set to n/a for all not regional ones, so should be skipped
-    if isinstance(factor, str) and factor.lower() == 'n/a':
-        factor = 1        
-
-    else:
-        factor = float(factor)
+    factor = float(row['conversion_factor'])
     # print(f'this is factor! {factor}')
 
     result = float(cap * factor)
