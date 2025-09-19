@@ -1225,7 +1225,7 @@ def workarounds_eg_interim(gdf):
     
 workarounds_eg_interim_gdf = workarounds_eg_interim(africa_df_country_update)
 
-def last_min_fixes(gdf):
+def last_min_fixes_old(gdf):
     gdf = gdf.copy()
     print(len(gdf))
     gdf.drop_duplicates(inplace=True)

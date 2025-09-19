@@ -1,14 +1,14 @@
 
-from datetime import datetime, timedelta 
+from datetime import datetime
 import os
 import gspread
 from numpy import true_divide
-import sys
 from creds import *
 import logging
-import subprocess
 from pathlib import Path
 
+# Format the date in ISO format
+# Get today's date
 today_date = datetime.today()
 
 iso_today_date = today_date.isoformat().split('T')[0]
@@ -58,7 +58,7 @@ about_templates_key = '1wrPJBqNuf5o-vzKYljlrWbjDtf_Ui7hR4JQM1p8gV7I' # new initi
 
 tracker_mapnames = ["europe", "africa", "integrated", "asia", "latam", "ggit", "goit", "goget", "gctt", "gcpt", "gcmt", "gogpt", "gspt", "gwpt", "gnpt", "gbpt", "ggpt", "ghpt", "gist", "gmet", "giomt"]
 
-# At the beginning of all_config.py
+
 def ensure_compilation_folders():
     """Ensure compilation_output folders exist in all tracker directories"""
     trackers_dir = Path(__file__).parent / 'trackers'
@@ -68,11 +68,11 @@ def ensure_compilation_folders():
             compilation_dir = tracker_dir / 'compilation_output'
             compilation_dir.mkdir(exist_ok=True)
 
+# def main():
 # Run at import time
 ensure_compilation_folders()
 
 
-# def main():
 # make necessary directories if they don't exist
 folders_needed = ["logfiles/", 'local_pkl/', "metadata_files/"]
 for folder in folders_needed:
@@ -85,6 +85,8 @@ os.makedirs(metadata_dir, exist_ok=True)
 local_pkl_dir = os.path.join(os.path.dirname(__file__), 'local_pkl')
 os.makedirs(local_pkl_dir, exist_ok=True)
 
+
+# create logging functionality 
 logpath = 'logfiles/'
 logger = logging.getLogger(__name__)
 log_file_path = f'{logpath}log_file_{iso_today_date}.log' 
@@ -201,39 +203,38 @@ legcols_bymap = {
     "gcct": ["status", "plant-type", "prod-type"]
     
 }
+gcmt_closed_tab = 'Global Coal Mine Tracker (Close'
+
 region_key = '1yaKdLauJ2n1FLSeqPsYNxZiuF5jBngIrQOIi9fXysAw'
 region_tab = ['mapping']
 
-# TODO swap out for rep points https://docs.google.com/spreadsheets/d/1Bu2RhxgvRW7yEJu6zbng_nudXBYRASNvRtgIOvrDN0c/edit?gid=975391128#gid=975391128 
+# TODO TESTING swap out for rep points https://docs.google.com/spreadsheets/d/1Bu2RhxgvRW7yEJu6zbng_nudXBYRASNvRtgIOvrDN0c/edit?gid=975391128#gid=975391128 
 # gem standard representative points Latitude_rep_point	Longitude_rep_point	GEM Standard Country Name
-centroid_key = '1ETg632Bkwnr96YQbtmDwyWDpSHqmg5He0GQwJjJz8IU'  # Country/Area
+centroid_key = '1ETg632Bkwnr96YQbtmDwyWDpSHqmg5He0GQwJjJz8IU'  # Country/Area Copy of Fill In Coordinates from Country Centroid
 centroid_tab = ['centroids']
-rep_point_key = '1Bu2RhxgvRW7yEJu6zbng_nudXBYRASNvRtgIOvrDN0c', # GEM Standard Country Name
-rep_point_tab = ['gem standard representative points']
-# Format the date in ISO format
-# Get today's date
+rep_point_key = '1Yke2VQYWZn3UvbqenP2KXvOKR_ZuS43m6C0gd4lwLOQ', # GEM Standard Country Name
+rep_point_tab = ['lev1_reppoints']
+
 
 client_secret_full_path = os.path.expanduser("~/") + client_secret
 gem_path = os.path.join(os.path.dirname(__file__), 'trackers/')
-# gem_path_tst = '~/testing/'
 path_for_pkl = gem_path + 'local_pkl/'
 gspread_creds = gspread.oauth(
         scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"],
         credentials_filename=client_secret_full_path,
-        # authorized_user_filename=json_token_name,
     )
+# WIP to handle numeric columns in an organized way
 # dtype_spec = {} #{'Latitude': float, 'Longitude': float}
 # numeric_cols = ['capacity', 'start_year', 'capacity2', 'prod_start_year', 'prod_gas', 'prod_year_gas', 'prod_oil', 'prod_year_oil', 'prod-coal', ] #STOPPED AT GCMT March 3rd 2025
 # list_official_tracker_names = ['Oil & Gas Plants', 'Coal Plants', 'Solar', 'Wind', 'Hydropower', 'Geothermal', 'Bioenergy', 'Nuclear', 'Coal Mines', 'Coal Terminals', 'Oil & Gas Extraction', 'Oil Pipelines', 'Gas Pipelines', 'LNG Terminals']
 
-# maps_with_needed_conversion = ['asia', 'europe', 'africa', 'latam', 'ggit']
+# helpful to pass over specialty logic
 gas_only_maps = ['AGT', 'EGT', 'asia', 'europe', 'ggit'] 
 non_gsheet_data = ['Gas Pipelines', 'LNG Terminals', 'Oil Pipelines', 'Gas Pipelines EU', 'LNG Terminals EU', 'GOGPT EU']
 non_regional_maps = ['gist', 'gmet', 'giomt', 'gcct']
 
 conversion_key = '1fOPwhKsFVU5TnmkbEyPOylHl3XKZzDCVJ29dtTngkew'
 conversion_tab = ['data']
-gcmt_closed_tab = 'Global Coal Mine Tracker (Close'
 
 
 steel_gist_table_cols = [
@@ -289,6 +290,8 @@ final_cols = ['model','reactor-type','lat', 'lng','coordinate-accuracy','total-r
 final_cols.extend(steel_gist_table_cols)
 
 
+
+# TODO this is what could be replaced by a class, tip from Hannah
 renaming_cols_dict = {
                         'GIOMT': {'GEM Asset ID': 'pid','Coordinate accuracy': 'coordinate-accuracy','GEM wiki page URL': 'url', 'Operating status': 'status', 'Asset name (English)': 'name', 'Asset name (other language)': 'noneng_name',
                                   'Design capacity (ttpa)': 'capacity', 'Owner': 'owner', 'Parent': 'parent', 'Start date': 'start_date', 'Country/Area':'areas',
@@ -332,11 +335,9 @@ renaming_cols_dict = {
                                'Wiki URL': 'url', 'River / Watercourse': 'river', 'Location Accuracy': 'loc-accu', 'Technology Type': 'tech-type'},
                       'GBPT': {'GEM location ID':'pid', 'GEM phase ID':'id','Country/Area': 'areas', 'Project Name': 'name', 'Unit Name': 'unit_name',
                                'Capacity (MW)': 'capacity', 'Status': 'status', 'Start Year': 'start_year', 'Owner(s)': 'owner',
-                      'GBPT': {'GEM location ID':'pid', 'GEM phase ID':'id','Country/Area': 'areas', 'Project Name': 'name', 'Unit Name': 'unit_name',
-                               'Capacity (MW)': 'capacity', 'Status': 'status', 'Start Year': 'start_year', 'Owner(s)': 'owner',
                                'Region': 'region', 'State/Province':'subnat', 'Wiki URL': 'url'},
                       'GGPT': {'GEM location ID':'pid', 'GEM unit ID':'id', 'Country/Area': 'areas', 'Project Name': 'name', 'Unit Name': 'unit_name',
-                               'Unit Capacity (MW)': 'capacity', 'Status': 'status', 'Start Year': 'start_year', 'Owner': 'owner',
+                               'Unit Capacity (MW)': 'capacity', 'Status': 'status', 'Start Year': 'start_year', 'Owner': 'owner', 'Operator': 'operator',
                                'Region': 'region', 'State/Province':'subnat', 'Wiki URL': 'url'},
                       
                       'GCTT': {'GEM Terminal ID':'pid', 'GEM Unit/Phase ID': 'unit_id','Coal Terminal Name': 'name', 'Coal Terminal Name (detail or other)': 'other_name','Parent Port Name': 'port','Wiki URL': 'url', 'Status': 'status', 'Owner': 'owner', 'Capacity (Mt)':'capacity',
@@ -372,7 +373,6 @@ renaming_cols_dict = {
                                 'start-year': 'start_year', 'state/province': 'subnat'},
 
                         # gas pipelines eu
-
                       'EGT-gas': {'projectid':'pid','countries': 'areas','wiki': 'url',
                                    'pipelinename':'name', 'segmentname':'unit_name',
                                    'startyear1': 'start_year', 'capacity': 'given_capacity','capacitybcm/y': 'capacity', 'startstate/province': 'subnat',
@@ -384,10 +384,6 @@ renaming_cols_dict = {
                                    'unitname': 'unit_name', 'country': 'areas', 'capacity': 'given_capacity','capacityinmtpa': 'capacity', 'startyear1': 'start_year', 'region': 'region',
                                    'state/province': 'subnat', 'otherlanguagename': 'other-name'},
                         }
-
-
-# final_order_datadownload = ['Oil & Gas Plants', 'Coal Plants', 'Solar', 'Wind', 'Nuclear', 'Hydropower', 'Bioenergy', 'Geothermal', 'Coal Terminals', 'Oil & Gas Extraction', 'Coal Mines', 'Oil Pipelines', 'Gas Pipelines', 'LNG Terminals']
-# tracker_mult_countries = ['GGIT', 'GOIT'] # mult_countries Country List, Countries do not span multiple columns for goget 
 
 tracker_to_fullname = {
                     "GCPT": "coal power station",
@@ -435,11 +431,6 @@ tracker_to_legendname = {
 multi_tracker_log_sheet_key = '15l2fcUBADkNVHw-Gld_kk7EaMiFFi8ysWt6aXVW26n8'
 source_data_tab = ['source']
 map_tab = ['map']
-regional_multi_map_tab = ['regional_multi_map'] # regional 
-
-multi_tracker_countries_sheet = '1UUTNERZYT1kHNMo_bKpwSGrUax9WZ8eyGPOyaokgggk'
-
-# testing_path = '/Users/gem-tah/GEM_INFO/GEM_WORK/earthrise-maps/testing/'
 
 full_country_list = [
     "Algeria", "Angola", "Benin", "Botswana", "British Indian Ocean Territory", "Burkina Faso", 
@@ -571,9 +562,7 @@ geo_mapping = {'africa': africa_countries,
             'global': full_country_list,
             '': full_country_list
             }
-    # when was in map class
-    # geo = self.geo
-    # self.needed_geo = geo_mapping[geo]
+
     
 dd_tab_mapping = {'africa': 'Africa Energy',
             'asia': 'Asia Gas',
