@@ -2,7 +2,7 @@ var config = {
     /* name of the data file; use key `csv` if data file is CSV format */
     // csv: 'data.csv',
 
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/GBPT/2025-09/bioenergy_map_2025-09-18.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/GBPT/2025-09/bioenergy_map_2025-09-22.geojson',
 
     /* zoom level to set map when viewing all phases */
     phasesZoom: 10,
@@ -58,8 +58,8 @@ var config = {
     /* configure the table view, selecting which columns to show, how to label them, 
         and designated which column has the link */
     tableHeaders: {
-        values: ['name', 'capacity', 'status', 'owner', 'areas', 'Fuel'],
-        labels: ['Project name','Capacity (MW)','Status','Owner', 'Country/Area(s)','Fuel',],
+        values: ['name', 'capacity', 'status', 'owner', 'operator','areas', 'fuel'],
+        labels: ['Project name','Capacity (MW)','Status','Owner', 'Operator','Country/Area(s)','Fuel'],
         clickColumns: ['name'],
         rightAlign: ['capacity'],
         toLocaleString: ['capacity'],
@@ -70,7 +70,7 @@ var config = {
     /* configure the search box; 
         each label has a value with the list of fields to search. Multiple fields might be searched */
     searchFields: { 'Project': ['name'], 
-        'Companies': ['owner-search', 'owner'],
+        'Companies': ['owner-search', 'owner', 'operator'], // add 'operator-search' to processing script and entity id
         'Status': ['status'], 
 
     },

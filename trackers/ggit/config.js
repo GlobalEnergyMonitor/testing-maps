@@ -1,7 +1,7 @@
 var config = {
     geometries: ['Point','LineString'],
 
-    json: 'compilation_output/ggit_2025-05-01.geojson', //'data/ggit_2024-12-20.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/ggit/2025-10/ggit_map_2025-10-20.geojson', //'data/ggit_2024-12-20.geojson',
     color: {
         field: 'status-legend',
         values: {
@@ -61,6 +61,7 @@ var config = {
     //         'GGIT-export': 'trains',            
     //     }
     // },
+    countryField: 'areas',
     nameField: 'name', 
     tableHeaders: {
         values: ['name','unit-name', 'owner', 'parent', 'capacity-table', 'units-of-m', 'status', 'region', 'areas', 'subnat', 'start-year', 'tracker-display'],
@@ -68,6 +69,8 @@ var config = {
         clickColumns: ['name'],
         rightAlign: ['unit-name','capacity-table','start-year'],
         toLocaleString: ['capacity-table'],
+        removeLastComma: ['areas'], 
+
     
     },
     searchFields: { 'Infrastructure Type': ['tracker-custom'],

@@ -1,7 +1,7 @@
 var config = {
     /* name of the data file; use key `csv` if data file is CSV format */
     geometries: ['Point'],
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/giomt/2025-08/giomt_map_2025-08-15.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/giomt/2025-10/giomt_map_2025-10-17.geojson',
     /* zoom level to set map when viewing all phases */
     phasesZoom: 10,
     /* initial load zoom multiplier */

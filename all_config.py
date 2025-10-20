@@ -43,7 +43,7 @@ list_of_all_official = [
 ]
 
 pm_preview_mode = False # For Baird's testing work
-trackers_to_update = ["Bioenergy"] # official tracker tab name in map tracker log sheet
+trackers_to_update = ["Integrated"] # official tracker tab name in map tracker log sheet
 new_release_date = 'September_2025' # for within about page NEEDS TO BE FULL MONTH
 new_release_dateinput = input(f'In {new_release_date} format, with no spaces, tell me the public release date. Or press enter if {new_release_date} is the right month.')
 if new_release_dateinput == '':
@@ -52,11 +52,10 @@ if new_release_dateinput == '':
 releaseiso = '2025-09'
 simplified = False # True False to make a very barebones map files with coords and name and url (for speed tests gipt)
 new_h2_data = False
-priority = ['gbpt'] 
-
-about_templates_key = '1wrPJBqNuf5o-vzKYljlrWbjDtf_Ui7hR4JQM1p8gV7I' # new initiative to build about page for teams
+priority = ['integrated'] 
 
 tracker_mapnames = ["europe", "africa", "integrated", "asia", "latam", "ggit", "goit", "goget", "gctt", "gcpt", "gcmt", "gogpt", "gspt", "gwpt", "gnpt", "gbpt", "ggpt", "ghpt", "gist", "gmet", "giomt"]
+about_templates_key = '1wrPJBqNuf5o-vzKYljlrWbjDtf_Ui7hR4JQM1p8gV7I' # new initiative to build about page for teams
 
 
 def ensure_compilation_folders():
@@ -289,7 +288,8 @@ final_cols = ['model','reactor-type','lat', 'lng','coordinate-accuracy','total-r
 # add two together because gist list is so long and should be refactored soon
 final_cols.extend(steel_gist_table_cols)
 
-
+# need to adjust when handle sorting column names TODO 
+simplified_cols = ['url', 'areas','name','capacity', 'capacity-details', 'latitude', 'longitude', 'pid','id', 'type', 'areas-subnat-sat-display', 'geometry']
 
 # TODO this is what could be replaced by a class, tip from Hannah
 renaming_cols_dict = {
@@ -334,8 +334,12 @@ renaming_cols_dict = {
                                'Operator Name (local lang/script)': 'loc-oper',
                                'Wiki URL': 'url', 'River / Watercourse': 'river', 'Location Accuracy': 'loc-accu', 'Technology Type': 'tech-type'},
                       'GBPT': {'GEM location ID':'pid', 'GEM phase ID':'id','Country/Area': 'areas', 'Project Name': 'name', 'Unit Name': 'unit_name',
-                               'Capacity (MW)': 'capacity', 'Status': 'status', 'Start Year': 'start_year', 'Owner(s)': 'owner',
+                               'Capacity (MW)': 'capacity', 'Status': 'status', 'Start Year': 'start_year', 'Owner(s)': 'owner', 'Operator(s)': 'operator',
                                'Region': 'region', 'State/Province':'subnat', 'Wiki URL': 'url'},
+                    #   final_cols_gbpt=['country/area', 'project-name', 'fuel', 'unit-name', 'project-name-in-local-language-/-script',
+                                            # 'capacity-(mw)', 'status', 'start-year', 'retired-year', 'hydrogen-capable',
+                                            # 'operator(s)', 'owner(s)', 'lat', 'lng', 'location-accuracy', 'city', 'state/province',
+                                            # 'region', 'gem-phase-id', 'url'          
                       'GGPT': {'GEM location ID':'pid', 'GEM unit ID':'id', 'Country/Area': 'areas', 'Project Name': 'name', 'Unit Name': 'unit_name',
                                'Unit Capacity (MW)': 'capacity', 'Status': 'status', 'Start Year': 'start_year', 'Owner': 'owner', 'Operator': 'operator',
                                'Region': 'region', 'State/Province':'subnat', 'Wiki URL': 'url'},
@@ -571,3 +575,27 @@ dd_tab_mapping = {'africa': 'Africa Energy',
             'internal': 'internal',
             
             }
+
+
+DATABASE_URL = 'postgresql://readonly:pc1d65885e80e7709675a2e635adcd9cb71bf91a375e5276f8ee143c623e2fb34@ec2-44-222-6-135.compute-1.amazonaws.com:5432/d8ik14rsae6026'
+SQL = ''' 
+    select unit_id, string_agg(all_entity_names, ', ') all_entity_names from (
+    select 
+    coalesce(pu.id, po.powerplant_unit_id) unit_id, 
+    coalesce(c.name, '') || coalesce(c."nameOther"::text, '') || 
+    coalesce(c.abbreviation, '') ||
+    coalesce(c.name_local, '') all_entity_names
+    from plant_owner po left join powerplant_unit pu on pu.plant_id = po.plant_id join company c on c.id = po.company_id) a
+    group by unit_id;
+    '''
+    
+    
+diacritic_map = {
+    'a': ["a", "á", "à", "â", "ã", "ä", "å"],
+    'e': ["e", "é", "è", "ê", "ë"],
+    'i': ["i", "í", "ì", "î", "ï"],
+    'o': ["o", "ó", "ò", "ô", "õ", "ö", "ø"],
+    'u': ["u", "ú", "ù", "û", "ü"],
+    'c': ["c", "ç"],
+    'n': ["n", "ñ"],
+}

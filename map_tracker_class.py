@@ -1,6 +1,6 @@
 from requests import HTTPError
 from all_config import about_templates_key, logpath, local_pkl_dir, new_h2_data, logger, new_release_dateinput, iso_today_date,trackers_to_update, geo_mapping, releaseiso, gspread_creds, region_key, region_tab, centroid_key, centroid_tab, rep_point_key, rep_point_tab
-from helper_functions import wait_n_sec, fix_prod_type_space, fix_status_space, split_coords, make_plant_level_status, make_prod_method_tier, rename_gdfs, clean_about_df, replace_old_date_about_page_reg, convert_google_to_gdf, convert_coords_to_point, check_and_convert_float, check_in_range, check_and_convert_int, get_most_recent_value_and_year_goget, calculate_total_production_goget, get_country_list, get_country_list, create_goget_wiki_name,create_goget_wiki_name, gspread_access_file_read_only
+from helper_functions import split_countries, convert_coords_to_point, wait_n_sec, fix_prod_type_space, fix_status_space, split_coords, make_plant_level_status, make_prod_method_tier, rename_gdfs, clean_about_df, replace_old_date_about_page_reg, convert_google_to_gdf, check_and_convert_float, check_in_range, check_and_convert_int, get_most_recent_value_and_year_goget, calculate_total_production_goget, get_country_list, get_country_list, create_goget_wiki_name,create_goget_wiki_name, gspread_access_file_read_only
 import pandas as pd
 from numpy import absolute
 import geopandas as gpd
@@ -402,7 +402,7 @@ class TrackerObject:
 
     def create_df(self):
         logger.info('in create_df')
-        wait_n_sec(1)
+        wait_n_sec(45)
         dfs = []
         
         if self.off_name == 'Iron and Steel':
@@ -583,52 +583,6 @@ class TrackerObject:
             
             self.data = df
         
-                
-    def deduplicate_gogpt_eu(self):
-        # deduplicate and merge into ONE df
-        # also lets make tracker-custom GOGPT
-        # not clear if we still need this or why there would be duplicates but I had it in there and can't hurt
-
-        if new_h2_data == True:
-            input("CHECK H2 IS TRUE")
-            plants_df, plants_hy_df = self.data
-            
-            plants_df['tracker-acro'] = 'plants'
-            plants_hy_df['tracker-acro'] = 'plants_hy'
-            
-            list_dfs = []
-            for df in [plants_df, plants_hy_df]:
-                df['custom-tracker'] = 'GOGPT'
-                
-                df = df.reset_index()
-                if 'geometry' not in df.columns:
-                    df = convert_coords_to_point(df)
-                df = rename_gdfs(df) # TODO check that the right acro in all config is here for the tabs
-                [logger.info(col) for col in df.columns]
-                logger.info('CHECK After renaming in deduplciate_gogpt_eu')
-                list_dfs.append(df)
-            # concat the two first
-            gogpt_eu_df = pd.concat(list_dfs, sort=False, ignore_index=True)
-            gogpt_eu_df.reset_index(drop=True, inplace=True)
-            gogpt_eu_df.drop_duplicates(subset='id', inplace=True, keep='last') # add logic so it defaults to keeping the hy one, last because second df in list
-
-            self.data = gogpt_eu_df
-        
-        else:
-            logger.info("CHECK H2 NOT TRUE")
-            plants_hy_df = self.data
-            
-            plants_hy_df['tracker-acro'] = 'plants_hy'
-            # need this to be GOGPT for conversion factors 
-            plants_hy_df['custom-tracker'] = 'GOGPT'
-            plants_hy_df = plants_hy_df.reset_index()
-            if 'geometry' not in plants_hy_df.columns:
-                plants_hy_df = convert_coords_to_point(plants_hy_df)
-                
-            gogpt_eu_df = rename_gdfs(plants_hy_df) 
-
-            self.data = gogpt_eu_df
-            
 
     def process_steel_iron_parent(self):
         
@@ -1588,16 +1542,4 @@ def create_filtered_fuel_df(df, self): # TODO HOW ARE WE HANDLING GGIT LNG?!
               
     
     return df
-    
-# TODO move these to helper functions
-# Function to check if any item in the row's list is in needed_geo
-def check_list(row_list, needed_geo):
-    return any(item in needed_geo for item in row_list)
-
-def split_countries(country_str):
-
-    for sep in [';', '-', ',']:
-        if sep in country_str:
-            return country_str.strip().split(sep)
-        return [country_str]
     

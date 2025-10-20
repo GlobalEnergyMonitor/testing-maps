@@ -1,5 +1,5 @@
 var config = {
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gist/2025-07/gist_map_2025-07-17.geojson', 
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gist/2025-10/gist_map_2025-10-07.geojson', 
     colors: {
         'light red': '#f28b82',
         'red': '#c74a48',

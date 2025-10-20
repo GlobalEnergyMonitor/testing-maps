@@ -1,6 +1,6 @@
 var config = {
 
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/mapfiles/gcmt_map_2025-06-02.geojson', //'compilation_output/gcmt_2025-05-05.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/GCMT/2025-09/gcmt_map_2025-09-22-sectionfix.geojson',
 
     colors: {
         'red': '#c74a48',
@@ -38,14 +38,14 @@ var config = {
         {
             field: 'mine-type',
             label: 'Mine Type',
-            values: ['surface','underground','underground & surface', '-'],
+            values: ['surface','underground','underground-surface', '-'],
             values_labels: ['Surface','Underground','Underground & Surface', 'Not found']
 
         },
         {
             field: 'coal-grade',
             label: 'Coal Grade',
-            values: ['thermal','met','thermal & met','-'],
+            values: ['thermal','met','thermal-met','-'],
             /* value_labels must match order/number in values */
             values_labels: ['Thermal','Met','Thermal & Met','Not found']
         }
