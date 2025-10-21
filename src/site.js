@@ -1895,9 +1895,9 @@ function displayDetails(features) {
         }, {});
 
         features.forEach((feature) => {
-            let capacityInt = parseInt(feature.properties[config.capacityDisplayField], 10);
+            let capacityFloat = parseFloat(feature.properties[config.capacityDisplayField]);
 
-            capacity[feature.properties[config.statusField]] += capacityInt;
+            capacity[feature.properties[config.statusField]] += capacityFloat;
             count[feature.properties[config.statusField]]++;
 
         });
@@ -1936,12 +1936,12 @@ function displayDetails(features) {
                 // and then display the projects type field with the appropriate color based on the value and the dictionary
                 detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
                 '<span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
-                detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + parseInt(features[0].properties[config.capacityDisplayField], 10).toLocaleString() + ' ' + capacityLabel;
+                detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + parseFloat(features[0].properties[config.capacityDisplayField]).toFixed(2).replace(/\.?0+$/, '') + ' ' + capacityLabel;
             }
             else {
                 detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
                     '<span class="legend-dot" style="background-color:' + config.color.values[ features[0].properties[config.statusDisplayField] ] + '"></span><span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
-                detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + parseInt(features[0].properties[config.capacityDisplayField], 10).toLocaleString() + ' ' + capacityLabel;
+                detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + parseFloat(features[0].properties[config.capacityDisplayField]).toFixed(2).replace(/\.?0+$/, '') + ' ' + capacityLabel;
             }
             }
     }
