@@ -1001,7 +1001,18 @@ function addLineLayer() {
         }
     );
 }
-
+function getUniqueFeatures(features, comparatorProperty) {
+    const uniqueIds = new Set();
+    const uniqueFeatures = [];
+    for (const feature of features) {
+        const id = feature.properties[comparatorProperty];
+        if (!uniqueIds.has(id)) {
+            uniqueIds.add(id);
+            uniqueFeatures.push(feature);
+        }
+    }
+    return uniqueFeatures;
+}
 
 
 function addEvents() {
@@ -1546,6 +1557,15 @@ function updateSummary() {
 
 }
 
+
+function removeLastComma(str) {
+    if (str.charAt(str.length - 1) === ';') {
+        str = str.slice(0, -1);
+    }
+    return str;
+}
+
+
 /*
   table view
 */
@@ -1968,6 +1988,55 @@ function displayDetails(features) {
     setHighlightFilter(features[0].properties[config.linkField]);
 }
 
+function getCoordinatesDump(gj) {
+    var coords;
+    if (gj.type == 'Point') {
+      coords = [gj.coordinates];
+    } else if (gj.type == 'LineString' || gj.type == 'MultiPoint') {
+      coords = gj.coordinates;
+    } else if (gj.type == 'Polygon' || gj.type == 'MultiLineString') {
+      coords = gj.coordinates.reduce(function(dump,part) {
+        return dump.concat(part);
+      }, []);
+    } else if (gj.type == 'MultiPolygon') {
+      coords = gj.coordinates.reduce(function(dump,poly) {
+        return dump.concat(poly.reduce(function(points,part) {
+          return points.concat(part);
+        },[]));
+      },[]);
+    } else if (gj.type == 'Feature') {
+      coords =  getCoordinatesDump(gj.geometry);
+    } else if (gj.type == 'GeometryCollection') {
+      coords = gj.geometries.reduce(function(dump,g) {
+        return dump.concat(getCoordinatesDump(g));
+      },[]);
+    } else if (gj.type == 'FeatureCollection') {
+      coords = gj.features.reduce(function(dump,f) {
+        return dump.concat(getCoordinatesDump(f));
+      },[]);
+    }
+    return coords;
+}
+
+
+/* from https://github.com/geosquare/geojson-bbox */
+function geoJSONBBox (gj) {
+    var coords, bbox;
+    if (!gj.hasOwnProperty('type')) return;
+    coords = getCoordinatesDump(gj);
+    bbox = [ Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY,
+        Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,];
+    return coords.reduce(function(prev,coord) {
+      return [
+        Math.min(coord[0], prev[0]),
+        Math.min(coord[1], prev[1]),
+        Math.max(coord[0], prev[2]),
+        Math.max(coord[1], prev[3])
+      ];
+    }, bbox);
+  };
+
+
 function buildSatImage(features) {
     let location_arg = '';
     let bbox = geoJSONBBox({'type': 'FeatureCollection', features: features });
@@ -2139,6 +2208,22 @@ function removeDiacritics(value) {
 }
 
 
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
+
+
 function enableSearch() {
     $('#search-text').on('keyup paste', debounce(function() {
         config.searchText = $('#search-text').val().toLowerCase();
@@ -2246,77 +2331,7 @@ function getUniqueFeatures(features, comparatorProperty) {
     }
     return uniqueFeatures;
 }
-
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
-
-/* from https://github.com/geosquare/geojson-bbox */
-function geoJSONBBox (gj) {
-    var coords, bbox;
-    if (!gj.hasOwnProperty('type')) return;
-    coords = getCoordinatesDump(gj);
-    bbox = [ Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY,
-        Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,];
-    return coords.reduce(function(prev,coord) {
-      return [
-        Math.min(coord[0], prev[0]),
-        Math.min(coord[1], prev[1]),
-        Math.max(coord[0], prev[2]),
-        Math.max(coord[1], prev[3])
-      ];
-    }, bbox);
-  };
   
-function getCoordinatesDump(gj) {
-    var coords;
-    if (gj.type == 'Point') {
-      coords = [gj.coordinates];
-    } else if (gj.type == 'LineString' || gj.type == 'MultiPoint') {
-      coords = gj.coordinates;
-    } else if (gj.type == 'Polygon' || gj.type == 'MultiLineString') {
-      coords = gj.coordinates.reduce(function(dump,part) {
-        return dump.concat(part);
-      }, []);
-    } else if (gj.type == 'MultiPolygon') {
-      coords = gj.coordinates.reduce(function(dump,poly) {
-        return dump.concat(poly.reduce(function(points,part) {
-          return points.concat(part);
-        },[]));
-      },[]);
-    } else if (gj.type == 'Feature') {
-      coords =  getCoordinatesDump(gj.geometry);
-    } else if (gj.type == 'GeometryCollection') {
-      coords = gj.geometries.reduce(function(dump,g) {
-        return dump.concat(getCoordinatesDump(g));
-      },[]);
-    } else if (gj.type == 'FeatureCollection') {
-      coords = gj.features.reduce(function(dump,f) {
-        return dump.concat(getCoordinatesDump(f));
-      },[]);
-    }
-    return coords;
-}
-
-function removeLastComma(str) {
-    if (str.charAt(str.length - 1) === ';') {
-        str = str.slice(0, -1);
-    }
-    return str;
-}
-
-
 function makeCase(str) {
     str = str.replace(/\w\S*/g, function(txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -2336,7 +2351,6 @@ const slowSpinZoom = 3;
 
 let userInteracting = false;
 let spinEnabled = true;
-
 
 map.on('moveend', () => {
     spinGlobe();

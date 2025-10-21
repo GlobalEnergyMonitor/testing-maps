@@ -92,6 +92,8 @@ var config = {
 showMaxCapacity: false,
 multiCountry: true,
 
+linkField: 'pid',
+
 minLineWidth: 1,
 maxLineWidth: 3,
 highZoomMinLineWidth: 2,
