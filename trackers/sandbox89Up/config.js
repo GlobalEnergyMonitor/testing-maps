@@ -1,6 +1,6 @@
 var config = {
 
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/ggit/2025-11/asia_map_2025-11-25.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/ggit/2025-10/asia_map_2025-11-05.geojson',
     geometries: ['Point','LineString'],
     center: [60, 20],
     zoomFactor: 1.9,
@@ -13,7 +13,7 @@ var config = {
         field: 'tracker-custom',
         values: {
             'GOGPT': 'blue',
-            'GOGET-oil': 'red',
+            'GOGET-oil': 'red', // note GOGET is just gas here 
             'GGIT': 'green',
             'GGIT-import':'green',
             'GGIT-export':'green',
@@ -26,7 +26,7 @@ var config = {
     filters: [
         {
             field: 'tracker-custom',
-            values: ["GOGPT",  "GGIT", "GGIT-import", "GGIT-export","GOGET-oil", ], 
+            values: ["GOGPT",  "GGIT", "GGIT-import", "GGIT-export","GOGET-oil", ], // using GOGET-oil as a name though it is just gas 
             values_labels: ['gas power units', 'gas pipelines', 'LNG import terminals', 'LNG export terminals', 'gas extraction areas',], // CHECK THAT
             primary: true
         },
@@ -58,31 +58,11 @@ var config = {
     //can be string for single value, or hash
     // not using assetLabel for now TODO
     assetLabel: 'units',
-    // assetLabel: {
-        // field: 'tracker-custom',
-        // values: {
-        //     'GCPT': 'units',
-        //     'GOGPT': 'units',
-        //     'GBPT': 'units',
-        //     'GNPT': 'units',
-        //     'GSPT': 'phases',
-        //     'GWPT':	'phases',
-        //     'GHPT':	'units',
-        //     'GGPT':	'units',
-        //     'GOGET - oil': 'areas',
-        //     'GOGET - gas': 'areas',
-        //     'GOIT': 'projects',
-        //     'GGIT': 'projects',
-        //     'GGIT - import': 'projects',
-        //     'GGIT - export': 'projects',
-        //     'GCMT': 'projects',
-        //     'GCTT': 'projects'
-        // }
-    // },
+
     nameField: 'name',
     countryFile: 'countries.js',
     countryField: 'areas',
-    //if multicountry, always end values with a comma
+    //if multicountry, always end values with a semicolon
     multiCountry: true,
 
     tableHeaders: {

@@ -822,24 +822,32 @@ function addPointLayer() {
     }
     let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
     try {
-        paint['circle-radius'] = [
-            "interpolate", ["exponential", .5], ["zoom"],
-            1, ["interpolate", interpolateExpression,
-                ["to-number",["get", config.capacityField]],
-                config.minPointCapacity, config.minRadius,
-                config.maxPointCapacity, config.maxRadius
-            ],
-            10, ["interpolate", interpolateExpression,
-                ["to-number",["get", config.capacityField]],
-                config.minPointCapacity, config.highZoomMinRadius,
-                config.maxPointCapacity, config.highZoomMaxRadius
-            ],
-        ];
+        // Handle case where all capacity values are the same
+        if (config.minPointCapacity === config.maxPointCapacity) {
+            paint['circle-radius'] = [
+                "interpolate", ["exponential", .5], ["zoom"],
+                1, config.minRadius,
+                10, config.highZoomMinRadius
+            ];
+        } else {
+            paint['circle-radius'] = [
+                "interpolate", ["exponential", .5], ["zoom"],
+                1, ["interpolate", interpolateExpression,
+                    ["to-number",["get", config.capacityField]],
+                    config.minPointCapacity, config.minRadius,
+                    config.maxPointCapacity, config.maxRadius
+                ],
+                10, ["interpolate", interpolateExpression,
+                    ["to-number",["get", config.capacityField]],
+                    config.minPointCapacity, config.highZoomMinRadius,
+                    config.maxPointCapacity, config.highZoomMaxRadius
+                ]
+            ];
+        }
     } catch (e) {
         console.error("Error setting circle-radius. config.capacityField:", config.capacityField);
         throw e;
     }
-    
     map.addLayer({
         'id': 'assets-points',
         'type': 'circle',
@@ -851,14 +859,13 @@ function addPointLayer() {
     });
     config.layers.push('assets-points');
 
-
     // Add layer with proportional icons
     if (config.sqrt === true) {
         // interpolateExpression = ["exponential", 1.5]
-        console.log('in sqrt')
+        // console.log('in sqrt')
         const sqrtMin = Math.sqrt(config.minPointCapacity);
         const sqrtMax = Math.sqrt(config.maxPointCapacity);
-        console.log(sqrtMin, sqrtMax)
+        // console.log(sqrtMin, sqrtMax)
 
         map.addLayer({
             'id': 'assets-symbol', 
@@ -883,9 +890,11 @@ function addPointLayer() {
                         sqrtMax, config.highZoomMaxRadius * 2 / 64]
                     ]
             }
-        });        
+        });
     }
+
     else {
+        // Add layer with proportional icons
         map.addLayer({
             'id': 'assets-symbol', 
             'type': 'symbol',
@@ -896,10 +905,10 @@ function addPointLayer() {
                 'icon-image': ["get", "icon"],
                 'icon-allow-overlap': true,
                 'icon-size': [
-                    "interpolate", ["linear"], ["zoom"],
+                    "interpolate", ["exponential", .5], ["zoom"],
                     1, ['interpolate', interpolateExpression,
                         ["to-number", ["get", config.capacityField]],
-                        config.minPointCapacity, config.minRadius * 2 / 64, // ASK MIKEL TODO
+                        config.minPointCapacity, config.minRadius * 2 / 64,
                         config.maxPointCapacity, config.maxRadius * 2 / 64],
                     10, ['interpolate', interpolateExpression,
                         ["to-number", ["get", config.capacityField]],
@@ -950,6 +959,7 @@ function addPointLayer() {
 }
 function addLineLayer() {
     let paint = config.linePaint;
+
     if ('color' in config) {
         paint["line-color"] = [
             "match",
@@ -960,19 +970,33 @@ function addLineLayer() {
     }
 
     let interpolateExpression = ('interpolate' in config ) ? config.interpolate :  ["linear"];
-
-    paint['line-width'] = [
-        "interpolate", ["linear"], ["zoom"],
-        1, ["interpolate", interpolateExpression,
-            ["to-number",["get", config.capacityField]],
-            config.minLineCapacity, config.minLineWidth,
+    // Handle case where all capacity values are the same
+    if (config.minLineCapacity === config.maxLineCapacity) {
+        paint['line-width'] = [
+            "interpolate", ["linear"], ["zoom"],
+            1, config.minLineWidth,
+            10, config.highZoomMinLineWidth
+        ];
+    } else {
+        paint['line-width'] = [
+            "interpolate", ["linear"], ["zoom"],
+            1, ["interpolate", interpolateExpression,
+                ["to-number",["get", config.capacityField]],
+                config.minLineCapacity, config.minLineWidth,
+                config.maxLineCapacity, config.maxLineWidth
+            ],
+            10, ["interpolate", interpolateExpression,
+                ["to-number",["get", config.capacityField]],
+                config.minLineCapacity, config.highZoomMinLineWidth,
+                config.maxLineCapacity, config.highZoomMaxLineWidth
+            ]
+        ];
+    }
             config.maxLineCapacity, config.maxLineWidth
-        ],
         10, ["interpolate", interpolateExpression,
             ["to-number",["get", config.capacityField]],
             config.minLineCapacity, config.highZoomMinLineWidth,
             config.maxLineCapacity, config.highZoomMaxLineWidth
-        ],
 
     ];
 
@@ -1742,6 +1766,7 @@ function displayDetails(features) {
     let all_details_gist = [];
 
     Object.keys(config.detailView).forEach((detail) => {
+        
         if (features[0].properties[detail] == "" || features[0].properties[detail] == 'unknown' || features[0].properties[detail] == 'undefined' || features[0].properties[detail] ==0 || features[0].properties[detail] == NaN || features[0].properties[detail] == 'nan' || features[0].properties[detail] == null){
             detail_text += ''
         } else if (Object.keys(config.detailView[detail]).includes('display')) {
@@ -1850,7 +1875,7 @@ function displayDetails(features) {
             }
 
         } else {
-            if (features[0].properties[detail] != "" && features[0].properties[detail] != 'undefined' && features[0].properties[detail] !=0 && features[0].properties[detail] != NaN && features[0].properties[detail] != 'nan' && features[0].properties[detail] != null && features[0].properties[detail] != 'Unknown [unknown %]' && features[0].properties[detail] != 'unknown') {
+            if (features[0].properties[detail] !== "" && features[0].properties[detail] !== undefined && features[0].properties[detail] !==0 && features[0].properties[detail] !== 'nan' && features[0].properties[detail] !== null && features[0].properties[detail] !== 'Unknown [unknown %]' && features[0].properties[detail] !== 'unknown') {
                 if (config.multiCountry == true && config.detailView[detail] && config.detailView[detail]['label'] && config.detailView[detail]['label'].includes('Country')) {
                     detail_text += '<span class="fw-bold">' + config.detailView[detail]['label'] + '</span>: ' + removeLastComma(features[0].properties[detail]) + '<br/>';
                 }
@@ -1884,27 +1909,53 @@ function displayDetails(features) {
             }
 
         // Initialize capacity and count objects using reduce to avoid summary build bug
-        let capacity = config.filters[filterIndex].values.reduce((acc, f) => {
-            acc[f] = 0;
-            return acc;
-        }, {});
-
-        let count = config.filters[filterIndex].values.reduce((acc, f) => {
-            acc[f] = 0;
-            return acc;
-        }, {});
+        // first builds an array of filter values then with reduce makes it an object
+        // then initializes the start point with 0 though the bug is showing NaN, is it being cached??, because it also shows 2.5 in operating
+        
+        // starting fresh so no reuse of capacity value to prevent bug where some statuses start with NaN or undefined so cannot add any capacity value and shows up as NaN
+        // even though the data is correctly displayed in the table view
+        let capacity = Object.fromEntries(
+            config.filters[filterIndex].values.map(f => [f, 0])
+        );
+        
+        let count = Object.fromEntries(
+            config.filters[filterIndex].values.map(f => [f, 0])
+        );
 
         features.forEach((feature) => {
-            let capacityFloat = parseFloat(feature.properties[config.capacityDisplayField]);
+            let capacityFloat = feature.properties[config.capacityDisplayField]
 
+            if (typeof feature.properties[config.capacityDisplayField] === 'string' ){
+                capacityFloat = Number(capacityFloat);
+                console.log(capacityFloat) // Himeji-Okayama Gas Pipeline
+            } // or typeof === string
+            else {
+                capacityFloat = parseFloat(capacityFloat);
+                console.log(capacityFloat) // Himeji-Okayama Gas Pipeline
+
+
+            }
+
+            // to fix bug where it is not a clean slate for some reason
+            // now it adds correctly, the data file was fine and shows the value correctly in table view
+            // the values of the capacities were converted carefully so used Number() to avoid NaN so could add to an integer
+            // still the array had been initialized to start with 0 but had NaN in some even right after initialization
+            // so this resets it when it is undefined but, still would be good to get to the bottom of why it is undefined when it should be 0, and why its only some statuses
+            if (typeof capacity[feature.properties[config.statusField]] === 'undefined') {
+                capacity[feature.properties[config.statusField]] = 0
+            }
             capacity[feature.properties[config.statusField]] += capacityFloat;
+
+            if (typeof count[feature.properties[config.statusField]] === 'undefined') {
+                count[feature.properties[config.statusField]] = 0
+            }
             count[feature.properties[config.statusField]]++;
 
         });
 
             let detail_capacity = '';
-
             Object.keys(count).forEach((k) => {
+
                 if (config.color.field == config.statusField){ 
                     if (count[k] != 0) {
                         detail_capacity += '<div class="row"><div class="col-5"><span class="legend-dot" style="background-color:' + config.color.values[k] + '"></span>' + k + '</div><div class="col-4">' + Number(capacity[k]).toLocaleString() + '</div><div class="col-3">' + count[k] + " of " + features.length + "</div></div>";
@@ -1925,10 +1976,23 @@ function displayDetails(features) {
         }
         // else when there is only one feature or one unit per project in the popup modal
         else {
+            console.log('This is capacity:')
+            console.log(features[0].properties[config.capacityDisplayField])
+            capacityFloat = Number(features[0].properties[config.capacityDisplayField])
+            console.log(typeof capacityFloat)
 
+            // if capacity is a string and when you convert with Number it is 0 then we can say it is NA or Not found
+            if (features[0].properties[config.capacityDisplayField].trim() === ''){
+                    capacityFloatandLabel = 'Not found or N/A'
+            }
+
+            // if it is not a string then we are good ...  
+            else {
+                capacityFloatandLabel = parseFloat(capacityFloat).toFixed(2).replace(/\.?0+$/, '') + ' ' + capacityLabel
+            }
             // this handles capacity adjustment for solo projects where it looks redundant to have Capacity written out twice
-            // Remove 'Capacity' prefix and parentheses from capacityLabel
-            capacityLabel = capacityLabel.replace(/^Capacity\s*/i, '').replace(/[()]/g, '');
+            // Remove 'Capacity' prefix and parentheses from capacityLabel TODO look into a better way to handle, issue if capacity is nan or undefined like intentionally is for GOGET
+            // capacityLabel = capacityLabel.replace(/^Capacity\s*/i, '').replace(/[()]/g, '');
 
             // and it allows status outside of the summary table to have the colored dot when status is the highest filter section
             if (config.color.field != config.statusDisplayField){
@@ -1936,12 +2000,12 @@ function displayDetails(features) {
                 // and then display the projects type field with the appropriate color based on the value and the dictionary
                 detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
                 '<span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
-                detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + parseFloat(features[0].properties[config.capacityDisplayField]).toFixed(2).replace(/\.?0+$/, '') + ' ' + capacityLabel;
+                detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + capacityFloatandLabel;
             }
             else {
                 detail_text += '<span class="fw-bold text-capitalize">Status</span>: ' +
                     '<span class="legend-dot" style="background-color:' + config.color.values[ features[0].properties[config.statusDisplayField] ] + '"></span><span class="text-capitalize">' + features[0].properties[config.statusDisplayField] + '</span><br/>';
-                detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + parseFloat(features[0].properties[config.capacityDisplayField]).toFixed(2).replace(/\.?0+$/, '') + ' ' + capacityLabel;
+                detail_text += '<span class="fw-bold text-capitalize">Capacity</span>: ' + capacityFloatandLabel;
             }
             }
     }
@@ -2351,6 +2415,39 @@ const slowSpinZoom = 3;
 
 let userInteracting = false;
 let spinEnabled = true;
+
+// the function in charge of spinning the globe projection of the map
+function spinGlobe() {
+
+    const zoom = map.getZoom();
+    if (config.projection == 'globe'){
+
+        if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
+            let distancePerSecond = 360 / secondsPerRevolution;
+            if (zoom > slowSpinZoom) {
+                // Slow spinning at higher zooms
+                const zoomDif =
+                    (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+                distancePerSecond *= zoomDif;
+            }
+            const center = map.getCenter();
+            center.lng -= distancePerSecond;
+            // Smoothly animate the map over one second.
+            // When this animation is complete, it calls a 'moveend' event.
+            map.easeTo({ center, duration: 1000, easing: (n) => n });
+        }
+    }
+}
+
+function getStandardDeviation (array) {
+    if (!array || array.length === 0) {return 0;}
+
+    const n = array.length
+    const mean = array.reduce((a, b) => a + b) / n
+    return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+    }
+
+
 
 map.on('moveend', () => {
     spinGlobe();

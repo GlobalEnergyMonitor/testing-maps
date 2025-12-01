@@ -1,7 +1,7 @@
 var config = {
     /* name of the data file; use key `csv` if data file is CSV format */
     // csv: 'data.csv',
-    csv: 'compilation_output/Wind-map-file-2025-02-04.csv',
+    csv: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gwpt/Wind-map-file-2025-02-04.csv',
     colors: {
         'red greeninfo': '#c00',
         'light blue greeninfo': '#1e90ff',

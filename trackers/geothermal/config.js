@@ -1,7 +1,6 @@
 var config = {
     /* name of the data file; use key `csv` if data file is CSV format */
-    csv: 'compilation_output/Geothermal-map-file-2025-03-18.csv',
-    // csv: 'Geothermal_Power_Tracker_May_2024_FINAL_2024-05-14.csv',
+    csv: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/ggpt/Geothermal-map-file-2025-03-18.csv',
 
     colors: {
         'red greeninfo': '#c00',

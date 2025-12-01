@@ -1,11 +1,7 @@
-// 'gem-terminal-id', 'gem-unit/phase-id', 'parent-port-name','country/area', 'coal-terminal-name', 'coal-terminal-name-(detail-or-other)',
-//     'capacity-(mt)', 'status', 'start-year', 'retired-year', 'location-accuracy',
-//      'owner', 'lat', 'lng', 'state/province',
-//     'region', 'url'  
 
 var config = {
     /* name of the data file; use key `csv` if data file is CSV format */
-    csv: 'compilation_output/Coal Terminals-map-file-2025-01-15.csv', 
+    csv: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gctt/Coal%20Terminals-map-file-2025-01-15.csv', 
     /* define the column and associated values for color application */
     linkField: 'gem-terminal-id',
     color: {

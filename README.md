@@ -8,6 +8,12 @@
 * WARNING: If you are on a windows machine to test the maps you'll need to launch the server through a linux terminal, such as WSL. 
 
 
+# running list of items the config.js files require
+1. no underscores in variable names if name is in legend filter
+2. country column should have a semicolon at the end so multiple countries can be handled correctly
+3. capacityLabel when not a blank string initiates the unit summary feature, when it is empty the capacity and status get added to the modal details popup in the config's array. When it is not blank, the statusDisplayField capacityDisplayField are used in a function in site.js
+
+
 * create a virtual environment and activate it
 
 * `pip install -r requirements.txt`

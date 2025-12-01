@@ -1,7 +1,8 @@
 var config = {
     /* name of the data file; use key `csv` if data file is CSV format */
     // csv: 'data.csv',
-    geojson: 'ghpt_2025-04-23.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/ghpt/ghpt_2025-04-23.geojson',
+
     colors: {
         'red greeninfo': '#c00',
         'light blue greeninfo': '#74add1',

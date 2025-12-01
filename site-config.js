@@ -3,7 +3,6 @@ var site_config = {
     accessToken: 'pk.eyJ1IjoiZ2VtdGVhbTEiLCJhIjoiY21la2ozNjdoMDZkbDJzb2xiMms1c3VqeiJ9._Yv1a0HZIELTZjYjFStV0A',
     /* Mapbox Base Map Style */
     mapStyle: 'mapbox://styles/gemteam1/cls98k6sf02li01p2fqtu67lc',
-
     center: [0, 0],
     projection: 'naturalEarth',
     sqrt: true, // default so can apply sqrt refactor test to only select maps but adjust in site.js
@@ -57,12 +56,11 @@ var site_config = {
     linkField: 'url',
 
     urlField: 'url',
-
     countryField: 'country',
     statusField: 'status',
     statusDisplayField: 'status',
-    capacityField: 'capacity',
-    capacityDisplayField: 'capacity',
+    capacityField: 'capacity', // 
+    capacityDisplayField: 'capacity', // this is what gets used in the details summary unit feature where applicable
     locationColumns:{
         lat: 'lat',
         lng: 'lng'
@@ -83,6 +81,6 @@ var site_config = {
     multiCountry: false,
 
     hitArea: 5, 
-
+    sqrt: true,
     geometries: ['Point']
 };
