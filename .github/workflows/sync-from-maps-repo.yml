@@ -16,7 +16,7 @@ jobs:
 
       - name: Add maps Repo Remote
         run: |
-          git remote add maps-repo https://x-access-token:${{ secrets.READ_MAPS_REPO_TOKEN }}@github.com:GlobalEnergyMonitor/maps.git
+          git remote add maps-repo https://x-access-token:${{ secrets.READ_MAPS_REPO_TOKEN }}@github.com/GlobalEnergyMonitor/maps.git
           git fetch maps-repo
 
       - name: Sync Branch
