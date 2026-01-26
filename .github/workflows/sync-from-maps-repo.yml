@@ -1,0 +1,25 @@
+name: Sync From 'maps' Repo
+
+on:
+  repository_dispatch:
+    types: [sync-maps-repo]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout testing-maps Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add maps Repo Remote
+        run: |
+          git remote add maps-repo https://x-access-token:${{ secrets.READ_MAPS_REPO_TOKEN }}@github.com:GlobalEnergyMonitor/maps.git
+          git fetch maps-repo
+
+      - name: Sync Branch
+        run: |
+          git checkout -B staging-feature maps-repo/${{ github.event.client_payload.branch }}
+          git push origin staging-feature --force
