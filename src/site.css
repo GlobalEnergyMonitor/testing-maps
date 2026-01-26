@@ -81,6 +81,10 @@ table.dataTable td {
     background: linear-gradient(to right, #fca107, #7f3121);
 }
 
+.map-overlay .map-overlay-inner {
+    min-width: 300px;
+}
+
 .map-overlay input {
     background-color: transparent;
     display: inline-block;
@@ -147,9 +151,11 @@ table.dataTable td {
     display: none;
 }
 #card-body {
-    min-width: 300px;
+    min-width: 400px;
+    width: fit-content;
+    max-width: 90vw;
 }
-#summary, #capacity_summary, #capacity_summary_min {
+#summary, #capacity_summary_max, #capacity_summary_min {
     font-size: 9px;
 }
 

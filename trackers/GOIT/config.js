@@ -2,10 +2,8 @@ var config = {
     geometries: ['LineString'],
 
     /* name of the data file; use key `csv` if data file is CSV format */
-    // csv: 'GOGET_Earthgenome_file2024-04-01.csv',
-    // can this be a s3 link but not tiles? 
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/latest/goit_2025-04-09.geojson',
-    
+    // geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/latest/goit_2025-04-09.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/GOIT/2025-03/goit_2025-04-09.geojson', //copy from latest
     /* Define labels for sitewide colors, referenced in tracker config */
     colors: {
         'red': '#c74a48',

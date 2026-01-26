@@ -1,3 +1,12 @@
+# WIP while refactoring
+
+# To Test Locally
+
+1. cd to `GEMmaps/maps`
+2. Run `python server.py`
+3. Navigate to `http://localhost:8080/trackers/<tracker_name>/`
+
+---
 
 ## Initial Set up
 * clone the repo "maps"

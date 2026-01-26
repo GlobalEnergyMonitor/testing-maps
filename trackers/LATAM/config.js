@@ -46,7 +46,7 @@ var config = {
     ],
     capacityField: 'scaling-capacity',
     
-    capacityDisplayField: 'capacity-table',
+    capacityDisplayField: 'capacity-display',
 
     //interpolate: ["cubic-bezier", 0, 0, 0, 1],
     //can be string for single value, or hash. always single value is showMaxCapacity is true
@@ -113,8 +113,8 @@ var config = {
         values: ['name','unit-name', 'owner', 'parent', 'capacity-table', 'units-of-m','status', 'areas', 'start-year', 'prod-coal','prod-oil', 'prod-year-oil', 'prod-gas', 'prod-year-gas', 'prod-coal', 'tracker-display',],
         labels: ['Name','Unit','Owner', 'Parent','Capacity', '','Status','Country/Area(s)','Start year', 'Production (million tonnes coal/y)', 'Production (million bbl/y)','Production year (oil)', 'Production (Million m³/y)', 'Production year (gas)', 'Production (Mt)','Facility Type'],
         clickColumns: ['name'],
-        rightAlign: ['unit','capacity-table','prod-oil', 'prod-gas','start-year', 'prod-year-oil', 'prod-year-gas'], 
-        removeLastComma: ['areas'], 
+        rightAlign: ['unit','capacity-table','prod-oil', 'prod-gas','start-year', 'prod-year-oil', 'prod-year-gas'],
+        removeLastComma: ['areas'],
         toLocaleString: ['capacity-table'],
 
         // displayValue: {'tracker-display': "assetLabel"},

@@ -106,7 +106,7 @@ var config = {
     */
     detailView: {
         'name': {'display': 'heading'},
-        'capacity-details': {'label': 'Design Capacity (ttpa)'},
+        'capacity-display': {'label': 'Design Capacity (ttpa)'},
         'areas-subnat-sat-display': {'display': 'location'},
         'total-reserves-(proven-and-probable': {'label': 'Reserves (thousand tonnes)'},
         'total-resource-(inferred': {'label': 'Resources (thousand tonnes)'},
