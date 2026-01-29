@@ -1,7 +1,7 @@
 
 var config = {
 
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/GOGPT/2025-08-05/gogpt_map_2025-08-05.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gas-plant/2026-01/gogpt_map_2026-01-28.geojson',
     linkField: 'pid',
     countryField: 'areas',
     color: {

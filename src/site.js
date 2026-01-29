@@ -1277,7 +1277,7 @@ function displayDetails(features) {
                     if (urlMatch) {
                         const url = urlMatch[1];
                         const textWithoutUrl = value.replace(url, '').trim();
-                        detail_text += '<br/><div>' + textWithoutUrl + ' <a href="' + url + '" target="_blank"> here </a></div>';
+                        detail_text += '<br/><div>' + textWithoutUrl + ' <a href="' + url + '" target="_blank">' + 'here' + '</a></div>';
                     } else {
                         detail_text += '<br/><div>' + value + '</div><br/>';
                     }

@@ -1,6 +1,5 @@
 var config = {
-    
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gmet/2025-12/gmet_map_2025-12-05.geojson',
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gmet/2025-12/gmet_map_2026-01-16.geojson',
     geometries: ['Point','LineString'],
     colors: {
         'red': '#c74a48',
@@ -95,7 +94,7 @@ var config = {
         'Project': ['name', 'name-search', 'infra-name', 'geminfrawiki'], 
         'Companies': ['operator'],
         'Type of Infrastructure': ['typeInfra'],
-        'Coordinates': ['geometry', 'lat', 'lng']
+        // 'Coordinates': ['geometry', 'lat', 'lng', 'coordssearch'] # this does not work so commenting out, unclear how useful without the zoomTo / fitBounds
         // 'Government Well ID': ['well_id'],
         // 'Other Government ID Assets': ['gov_assets']
 
@@ -153,9 +152,8 @@ var config = {
         // 'geminfrawiki': {'label': 'Infrastructure Wiki'}, // or display md to just display as text md
         'areas-subnat-sat-display': {'display': 'location'}, 
         'infra-wiki-md': {'display': 'simple_markup'},
-        'carbon-mapper-md': {'display': 'simple_markup'} 
-
-
+        'carbon-mapper-md': {'display': 'simple_markup'},
+        'release-date-infra': {'display': 'simple_markup'}
     }, 
 
     linkField: 'pid',

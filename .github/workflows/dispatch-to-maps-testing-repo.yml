@@ -1,0 +1,31 @@
+name: Notify maps-testing Repo of Branch Update
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - "main"
+      - "master"
+      - "gitpages-production"
+      - "production"
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Dispatch Event
+        run: |
+          BRANCH_NAME="${GITHUB_REF_NAME}"
+
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.DISPATCH_TO_MAPS_TESTING_REPO }}" \
+            https://api.github.com/repos/GlobalEnergyMonitor/testing-maps/dispatches \
+            -d "{
+              \"event_type\": \"sync-maps-repo\",
+              \"client_payload\": {
+                \"branch\": \"${BRANCH_NAME}\"
+              }
+            }"
+

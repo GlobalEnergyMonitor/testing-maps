@@ -1,5 +1,5 @@
 var config = {
-    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/ggit/2025-11/africa-energy_map_2025-11-25.geojson', 
+    geojson: 'https://publicgemdata.nyc3.cdn.digitaloceanspaces.com/gas-plant/2026-01/africa-energy_map_2026-01-28.geojson', 
     geometries: ['Point','LineString'],
     center: [15, 0],
     zoomFactor: 1,
